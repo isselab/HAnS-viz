@@ -10,6 +10,9 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="com.github.johmara.hansviz.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+
+        <toolWindow id="Browser" factoryClass="com.github.johmara.hansviz.BrowserWindowFactory" anchor="right"/>
+        <projectService id="BrowserViewerService" serviceImplementation="com.github.johmara.hansviz.BrowserViewerService"/>
     </extensions>
 
     <applicationListeners>
