@@ -1,12 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HAnS</title>
-</head>
-<body>
-    <button id="myButton">Click me</button>
-    <script src="index.js"></script>
-</body>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ECharts</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  </head>
+  <body class="box">
+    <!-- Prepare a DOM with a defined width and height for ECharts -->
+    <div id="navbar">
+      <div id="pluginNameDiv" >
+        <img src="./img/pluginIcon.png" alt="HAnS-Viz">
+      </div>
+      <button id="treeMapButton">Treemap</button>
+      <button id="treeButton">Tree</button>
+      <button id="tanglingButton">Tangling</button>
+      <button id="themeButton">Toggle Theme</button>
+    </div>
+    <div id="main" class="dark-mode"></div>
+  </body>
+  <script src="js/main.js"></script>
+  <script type="text/javascript">
+  </script>
 </html>
