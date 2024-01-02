@@ -5,7 +5,7 @@
     <vendor>johmara</vendor>
 
     <depends>com.intellij.modules.platform</depends>
-    <depends>se.isselab.hans</depends>
+
 
     <resource-bundle>messages.MyBundle</resource-bundle>
 
@@ -16,13 +16,6 @@
         <projectService id="BrowserViewerService" serviceImplementation="com.github.johmara.hansviz.browser.BrowserViewerService"/>
     </extensions>
 
-    <!-- &begin[HAnSData]-->
-    <extensions defaultExtensionNs="se.isselab.hans">
-        <!-- &begin[Service]-->
-        <featureService implementation="com.github.johmara.hansviz.DataCalculation.FeatureServiceImpl"/>
-        <!-- &end[Service]-->
-    </extensions>
-    <!-- &end[HAnSData]-->
 
     <applicationListeners>
         <listener class="com.github.johmara.hansviz.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
