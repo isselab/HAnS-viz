@@ -19,7 +19,7 @@ openTreeView();
 //add listeners to buttons
 treeMapButton.addEventListener("click", openTreemapView);
 treeButton.addEventListener("click", openTreeView);
-tanglingButton.addEventListener("click", openTanglingView);
+tanglingButton.addEventListener("click", requestData());
 themeButton.addEventListener("click", () => {
   //apply darkmode to the chart container
   var elem = document.getElementById("main");
@@ -48,10 +48,37 @@ window.addEventListener('resize', function() {
   // Resize the chart when the window size changes
   myChart.resize();
 });
+// TODO THESIS: requestData(option)
+function requestData() {
+  alert("HUHU")
+  window.java({
+    request: "tangling",
+    persistent: false,
+    success: function(response) {
+      // response should contain JSON
+      handleData("tangling", response);
+    },
+    failure: function(error_code, error_message) {
+      console.log(error_code, error_message);
+    }
+  })
+}
 
-
+function handleData(option, response) {
+  switch(option) {
+    case "refresh":
+      // handle refresh data
+      break;
+    case "tanglingdegree":
+      // handle tangling degree data
+      break;
+    case "tangling":
+      openTanglingView(response);
+      break;
+  }
+}
 // options for the tangling view
-function openTanglingView(){
+function openTanglingView(response){
   myChart.clear();
   option = {
     title: {
@@ -81,11 +108,11 @@ function openTanglingView(){
         circular: {
           rotateLabel: true
         },
-        data: snakeTangling().features.map(node => {
+        data: response.features.map(node => {
             node["symbolSize"] = node.tanglingDegree * 20 + 20;
             return node;
         }),
-        links: snakeTangling().tanglingLinks.map(function(link){
+        links: response.tanglingLinks.map(function(link){
           link.lineStyle = {
             color: mixColors(stringToColour(link.source), stringToColour(link.target))
           }

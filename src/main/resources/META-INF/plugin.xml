@@ -5,14 +5,14 @@
     <vendor>johmara</vendor>
 
     <depends>com.intellij.modules.platform</depends>
-
-
-    <resource-bundle>messages.MyBundle</resource-bundle>
+    <depends>se.isselab.hans</depends>
+    <!--<resource-bundle>messages.MyBundle</resource-bundle>-->
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="com.github.johmara.hansviz.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
 
-        <toolWindow id="Browser" factoryClass="com.github.johmara.hansviz.browser.BrowserWindowFactory" anchor="right"/>
+        <toolWindow id="HANS-Vis Browser" factoryClass="com.github.johmara.hansviz.browser.BrowserWindowFactory" anchor="right"/>
+
         <projectService id="BrowserViewerService" serviceImplementation="com.github.johmara.hansviz.browser.BrowserViewerService"/>
     </extensions>
 
