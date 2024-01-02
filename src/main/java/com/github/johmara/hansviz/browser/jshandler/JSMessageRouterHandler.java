@@ -1,4 +1,4 @@
-package com.github.johmara.hansviz.JSHandler;
+package com.github.johmara.hansviz.browser.jshandler;
 
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;

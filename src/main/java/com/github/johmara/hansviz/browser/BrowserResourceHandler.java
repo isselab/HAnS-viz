@@ -1,6 +1,6 @@
 // Copyright 2021 Kenny Bang, Johan Berg, Seif Bourogaa, Lucas Frövik, Alexander Grönberg, Sara Persson
 
-package com.github.johmara.hansviz;
+package com.github.johmara.hansviz.browser;
 
 import org.cef.callback.CefCallback;
 import org.cef.handler.CefResourceHandler;

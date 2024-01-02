@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.github.johmara.hansviz;
+package com.github.johmara.hansviz.browser;
 
-import com.github.johmara.hansviz.JSHandler.JSMessageRouterHandler;
+import com.github.johmara.hansviz.browser.jshandler.JSMessageRouterHandler;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.vfs.VirtualFile;
