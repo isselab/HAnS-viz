@@ -2,12 +2,23 @@ package com.github.johmara.hansviz.browser.jshandler;
 
 import JSONHandler.JSONHandler;
 import com.intellij.codeInsight.daemon.impl.quickfix.FetchExtResourceAction;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.ProjectManager;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
 import org.cef.callback.CefQueryCallback;
 import org.cef.handler.CefMessageRouterHandlerAdapter;
+import org.jetbrains.annotations.NotNull;
+import se.isselab.HAnS.featureModel.FeatureModelUtil;
 import se.isselab.HAnS.featureExtension.FeatureService;
+import se.isselab.HAnS.featureLocation.FeatureFileMapping;
+import se.isselab.HAnS.featureLocation.FeatureLocationManager;
+
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class JSMessageRouterHandler extends CefMessageRouterHandlerAdapter {
@@ -30,7 +41,17 @@ public class JSMessageRouterHandler extends CefMessageRouterHandlerAdapter {
             }
             case "tangling" -> {
                 // service.getTanglingMap();
-                callback.success(JSONHandler.getFeatureJSON(JSONHandler.JSONType.Tangling, service.getAllFeatureFileMappings(), service.getTanglingMap()).toJSONString());
+                AtomicReference<String> result = new AtomicReference<>();
+                ProgressManager.getInstance().run(new Task.Modal(ProjectManager.getInstance().getOpenProjects()[0], "Processing Features", false) {
+                    @Override
+                    public void run(@NotNull ProgressIndicator indicator) {
+                        //TODO THESIS
+                        // wrap in read action
+                        result.set(JSONHandler.getFeatureJSON(JSONHandler.JSONType.Tangling, service.getAllFeatureFileMappings(), service.getTanglingMap()).toJSONString());
+                    }
+                });
+                callback.success(result.get());
+                return true;
             }
         }
         return false;

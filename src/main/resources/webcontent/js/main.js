@@ -3,6 +3,8 @@ var treeButton = document.getElementById("treeButton");
 var tanglingButton = document.getElementById("tanglingButton");
 var themeButton = document.getElementById("themeButton");
 
+var testButton = document.getElementById("testButton");
+
 
 var chartDom = document.getElementById('main');
 var myChart = echarts.init(chartDom);
@@ -19,7 +21,8 @@ openTreeView();
 //add listeners to buttons
 treeMapButton.addEventListener("click", openTreemapView);
 treeButton.addEventListener("click", openTreeView);
-tanglingButton.addEventListener("click", requestData);
+tanglingButton.addEventListener("click", openTanglingView);
+testButton.addEventListener("click", requestData);
 themeButton.addEventListener("click", () => {
   //apply darkmode to the chart container
   var elem = document.getElementById("main");
@@ -53,11 +56,11 @@ function requestData() {
   window.java({
     request: "tangling",
     persistent: false,
-    success: function(response) {
+    onSuccess: function(response) {
       // response should contain JSON
       handleData("tangling", response);
     },
-    failure: function(error_code, error_message) {
+    onFailure: function(error_code, error_message) {
       alert("could not retrieve data " + error_code + "  " + error_message)
       console.log(error_code, error_message);
     }
@@ -65,7 +68,6 @@ function requestData() {
 }
 
 function handleData(option, response) {
-  alert("retrieved data with option " + option + ":\n" + response);
   switch(option) {
     case "refresh":
       // handle refresh data
@@ -74,12 +76,13 @@ function handleData(option, response) {
       // handle tangling degree data
       break;
     case "tangling":
-      openTanglingView(response);
+      openTanglingWithResponse(response);
       break;
   }
 }
+
 // options for the tangling view
-function openTanglingView(response){
+function openTanglingView(){
   myChart.clear();
   option = {
     title: {
@@ -109,11 +112,11 @@ function openTanglingView(response){
         circular: {
           rotateLabel: true
         },
-        data: response.features.map(node => {
+        data: snakeTangling().features.map(node => {
             node["symbolSize"] = node.tanglingDegree * 20 + 20;
             return node;
         }),
-        links: response.tanglingLinks.map(function(link){
+        links: snakeTangling().tanglingLinks.map(function(link){
           link.lineStyle = {
             color: mixColors(stringToColour(link.source), stringToColour(link.target))
           }
@@ -234,6 +237,68 @@ function openTreeView(){
         expandAndCollapse: true,
         animationDuration: 550,
         animationDurationUpdate: 750
+      }
+    ]
+  };
+  option && myChart.setOption(option);
+}
+
+function openTanglingWithResponse(response){
+  let data = JSON.parse(response);
+  myChart.clear();
+  option = {
+    title: {
+      text: 'Tangling Degree',
+      subtext: 'Circular layout',
+      top: 'bottom',
+      left: 'right'
+    },
+    tooltip: {
+      show: true,
+      formatter: function (params) {
+        if(params.dataType === "node"){
+          return `${params.marker}${params.data.name}<br>Tangling Degree: ${params.data.tanglingDegree}<br>Total Lines: ${params.data.totalLines}`;
+        }
+        else {
+          return `${params.data.source} > ${params.data.target}`;
+        }
+      }
+    },
+    animationDurationUpdate: 1500,
+    animationEasingUpdate: 'quinticInOut',
+    series: [
+      {
+        name: 'Tangling Degree',
+        type: 'graph',
+        layout: 'circular',
+        circular: {
+          rotateLabel: true
+        },
+        data: data.features.map(node => {
+          node["symbolSize"] = node.tanglingDegree * 20 + 20;
+          return node;
+        }),
+        links: data.tanglingLinks.map(function(link){
+          link.lineStyle = {
+            color: mixColors(stringToColour(link.source), stringToColour(link.target))
+          }
+          return link;
+        }),
+        roam: true,
+        label: {
+          show: true, // Show label by default
+          position: 'right',
+          formatter: '{b}'
+        },
+        itemStyle: {
+          color: function (params) {
+            // Generate a random color
+            return stringToColour(params.data.id);
+          }
+        },
+        lineStyle: {
+          curveness: 0.3
+        }
       }
     ]
   };
