@@ -19,7 +19,7 @@ openTreeView();
 //add listeners to buttons
 treeMapButton.addEventListener("click", openTreemapView);
 treeButton.addEventListener("click", openTreeView);
-tanglingButton.addEventListener("click", requestData());
+tanglingButton.addEventListener("click", requestData);
 themeButton.addEventListener("click", () => {
   //apply darkmode to the chart container
   var elem = document.getElementById("main");
@@ -50,7 +50,6 @@ window.addEventListener('resize', function() {
 });
 // TODO THESIS: requestData(option)
 function requestData() {
-  alert("HUHU")
   window.java({
     request: "tangling",
     persistent: false,
@@ -59,12 +58,14 @@ function requestData() {
       handleData("tangling", response);
     },
     failure: function(error_code, error_message) {
+      alert("could not retrieve data " + error_code + "  " + error_message)
       console.log(error_code, error_message);
     }
   })
 }
 
 function handleData(option, response) {
+  alert("retrieved data with option " + option + ":\n" + response);
   switch(option) {
     case "refresh":
       // handle refresh data
