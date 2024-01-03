@@ -41,6 +41,11 @@ public class JSMessageRouterHandler extends CefMessageRouterHandlerAdapter {
             }
             case "tangling" -> {
                 // service.getTanglingMap();
+
+                // TODO THESIS: HAnS-Viz should not start any background or modal task. Change this to only
+                //  JSONHandler.getFeatureJSON(JSONHandler.JSONType.Tangling, service.getAllFeatureFileMappings(), service.getTanglingMap()).toJSONString()
+                //  We maybe need to implement interface extension point HAnSCallback and give it to service
+
                 AtomicReference<String> result = new AtomicReference<>();
                 ProgressManager.getInstance().run(new Task.Modal(ProjectManager.getInstance().getOpenProjects()[0], "Processing Features", false) {
                     @Override
