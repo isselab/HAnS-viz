@@ -51,6 +51,11 @@ window.addEventListener('resize', function() {
   // Resize the chart when the window size changes
   myChart.resize();
 });
+// TODO THESIS: This function gets called by HAnsDumbModeListener after finishing indexing. display style from main should be changed
+function startPlotting() {
+  document.getElementById("main").style.display = "block";
+  document.getElementById("idle").style.display = "none";
+}
 // TODO THESIS: requestData(option)
 function requestData() {
   window.java({

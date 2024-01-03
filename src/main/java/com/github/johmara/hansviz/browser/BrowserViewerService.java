@@ -30,7 +30,7 @@ public class BrowserViewerService implements Disposable {
      * @param project The project which the service is used in
      */
     public BrowserViewerService(Project project) {
-        browserViewerWindow = new BrowserViewerWindow(this, project);
+        browserViewerWindow = BrowserViewerWindow.startInstance(this, project);
     }
 
     /**

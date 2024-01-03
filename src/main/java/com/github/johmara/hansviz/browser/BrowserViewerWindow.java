@@ -35,17 +35,25 @@ import javax.swing.*;
 public class BrowserViewerWindow {
 
     private final JBCefBrowser webView;
+    private static BrowserViewerWindow browserViewerWindow;
 
     private final Box content;
     private final Project project;
 
+    public static BrowserViewerWindow getInstance() {
+        return browserViewerWindow;
+    }
+    public static BrowserViewerWindow startInstance(BrowserViewerService service, Project project) {
+        browserViewerWindow = new BrowserViewerWindow(service, project);
+        return browserViewerWindow;
+    }
 
     /**
      * Constructs a JCEF view containing the Feature Localisation View and Tangling View
      * @param service The parent service of the view
      * @param project The project the view is for
      */
-    public BrowserViewerWindow(BrowserViewerService service, Project project) {
+    private BrowserViewerWindow(BrowserViewerService service, Project project) {
         webView = new JBCefBrowser();
         registerAppSchemeHandler();
         initialiseJSHandler(webView.getCefBrowser().getClient());
@@ -118,5 +126,14 @@ public class BrowserViewerWindow {
         }
         // No file/folder found
         return null;
+    }
+
+    /**
+     * Can call a javascript function of current view. Parameter function has to be in js-format, e.g. "function();"
+     * @param function
+     */
+    public static void runJavascript(String function) {
+        System.out.println(function);
+        getInstance().webView.getCefBrowser().executeJavaScript(function, null, 0);
     }
 }
