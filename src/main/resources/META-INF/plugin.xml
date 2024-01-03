@@ -20,4 +20,7 @@
     <applicationListeners>
         <listener class="com.github.johmara.hansviz.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
     </applicationListeners>
+    <projectListeners>
+        <listener class="HanSDumbModeListener" topic="com.intellij.openapi.project.DumbService$DumbModeListener"/>
+    </projectListeners>
 </idea-plugin>
