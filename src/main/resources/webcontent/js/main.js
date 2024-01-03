@@ -2,27 +2,21 @@ var treeMapButton = document.getElementById("treeMapButton");
 var treeButton = document.getElementById("treeButton");
 var tanglingButton = document.getElementById("tanglingButton");
 var themeButton = document.getElementById("themeButton");
-
 var testButton = document.getElementById("testButton");
-
 
 var chartDom = document.getElementById('main');
 var myChart = echarts.init(chartDom);
 
 var option;
 
+var initialized = false;
 
 //initialize first view
-openTreeView();
+myChart.showLoading();
 
 
 
 
-//add listeners to buttons
-treeMapButton.addEventListener("click", openTreemapView);
-treeButton.addEventListener("click", openTreeView);
-tanglingButton.addEventListener("click", openTanglingView);
-testButton.addEventListener("click", requestData);
 themeButton.addEventListener("click", () => {
   //apply darkmode to the chart container
   var elem = document.getElementById("main");
@@ -51,11 +45,28 @@ window.addEventListener('resize', function() {
   // Resize the chart when the window size changes
   myChart.resize();
 });
+
 // TODO THESIS: This function gets called by HAnsDumbModeListener after finishing indexing. display style from main should be changed
 function startPlotting() {
-  document.getElementById("main").style.display = "block";
-  document.getElementById("idle").style.display = "none";
+
+  if(initialized){
+    return;
+  }
+
+  initialized = true;
+  //TODO
+  //add listeners to buttons
+  treeMapButton.addEventListener("click", openTreemapView);
+  treeButton.addEventListener("click", openTreeView);
+  tanglingButton.addEventListener("click", openTanglingView);
+  testButton.addEventListener("click", requestData);
+
+  //open start page
+  openTreeView();
+  myChart.hideLoading();
+  initialized = true;
 }
+
 // TODO THESIS: requestData(option)
 function requestData() {
   window.java({
