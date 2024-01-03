@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+
   </head>
   <body class="box">
     <!-- Prepare a DOM with a defined width and height for ECharts -->
@@ -13,13 +14,17 @@
       <div id="pluginNameDiv" >
         <img src="./img/pluginIcon.png" alt="HAnS-Viz">
       </div>
-      <button id="treeMapButton">Treemap</button>
-      <button id="treeButton">Tree</button>
-      <button id="tanglingButton">Tangling</button>
       <button id="testButton">TEST</button>
-      <button id="themeButton">Toggle Theme</button>
+      <button class="openbtn" onclick="toggleNav()">☰</button>
     </div>
     <div id="main" class="dark-mode"></div>
+
+    <div id="mySidepanel" class="sidepanel">
+      <a href="#" onclick="openTreeView()">Tree View</a>
+      <a href="#" onclick="openTreemapView()">Treemap View</a>
+      <a href="#" onclick="openTanglingView()">Tangling</a>
+      <a href="#" onclick="toggleTheme()">Switch Theme</a>
+    </div>
   </body>
   <script src="js/main.js"></script>
   <script type="text/javascript">

@@ -1,27 +1,26 @@
-var treeMapButton = document.getElementById("treeMapButton");
-var treeButton = document.getElementById("treeButton");
-var tanglingButton = document.getElementById("tanglingButton");
-var themeButton = document.getElementById("themeButton");
 var testButton = document.getElementById("testButton");
 
 var chartDom = document.getElementById('main');
-var myChart = echarts.init(chartDom);
+
+const state = {
+  isInitialized: false,
+  currentChart: 0,
+  treeChart: 0,
+  treeMapChart: 1,
+  tanglingChart: 2,
+  isDarkmode: true,
+  isNav: false
+}
+
+var myChart = echarts.init(chartDom, state.isDarkmode ? "dark" : "");
+
 
 var option;
 
-var initialized = false;
 
 //initialize first view
 myChart.showLoading();
 
-
-
-
-themeButton.addEventListener("click", () => {
-  //apply darkmode to the chart container
-  var elem = document.getElementById("main");
-  elem.classList.toggle("dark-mode");
-});
 
 // Handle click event
 myChart.on('click', function (params) {
@@ -49,22 +48,32 @@ window.addEventListener('resize', function() {
 // TODO THESIS: This function gets called by HAnsDumbModeListener after finishing indexing. display style from main should be changed
 function startPlotting() {
 
-  if(initialized){
+  if(state.isInitialized){
     return;
   }
 
-  initialized = true;
-  //TODO
-  //add listeners to buttons
-  treeMapButton.addEventListener("click", openTreemapView);
-  treeButton.addEventListener("click", openTreeView);
-  tanglingButton.addEventListener("click", openTanglingView);
-  testButton.addEventListener("click", requestData);
+  state.isInitialized = true;
+  //TODO prevent onClick from loading
+
+
+  testButton.addEventListener("click", highlightItem);
 
   //open start page
   openTreeView();
   myChart.hideLoading();
   initialized = true;
+}
+
+function highlightItem(){
+  myChart.dispatchAction({
+    type: "downplay",
+    seriesIndex: 0
+  });
+
+  myChart.dispatchAction({
+    type: "highlight",
+    name: "test"
+  })
 }
 
 // TODO THESIS: requestData(option)
@@ -99,6 +108,8 @@ function handleData(option, response) {
 
 // options for the tangling view
 function openTanglingView(){
+  if(!state.isInitialized)
+    return;
   myChart.clear();
   option = {
     title: {
@@ -152,15 +163,27 @@ function openTanglingView(){
         },
         lineStyle: {
           curveness: 0.3
+        },
+        emphasis: {
+          focus: 'adjacency',
+          label: {
+            position: 'right',
+            show: true,
+            fontSize: 30,
+            color: getTextColor()
+          }
         }
       }
     ]
   };
   option && myChart.setOption(option);
+  state.currentChart = state.tanglingChart;
 }
 
 //options for the treemap view
 function openTreemapView(){
+  if(!state.isInitialized)
+    return;
   myChart.clear();
 
   option = {
@@ -207,10 +230,13 @@ function openTreemapView(){
     ]
   };
  option && myChart.setOption(option);
+ state.currentChart = state.treeMapChart;
 }
 
 //options for the tree view
 function openTreeView(){
+  if(!state.isInitialized)
+    return;
   myChart.clear();
   option = {
     tooltip: {
@@ -235,7 +261,8 @@ function openTreeView(){
           width: 2
         },
         label: {
-          backgroundColor: '#fff',
+          backgroundColor: getTextColor(true),
+          color: getTextColor(),
           position: 'left',
           verticalAlign: 'middle',
           align: 'right'
@@ -257,6 +284,7 @@ function openTreeView(){
     ]
   };
   option && myChart.setOption(option);
+  state.currentChart = state.treeChart;
 }
 
 function openTanglingWithResponse(response){
@@ -358,6 +386,48 @@ function getLevelOption() {
       }
     }
   ];
+}
+
+function getTextColor(getInverse = false){
+  let light = "#17142c";
+  let dark = "#ffffff"
+
+  if(getInverse){
+    return state.isDarkmode ? light : dark;
+  }
+  return state.isDarkmode ? dark : light;
+}
+
+function toggleNav() {
+  state.isNav = !state.isNav;
+  document.getElementById("mySidepanel").style.width = state.isNav ?  "250px" : "0px";
+}
+
+function toggleTheme(){
+  //apply darkmode to the chart container
+  var elem = document.getElementById("main");
+  elem.classList.toggle("dark-mode");
+
+  state.isDarkmode = !state.isDarkmode;
+  echarts.dispose(myChart);
+  myChart = echarts.init(chartDom, state.isDarkmode ? "dark" : "");
+
+  switch(state.currentChart){
+    case state.treeChart:{
+      openTreeView();
+      break;
+    }
+    case state.treeMapChart:{
+      openTreemapView();
+      break;
+    }
+    case state.tanglingChart:{
+      openTanglingView();
+      break;
+    }
+    default:
+      openTreeView();
+  }
 }
 
   /**
