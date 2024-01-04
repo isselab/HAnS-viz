@@ -17,17 +17,13 @@ package com.github.johmara.hansviz.browser;
 import com.github.johmara.hansviz.browser.jshandler.JSMessageRouterHandler;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileSystemItem;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.ui.jcef.JBCefBrowser;
 import org.cef.CefApp;
 import org.cef.CefClient;
 import org.cef.browser.CefMessageRouter;
 
 import javax.swing.*;
+
 
 /**
  * A class creating the JCEF browser used as content in a ToolWindow
@@ -40,6 +36,10 @@ public class BrowserViewerWindow {
     private final Box content;
     private final Project project;
 
+    /**
+     * Singleton, while there is only one BrowserViewerWindow for a project.
+     * @return BrowserViewerWindow instance
+     */
     public static BrowserViewerWindow getInstance() {
         return browserViewerWindow;
     }
@@ -59,9 +59,9 @@ public class BrowserViewerWindow {
         initialiseJSHandler(webView.getCefBrowser().getClient());
         webView.loadURL("http://hans/index.html");
 
-        /**
-         * Helps IDE with memory management -> avoid "Memory leak detected"
-         */
+
+
+        // Helps IDE with memory management -> avoid "Memory leak detected"
         Disposer.register(service, webView);
 
 
@@ -74,6 +74,11 @@ public class BrowserViewerWindow {
         this.project = project;
     }
 
+    /**
+     * Initialises Javascript Handler.
+     * Request from Javascript-side with window.java and window.javacancel can be handeled through this handler.
+     * @param client CefClient
+     */
     private void initialiseJSHandler(CefClient client) {
         // create routing point for JS -> window.java ({})
         CefMessageRouter.CefMessageRouterConfig cefMessageRouterConfig = new CefMessageRouter.CefMessageRouterConfig("java","javaCancel");
@@ -82,6 +87,9 @@ public class BrowserViewerWindow {
         client.addMessageRouter(cefMessageRouter);
     }
 
+    /**
+     * Registers App Scheme Handler that introduces {@link BrowserSchemeHandlerFactory}
+     */
     private void registerAppSchemeHandler() {
         CefApp.getInstance().registerSchemeHandlerFactory(
                 "http",
@@ -100,37 +108,9 @@ public class BrowserViewerWindow {
     }
 
 
-
-
-    /**
-     * Searches the project for a file (or folder) with the specified filename
-     * and returns it as a VirtualFile.
-     * (Currently does not support to find the correct file when multiple files
-     * with the same name exists)
-     * @param fileName The name of the file (or folder) that should be returned
-     * @return A file (or folder) as a VirtualFile
-     *
-     */
-    private VirtualFile getVirtualFile(String fileName) {
-        // Try and return a file
-        PsiFile[] allFilenames = FilenameIndex.getFilesByName(
-                project, fileName, GlobalSearchScope.projectScope(project));
-        if (allFilenames.length > 0) {
-            return allFilenames[0].getVirtualFile();
-        }
-        // Try and return a folder
-        PsiFileSystemItem[] allFoldernames = FilenameIndex.getFilesByName(
-                project, fileName, GlobalSearchScope.projectScope(project), true);
-        if (allFoldernames.length > 0) {
-            return allFoldernames[0].getVirtualFile();
-        }
-        // No file/folder found
-        return null;
-    }
-
     /**
      * Can call a javascript function of current view. Parameter function has to be in js-format, e.g. "function();"
-     * @param function
+     * @param function String
      */
     public static void runJavascript(String function) {
         System.out.println(function);

@@ -7,9 +7,8 @@ import com.intellij.openapi.project.DumbService;
 public class HanSDumbModeListener implements DumbService.DumbModeListener {
     @Override
     public void exitDumbMode() {
+        // Indexing is done -> that function is called every time after an indexing process.
+        // "First time" has to be handeled inside called functions
         BrowserViewerWindow.runJavascript("startPlotting();");
-        System.out.println("exitDumbMode");
-        System.out.println("Änderung");
-        // DumbService.DumbModeListener.super.exitDumbMode();
     }
 }

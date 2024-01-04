@@ -10,6 +10,7 @@ import org.cef.network.CefRequest;
 
 /**
  * A class creating a custom CefResourceHandler
+ * @see BrowserResourceHandler
  */
 public class BrowserSchemeHandlerFactory implements CefSchemeHandlerFactory {
     /**

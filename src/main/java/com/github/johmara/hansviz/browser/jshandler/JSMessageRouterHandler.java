@@ -1,8 +1,7 @@
 package com.github.johmara.hansviz.browser.jshandler;
 
 import JSONHandler.JSONHandler;
-import com.intellij.codeInsight.daemon.impl.quickfix.FetchExtResourceAction;
-import com.intellij.openapi.application.ApplicationManager;
+
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
@@ -12,18 +11,25 @@ import org.cef.browser.CefFrame;
 import org.cef.callback.CefQueryCallback;
 import org.cef.handler.CefMessageRouterHandlerAdapter;
 import org.jetbrains.annotations.NotNull;
-import se.isselab.HAnS.featureModel.FeatureModelUtil;
 import se.isselab.HAnS.featureExtension.FeatureService;
-import se.isselab.HAnS.featureLocation.FeatureFileMapping;
-import se.isselab.HAnS.featureLocation.FeatureLocationManager;
 
-import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 
 public class JSMessageRouterHandler extends CefMessageRouterHandlerAdapter {
 
-    private FeatureService service = ProjectManager.getInstance().getOpenProjects()[0].getService(FeatureService.class);
+    private final FeatureService service = ProjectManager.getInstance().getOpenProjects()[0].getService(FeatureService.class);
+
+    /**
+     * Request on javascript side (that are called with window.java or window.javacancel are handeled here
+     * @param browser CefBrowser
+     * @param frame CefFrame
+     * @param queryId long
+     * @param request String: This request will be handeled
+     * @param persistent boolean
+     * @param callback CefQueryCallback: function that is called after success
+     * @return boolean
+     */
     @Override
     public boolean onQuery(CefBrowser browser, CefFrame frame, long queryId, String request, boolean persistent, CefQueryCallback callback) {
         System.out.println("Request: " + request); // For testing purposes
