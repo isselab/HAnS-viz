@@ -70,7 +70,8 @@ function startPlotting() {
   //TODO prevent onClick from loading
 
 
-  testButton.addEventListener("click", highlightItem);
+  // testButton.addEventListener("click", highlightItem);
+  testButton.addEventListener("click", requestData);
 
   //open start page
   openTreeView();
@@ -97,11 +98,13 @@ function highlightItem(input){
 
 // TODO THESIS: requestData(option)
 function requestData() {
+  myChart.showLoading();
   window.java({
     request: "tangling",
     persistent: false,
     onSuccess: function(response) {
       // response should contain JSON
+      //alert("response is there!");
       handleData("tangling", response);
     },
     onFailure: function(error_code, error_message) {
@@ -312,6 +315,7 @@ function openTreeView(){
 }
 
 function openTanglingWithResponse(response){
+  myChart.hideLoading();
   let data = JSON.parse(response);
   myChart.clear();
   option = {

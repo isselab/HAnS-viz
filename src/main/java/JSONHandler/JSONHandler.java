@@ -1,12 +1,16 @@
 package JSONHandler;
 
+import com.intellij.openapi.project.Project;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import org.cef.callback.CefQueryCallback;
+import se.isselab.HAnS.HAnSCallback;
 import se.isselab.HAnS.Logger;
 import se.isselab.HAnS.featureExtension.FeatureService;
 import se.isselab.HAnS.featureLocation.FeatureFileMapping;
 import se.isselab.HAnS.featureLocation.FeatureLocationManager;
 import se.isselab.HAnS.featureModel.psi.FeatureModelFeature;
+import se.isselab.HAnS.metrics.FeatureMetrics;
 import se.isselab.HAnS.metrics.FeatureTangling;
 
 import java.util.HashMap;
@@ -15,21 +19,89 @@ import java.util.List;
 
 
 
-public class JSONHandler {
+public class JSONHandler implements HAnSCallback {
+    private CefQueryCallback callback;
+    private JSONType jsonType;
+    private Project project;
+    @Override
+    public void onComplete(FeatureMetrics featureMetrics) {
+        JSONObject dataJSON = new JSONObject();
+        JSONArray nodesJSON = new JSONArray();
+        JSONArray linksJSON = new JSONArray();
+        HashMap<String, FeatureFileMapping> fileMapping = featureMetrics.getFileMapping();
+        HashMap<FeatureModelFeature, HashSet<FeatureModelFeature>> tanglingMap = featureMetrics.getTanglingMap();
+
+        HashMap<FeatureModelFeature, Integer> featureToId = new HashMap<>();
+        int counter = 0;
+        List<FeatureModelFeature> topLevelFeatures = null;
+
+        FeatureService featureService = project.getService(FeatureService.class);
+        if(jsonType == JSONType.Default || jsonType == JSONType.Tree || jsonType == JSONType.TreeMap)
+            topLevelFeatures = featureService.getRootFeatures();
+
+        else if(jsonType == JSONType.Tangling)
+            topLevelFeatures = featureService.getFeatures();
+
+        else {
+            Logger.print(Logger.Channel.ERROR, "Could not create JSON because of invalid type");
+            //return new JSONObject();
+        }
+
+
+        for(var feature : topLevelFeatures) {
+            JSONObject featureObj = featureToJSON(feature, fileMapping, tanglingMap);
+            nodesJSON.add(featureObj);
+            featureToId.put(feature, counter);
+            counter++;
+        }
+
+
+        for(var featureToTangledFeatures : tanglingMap.entrySet()){
+            for(var tangledFeature : featureToTangledFeatures.getValue()){
+                //add link if id of feature is less than the id of the tangled one
+                if(!featureToId.containsKey(featureToTangledFeatures.getKey()))
+                    continue;
+                if(featureToId.get(featureToTangledFeatures.getKey()) < featureToId.get(tangledFeature))
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("source", featureToTangledFeatures.getKey().getLPQText());
+                    obj.put("target", tangledFeature.getLPQText());
+                    linksJSON.add(obj);
+                }
+            }
+        }
+        dataJSON.put("features", nodesJSON);
+        dataJSON.put("tanglingLinks", linksJSON);
+        System.out.println("Ich bin von dem BackgroundTask");
+        System.out.println(dataJSON.toJSONString());
+        callback.success(dataJSON.toJSONString());
+    }
+
     public enum JSONType {Default, Tree, TreeMap, Tangling}
-    public static JSONObject getFeatureJSON(JSONType type, HashMap<String, FeatureFileMapping> fileMapping, HashMap<FeatureModelFeature, HashSet<FeatureModelFeature>> tanglingMap){
-        //TODO THESIS
-        // put into hans viz
+
+    public JSONHandler(Project project, JSONType type, CefQueryCallback callback) {
+        this.project = project;
+        this.jsonType = type;
+        this.callback = callback;
+        FeatureService featureService = project.getService(FeatureService.class);
+        featureService.getFeatureFileMappingAndTanglingMap(this);
+    }
+    /*public void getFeatureJSON(Project project, JSONType type, CefQueryCallback callback){
+        this.callback = callback;
         //converts TanglingMap to JSON
-        FeatureService featureService = new FeatureService();
+        FeatureService featureService =
+        //featureService.getFeatureFileMappingAndTanglingMap(this);
 
         JSONObject dataJSON = new JSONObject();
         JSONArray nodesJSON = new JSONArray();
         JSONArray linksJSON = new JSONArray();
 
+        HashMap<String, FeatureFileMapping> fileMapping = featureService.getAllFeatureFileMappings();
+        HashMap<FeatureModelFeature, HashSet<FeatureModelFeature>> tanglingMap = featureService.getTanglingMap();
+
         //get links
         //map feature with id
-        HashMap<FeatureModelFeature, Integer> featureToId = new HashMap<>();
+        *//*HashMap<FeatureModelFeature, Integer> featureToId = new HashMap<>();
         int counter = 0;
         List<FeatureModelFeature> topLevelFeatures;
 
@@ -72,10 +144,12 @@ public class JSONHandler {
         dataJSON.put("tanglingLinks", linksJSON);
 
 
-        return dataJSON;
-    }
+        return dataJSON;*//*
+    }*/
 
+    /*private JSONObject proceedFeatureJSONwithFeatureFileMappings(HashMap<String, FeatureFileMapping> fileMapping) {
 
+    }*/
     /**
      * Helperfunction to recursively create JSONObjects of features
      * Recursion takes place within the child property of the feature
