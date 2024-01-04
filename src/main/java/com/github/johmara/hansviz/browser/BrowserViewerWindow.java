@@ -17,11 +17,6 @@ package com.github.johmara.hansviz.browser;
 import com.github.johmara.hansviz.browser.jshandler.JSMessageRouterHandler;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileSystemItem;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.ui.jcef.JBCefBrowser;
 import org.cef.CefApp;
 import org.cef.CefClient;
@@ -39,7 +34,6 @@ public class BrowserViewerWindow {
     private static BrowserViewerWindow browserViewerWindow;
 
     private final Box content;
-    private final Project project;
 
     /**
      * Singleton, while there is only one BrowserViewerWindow for a project.
