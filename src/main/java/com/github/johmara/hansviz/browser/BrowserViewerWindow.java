@@ -34,6 +34,7 @@ public class BrowserViewerWindow {
     private static BrowserViewerWindow browserViewerWindow;
 
     private final Box content;
+    private final Project project;
 
     /**
      * Singleton, while there is only one BrowserViewerWindow for a project.
