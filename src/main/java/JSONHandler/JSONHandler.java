@@ -86,70 +86,7 @@ public class JSONHandler implements HAnSCallback {
         FeatureService featureService = project.getService(FeatureService.class);
         featureService.getFeatureFileMappingAndTanglingMap(this);
     }
-    /*public void getFeatureJSON(Project project, JSONType type, CefQueryCallback callback){
-        this.callback = callback;
-        //converts TanglingMap to JSON
-        FeatureService featureService =
-        //featureService.getFeatureFileMappingAndTanglingMap(this);
 
-        JSONObject dataJSON = new JSONObject();
-        JSONArray nodesJSON = new JSONArray();
-        JSONArray linksJSON = new JSONArray();
-
-        HashMap<String, FeatureFileMapping> fileMapping = featureService.getAllFeatureFileMappings();
-        HashMap<FeatureModelFeature, HashSet<FeatureModelFeature>> tanglingMap = featureService.getTanglingMap();
-
-        //get links
-        //map feature with id
-        *//*HashMap<FeatureModelFeature, Integer> featureToId = new HashMap<>();
-        int counter = 0;
-        List<FeatureModelFeature> topLevelFeatures;
-
-
-        if(type == JSONType.Default || type == JSONType.Tree || type == JSONType.TreeMap)
-            topLevelFeatures = featureService.getRootFeatures();
-
-        else if(type == JSONType.Tangling)
-            topLevelFeatures = featureService.getFeatures();
-
-        else {
-            Logger.print(Logger.Channel.ERROR, "Could not create JSON because of invalid type");
-            return new JSONObject();
-        }
-
-
-        for(var feature : topLevelFeatures) {
-            JSONObject featureObj = featureToJSON(feature, fileMapping, tanglingMap);
-            nodesJSON.add(featureObj);
-            featureToId.put(feature, counter);
-            counter++;
-        }
-
-
-        for(var featureToTangledFeatures : tanglingMap.entrySet()){
-            for(var tangledFeature : featureToTangledFeatures.getValue()){
-                //add link if id of feature is less than the id of the tangled one
-                if(!featureToId.containsKey(featureToTangledFeatures.getKey()))
-                    continue;
-                if(featureToId.get(featureToTangledFeatures.getKey()) < featureToId.get(tangledFeature))
-                {
-                    JSONObject obj = new JSONObject();
-                    obj.put("source", featureToTangledFeatures.getKey().getLPQText());
-                    obj.put("target", tangledFeature.getLPQText());
-                    linksJSON.add(obj);
-                }
-            }
-        }
-        dataJSON.put("features", nodesJSON);
-        dataJSON.put("tanglingLinks", linksJSON);
-
-
-        return dataJSON;*//*
-    }*/
-
-    /*private JSONObject proceedFeatureJSONwithFeatureFileMappings(HashMap<String, FeatureFileMapping> fileMapping) {
-
-    }*/
     /**
      * Helperfunction to recursively create JSONObjects of features
      * Recursion takes place within the child property of the feature
