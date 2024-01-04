@@ -43,7 +43,7 @@ public class BrowserViewerWindow {
 
     /**
      * Singleton, while there is only one BrowserViewerWindow for a project.
-     * @return
+     * @return BrowserViewerWindow instance
      */
     public static BrowserViewerWindow getInstance() {
         return browserViewerWindow;
@@ -65,9 +65,8 @@ public class BrowserViewerWindow {
         webView.loadURL("http://hans/index.html");
 
 
-        /**
-         * Helps IDE with memory management -> avoid "Memory leak detected"
-         */
+
+        // Helps IDE with memory management -> avoid "Memory leak detected"
         Disposer.register(service, webView);
 
 
@@ -83,7 +82,7 @@ public class BrowserViewerWindow {
     /**
      * Initialises Javascript Handler.
      * Request from Javascript-side with window.java and window.javacancel can be handeled through this handler.
-     * @param client
+     * @param client CefClient
      */
     private void initialiseJSHandler(CefClient client) {
         // create routing point for JS -> window.java ({})
@@ -95,7 +94,6 @@ public class BrowserViewerWindow {
 
     /**
      * Registers App Scheme Handler that introduces {@link BrowserSchemeHandlerFactory}
-     * @see
      */
     private void registerAppSchemeHandler() {
         CefApp.getInstance().registerSchemeHandlerFactory(
@@ -115,37 +113,9 @@ public class BrowserViewerWindow {
     }
 
 
-
-
-    /**
-     * Searches the project for a file (or folder) with the specified filename
-     * and returns it as a VirtualFile.
-     * (Currently does not support to find the correct file when multiple files
-     * with the same name exists)
-     * @param fileName The name of the file (or folder) that should be returned
-     * @return A file (or folder) as a VirtualFile
-     *
-     */
-    private VirtualFile getVirtualFile(String fileName) {
-        // Try and return a file
-        PsiFile[] allFilenames = FilenameIndex.getFilesByName(
-                project, fileName, GlobalSearchScope.projectScope(project));
-        if (allFilenames.length > 0) {
-            return allFilenames[0].getVirtualFile();
-        }
-        // Try and return a folder
-        PsiFileSystemItem[] allFoldernames = FilenameIndex.getFilesByName(
-                project, fileName, GlobalSearchScope.projectScope(project), true);
-        if (allFoldernames.length > 0) {
-            return allFoldernames[0].getVirtualFile();
-        }
-        // No file/folder found
-        return null;
-    }
-
     /**
      * Can call a javascript function of current view. Parameter function has to be in js-format, e.g. "function();"
-     * @param function
+     * @param function String
      */
     public static void runJavascript(String function) {
         System.out.println(function);

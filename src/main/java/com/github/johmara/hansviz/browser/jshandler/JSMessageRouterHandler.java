@@ -22,13 +22,13 @@ public class JSMessageRouterHandler extends CefMessageRouterHandlerAdapter {
 
     /**
      * Request on javascript side (that are called with window.java or window.javacancel are handeled here
-     * @param browser
-     * @param frame
-     * @param queryId
-     * @param request
-     * @param persistent
-     * @param callback
-     * @return
+     * @param browser CefBrowser
+     * @param frame CefFrame
+     * @param queryId long
+     * @param request String: This request will be handeled
+     * @param persistent boolean
+     * @param callback CefQueryCallback: function that is called after success
+     * @return boolean
      */
     @Override
     public boolean onQuery(CefBrowser browser, CefFrame frame, long queryId, String request, boolean persistent, CefQueryCallback callback) {
