@@ -1,6 +1,6 @@
 var testButton = document.getElementById("testButton");
-
 var chartDom = document.getElementById('main');
+var searchbar = document.getElementById("searchbar");
 
 const state = {
   isInitialized: false,
@@ -45,6 +45,20 @@ window.addEventListener('resize', function() {
   myChart.resize();
 });
 
+searchbar.addEventListener("keypress", function(event) {
+  if(event.key === "Enter"){
+    let input = searchbar.value;
+    highlightItem(input);
+  }
+});
+
+searchbar.onkeyup = function(){
+  if(searchbar.value === ""){
+    highlightItem("");
+  }
+}
+
+
 // TODO THESIS: This function gets called by HAnsDumbModeListener after finishing indexing. display style from main should be changed
 function startPlotting() {
 
@@ -64,15 +78,20 @@ function startPlotting() {
   initialized = true;
 }
 
-function highlightItem(){
+
+
+function highlightItem(input){
+
   myChart.dispatchAction({
     type: "downplay",
     seriesIndex: 0
   });
 
+  if(input === "")
+    return;
   myChart.dispatchAction({
     type: "highlight",
-    name: "test"
+    name: input
   })
 }
 
@@ -140,6 +159,7 @@ function openTanglingView(){
           rotateLabel: true
         },
         data: snakeTangling().features.map(node => {
+          /*TODO THESIS dont grow linear*/
             node["symbolSize"] = node.tanglingDegree * 20 + 20;
             return node;
         }),
@@ -164,6 +184,7 @@ function openTanglingView(){
         lineStyle: {
           curveness: 0.3
         },
+        zoom: 0.7,
         emphasis: {
           focus: 'adjacency',
           label: {
@@ -250,7 +271,7 @@ function openTreeView(){
         name: 'tree1',
         data: getFeatureJson().features,
         top: '10%',
-        left: '8%',
+        left: '20%',
         bottom: '22%',
         right: '20%',
         symbolSize: 7,
@@ -259,6 +280,9 @@ function openTreeView(){
         initialTreeDepth: 3,
         lineStyle: {
           width: 2
+        },
+        itemStyle: {
+          color: "#ff0000"
         },
         label: {
           backgroundColor: getTextColor(true),

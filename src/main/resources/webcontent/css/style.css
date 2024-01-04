@@ -46,6 +46,12 @@ button {
   color: white;*/
 }
 
+#searchbar {
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+  margin-left: auto;
+}
+
 /*SIDEBAR*/
 
 .sidepanel  {
@@ -80,7 +86,7 @@ button {
 }
 
 .openbtn {
-  margin-left: auto;
+  margin-left: 0;
   font-size: 20px;
   cursor: pointer;
   background-color: #111;
