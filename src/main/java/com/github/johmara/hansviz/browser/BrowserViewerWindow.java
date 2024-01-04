@@ -29,6 +29,7 @@ import org.cef.browser.CefMessageRouter;
 
 import javax.swing.*;
 
+
 /**
  * A class creating the JCEF browser used as content in a ToolWindow
  */
@@ -40,6 +41,10 @@ public class BrowserViewerWindow {
     private final Box content;
     private final Project project;
 
+    /**
+     * Singleton, while there is only one BrowserViewerWindow for a project.
+     * @return
+     */
     public static BrowserViewerWindow getInstance() {
         return browserViewerWindow;
     }
@@ -59,6 +64,7 @@ public class BrowserViewerWindow {
         initialiseJSHandler(webView.getCefBrowser().getClient());
         webView.loadURL("http://hans/index.html");
 
+
         /**
          * Helps IDE with memory management -> avoid "Memory leak detected"
          */
@@ -74,6 +80,11 @@ public class BrowserViewerWindow {
         this.project = project;
     }
 
+    /**
+     * Initialises Javascript Handler.
+     * Request from Javascript-side with window.java and window.javacancel can be handeled through this handler.
+     * @param client
+     */
     private void initialiseJSHandler(CefClient client) {
         // create routing point for JS -> window.java ({})
         CefMessageRouter.CefMessageRouterConfig cefMessageRouterConfig = new CefMessageRouter.CefMessageRouterConfig("java","javaCancel");
@@ -82,6 +93,10 @@ public class BrowserViewerWindow {
         client.addMessageRouter(cefMessageRouter);
     }
 
+    /**
+     * Registers App Scheme Handler that introduces {@link BrowserSchemeHandlerFactory}
+     * @see
+     */
     private void registerAppSchemeHandler() {
         CefApp.getInstance().registerSchemeHandlerFactory(
                 "http",
