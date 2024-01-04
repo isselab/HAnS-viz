@@ -98,3 +98,9 @@ button {
 .openbtn:hover {
   background-color:#444;
 }
+
+#toggleThemeDiv {
+  margin-left: 10px;
+  display: flex;
+}
+

@@ -47,6 +47,10 @@ public class JSMessageRouterHandler extends CefMessageRouterHandlerAdapter {
                 new JSONHandler(project, JSONHandler.JSONType.Tangling, callback);
                 return true;
             }
+            case "tree" -> {
+                new JSONHandler(project, JSONHandler.JSONType.Tree, callback);
+                return true;
+            }
         }
         return false;
     }

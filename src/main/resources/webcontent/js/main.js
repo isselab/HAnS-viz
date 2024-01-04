@@ -12,6 +12,11 @@ const state = {
   isNav: false
 }
 
+const data = {
+  tanglingData: "",
+  treeData: ""
+}
+
 var myChart = echarts.init(chartDom, state.isDarkmode ? "dark" : "");
 
 
@@ -66,20 +71,53 @@ function startPlotting() {
     return;
   }
 
-  state.isInitialized = true;
+
   //TODO prevent onClick from loading
+  state.isInitialized = true;
 
 
   // testButton.addEventListener("click", highlightItem);
-  testButton.addEventListener("click", requestData);
+  testButton.addEventListener("click", () => {
+    fetchAllData();
+  });
 
-  //open start page
-  openTreeView();
-  myChart.hideLoading();
-  initialized = true;
+  //get latest data
+  fetchAllData(function(code) {
+    if(code === 0){    //open start page
+      openTreeView();
+      myChart.hideLoading();
+    }
+    else{
+      alert("could not fetch data " + code)
+    }
+  });
 }
 
+//TODO THESIS
+// the callback is just for testing purposes.  can be removed later but we need another way of calling something after every request is done within fetch
+function fetchAllData(callback){
+  requestData("tangling");
+  requestData("tree", callback);
+}
 
+function refresh(){
+  switch(state.currentChart){
+    case state.treeChart:{
+      openTreeView();
+      break;
+    }
+    case state.treeMapChart:{
+      openTreemapView();
+      break;
+    }
+    case state.tanglingChart:{
+      openTanglingView();
+      break;
+    }
+    default:
+      openTreeView();
+  }
+}
 
 function highlightItem(input){
 
@@ -97,19 +135,25 @@ function highlightItem(input){
 }
 
 // TODO THESIS: requestData(option)
-function requestData() {
+function requestData(option, callback) {
   myChart.showLoading();
   window.java({
-    request: "tangling",
+    request: option,
     persistent: false,
     onSuccess: function(response) {
       // response should contain JSON
       //alert("response is there!");
-      handleData("tangling", response);
+      handleData(option, response);
+      if(callback != null) {
+        callback(0);
+      }
+      myChart.hideLoading();
     },
     onFailure: function(error_code, error_message) {
-      alert("could not retrieve data " + error_code + "  " + error_message)
+      alert("could not retrieve data for " + option + "  " + error_code + "  " + error_message)
+      callback(error_code)
       console.log(error_code, error_message);
+      myChart.hideLoading();
     }
   })
 }
@@ -123,9 +167,17 @@ function handleData(option, response) {
       // handle tangling degree data
       break;
     case "tangling":
-      openTanglingWithResponse(response);
+      data.tanglingData = JSON.parse(response);
+      break;
+    case "tree":
+    case "treeMap":
+      data.treeData = JSON.parse(response);
       break;
   }
+
+  //TODO THESIS
+  // refresh current chart
+
 }
 
 // options for the tangling view
@@ -161,12 +213,12 @@ function openTanglingView(){
         circular: {
           rotateLabel: true
         },
-        data: snakeTangling().features.map(node => {
+        data: data.tanglingData.features.map(node => {
           /*TODO THESIS dont grow linear*/
             node["symbolSize"] = node.tanglingDegree * 20 + 20;
             return node;
         }),
-        links: snakeTangling().tanglingLinks.map(function(link){
+        links: data.tanglingData.tanglingLinks.map(function(link){
           link.lineStyle = {
             color: mixColors(stringToColour(link.source), stringToColour(link.target))
           }
@@ -248,7 +300,7 @@ function openTreemapView(){
           borderColor: '#fff'
         },
         levels: getLevelOption(),
-        data: getFeatureJson().features.map(feature => convertLineCountToValue(feature)),
+        data: data.treeData.features.map(feature => convertLineCountToValue(feature)),
 
       }
     ]
@@ -272,7 +324,7 @@ function openTreeView(){
         type: 'tree',
         id: 0,
         name: 'tree1',
-        data: getFeatureJson().features,
+        data: data.treeData.features,
         top: '10%',
         left: '20%',
         bottom: '22%',
@@ -427,8 +479,17 @@ function getTextColor(getInverse = false){
 }
 
 function toggleNav() {
-  state.isNav = !state.isNav;
-  document.getElementById("mySidepanel").style.width = state.isNav ?  "250px" : "0px";
+  state.isNav ? closeNav() : openNav();
+}
+
+function openNav(){
+  document.getElementById("mySidepanel").style.width = "250px" ;
+  state.isNav = true;
+}
+
+function closeNav(){
+  document.getElementById("mySidepanel").style.width = "0px";
+  state.isNav = false;
 }
 
 function toggleTheme(){

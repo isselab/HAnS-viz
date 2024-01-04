@@ -14,13 +14,16 @@
       <div id="pluginNameDiv" >
         <img src="./img/pluginIcon.png" alt="HAnS-Viz">
       </div>
-      <button id="testButton">TEST</button>
+      <div id="refreshDiv">
+        <button id="testButton">Update and Refresh</button>
+        <p id="updatedAtText"></p>
+      </div>
       <input id="searchbar" placeholder="search...">
-      <button class="openbtn" onclick="toggleNav()">☰</button>
+      <button class="openbtn" onclick="toggleNav()" onmouseenter="openNav()" ><img src="img/burgermenu.png" width="20" height="20"></button>
     </div>
     <div id="main" class="dark-mode"></div>
 
-    <div id="mySidepanel" class="sidepanel">
+    <div id="mySidepanel" class="sidepanel" onmouseleave="closeNav()">
       <a href="#" onclick="openTreeView()">Tree View</a>
       <a href="#" onclick="openTreemapView()">Treemap View</a>
       <a href="#" onclick="openTanglingView()">Tangling</a>
