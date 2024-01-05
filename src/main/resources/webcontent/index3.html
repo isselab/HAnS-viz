@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ECharts</title>
+    <link rel="stylesheet" href="css/style3.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  </head>
+  <body class="box">
+    <div id="main" class="dark-mode"></div>
+    <!-- Prepare a DOM with a defined width and height for ECharts -->
+    <nav class="nav">
+      <img class="logo" src="./img/pluginIcon.png" alt="HAnS-Viz">
+      <ul class="nav-links">
+        <i class="uil uil-times navCloseBtn"></i>
+        <li><a href="#" onclick="openTreeView()">Tree View</a></li>
+        <li><a href="#" onclick="openTreemapView()">Treemap View</a></li>
+        <li><a href="#" onclick="openTanglingView()">Tangling</a></li>
+        <li><a href="#" onclick="toggleTheme()">Switch Theme</a></li>
+      </ul>
+      <div class="docked">
+        <i class="uil uil-search search-icon" id="searchIcon"></i>
+        <div class="search-box">
+          <i class="uil uil-search search-icon"></i>
+          <input placeholder="Search here..." id="searchbar"/>
+        </div>
+
+        <i class="uil uil-sync refresh-button" id="refresh-button"></i>
+        <i class="uil uil-bars navOpenBtn"></i>
+      </div>
+    </nav>
+  </body>
+  <script src="js/main2.js"></script>
+  <script type="text/javascript">
+  </script>
+</html>

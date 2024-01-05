@@ -57,7 +57,7 @@ public class BrowserViewerWindow {
         webView = new JBCefBrowser();
         registerAppSchemeHandler();
         initialiseJSHandler(webView.getCefBrowser().getClient());
-        webView.loadURL("http://hans/index.html");
+        webView.loadURL("http://hans/index3.html");
 
 
 
@@ -115,5 +115,6 @@ public class BrowserViewerWindow {
     public static void runJavascript(String function) {
         System.out.println(function);
         getInstance().webView.getCefBrowser().executeJavaScript(function, null, 0);
+
     }
 }
