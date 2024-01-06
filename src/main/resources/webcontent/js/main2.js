@@ -16,7 +16,8 @@ const state = {
   treeMapChart: 1,
   tanglingChart: 2,
   isDarkmode: true,
-  isNav: false
+  isNav: false,
+  isFeatureWindow: false
 }
 
 const jsonData = {
@@ -127,12 +128,25 @@ function fetchAllData(callback){
 
 function onFeatureSelect(params){
   //check type of clicked element
-  if (params.dataType === 'node') {
-    var clickedNode = params.data;
-    console.log('Clicked node:', clickedNode);
-    showFeatureInWindow(clickedNode.id);
-    //open window to show information about the clicked node
+  var clickedNode = params.data;
+  console.log('Clicked node:', clickedNode);
+  showFeatureInWindow(clickedNode.id);
+  //open window to show information about the clicked node
+
+}
+
+function toggleFeatureWindow(){
+  let featureWindow = document.getElementById("featureInfoDiv");
+  state.isFeatureWindow = !state.isFeatureWindow;
+  if(state.isFeatureWindow){
+    featureWindow.style.height = "40%"
+    featureWindow.style.overflow = "auto";
   }
+  else {
+    featureWindow.style.height = "3%";
+    featureWindow.style.overflow = "hidden";
+  }
+
 }
 
 function refresh(){
@@ -251,7 +265,7 @@ function openTanglingView(){
         },
         data: jsonData.tanglingData.features.map(node => {
           /*TODO THESIS dont grow linear*/
-          node["symbolSize"] =  (25 * Math.log2(node.tanglingDegree + 1));
+          node["symbolSize"] =  Math.max(25 * Math.log2(node.tanglingDegree + 1), 10);
             return node;
         }),
         links: jsonData.tanglingData.tanglingLinks.map(function(link){
@@ -401,70 +415,6 @@ function openTreeView(){
   option && myChart.setOption(option);
   state.currentChart = state.treeChart;
 }
-
-function openTanglingWithResponse(response){
-  myChart.hideLoading();
-  let data = JSON.parse(response);
-  myChart.clear();
-  option = {
-    title: {
-      text: 'Tangling Degree',
-      subtext: 'Circular layout',
-      top: 'bottom',
-      left: 'right'
-    },
-    tooltip: {
-      show: true,
-      formatter: function (params) {
-        if(params.dataType === "node"){
-          return `${params.marker}${params.data.name}<br>Tangling Degree: ${params.data.tanglingDegree}<br>Total Lines: ${params.data.totalLines}`;
-        }
-        else {
-          return `${params.data.source} > ${params.data.target}`;
-        }
-      }
-    },
-    animationDurationUpdate: 1500,
-    animationEasingUpdate: 'quinticInOut',
-    series: [
-      {
-        name: 'Tangling Degree',
-        type: 'graph',
-        layout: 'circular',
-        circular: {
-          rotateLabel: true
-        },
-        data: data.features.map(node => {
-          node["symbolSize"] = node.tanglingDegree * 20 + 20;
-          return node;
-        }),
-        links: data.tanglingLinks.map(function(link){
-          link.lineStyle = {
-            color: mixColors(stringToColour(link.source), stringToColour(link.target))
-          }
-          return link;
-        }),
-        roam: true,
-        label: {
-          show: true, // Show label by default
-          position: 'right',
-          formatter: '{b}'
-        },
-        itemStyle: {
-          color: function (params) {
-            // Generate a random color
-            return stringToColour(params.data.id);
-          }
-        },
-        lineStyle: {
-          curveness: 0.3
-        }
-      }
-    ]
-  };
-  option && myChart.setOption(option);
-}
-
 
 
 
