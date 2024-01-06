@@ -98,7 +98,7 @@ public class JSONHandler implements HAnSCallback {
         // put into hans viz
         JSONObject obj = new JSONObject();
         obj.put("id", feature.getLPQText());
-        obj.put("name", feature.getLPQText());
+        obj.put("name", feature.getFeatureName());
         var tangledFeatureMap = tanglingMap.get(feature);
         int tanglingDegree = tangledFeatureMap != null ? tangledFeatureMap.size() : 0;
 
@@ -132,7 +132,7 @@ public class JSONHandler implements HAnSCallback {
             locationObj.put("lines", fileMapping.containsKey(path) ? fileMapping.get(path).getFeatureLineCountInFile(path) : 0);
 
             locationObj.put("blocks", blocks);
-            locationObj.put(path, blocks);
+            locationObj.put("path", path);
             locations.add(locationObj);
         }
         obj.put("locations", locations);

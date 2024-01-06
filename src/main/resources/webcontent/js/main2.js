@@ -19,7 +19,7 @@ const state = {
   isNav: false
 }
 
-const data = {
+const jsonData = {
   tanglingData: "",
   treeData: ""
 }
@@ -33,16 +33,9 @@ var option;
 //initialize first view
 myChart.showLoading({text: "Wait for indexing to finish"});
 
-
 // Handle click event
 myChart.on('click', function (params) {
-  //check type of clicked element
-  if (params.dataType === 'node') {
-    var clickedNode = params.data;
-    console.log('Clicked node:', clickedNode);
-
-    //open window to show information about the clicked node
-  }
+  onFeatureSelect(params);
 });
 
 myChart.on("contextmenu", function(params){
@@ -132,7 +125,18 @@ function fetchAllData(callback){
   requestData("tree", callback);
 }
 
+function onFeatureSelect(params){
+  //check type of clicked element
+  if (params.dataType === 'node') {
+    var clickedNode = params.data;
+    console.log('Clicked node:', clickedNode);
+    showFeatureInWindow(clickedNode.id);
+    //open window to show information about the clicked node
+  }
+}
+
 function refresh(){
+  myChart.showLoading();
   switch(state.currentChart){
     case state.treeChart:{
       openTreeView();
@@ -149,6 +153,7 @@ function refresh(){
     default:
       openTreeView();
   }
+  myChart.hideLoading();
 }
 
 function highlightItem(input){
@@ -162,7 +167,7 @@ function highlightItem(input){
     return;
   myChart.dispatchAction({
     type: "highlight",
-    name: input
+    name: [input]
   })
 }
 
@@ -179,7 +184,6 @@ function requestData(option, callback) {
       if(callback != null) {
         callback(0);
       }
-      myChart.hideLoading();
     },
     onFailure: function(error_code, error_message) {
       alert("could not retrieve data for " + option + "  " + error_code + "  " + error_message)
@@ -199,11 +203,11 @@ function handleData(option, response) {
       // handle tangling degree data
       break;
     case "tangling":
-      data.tanglingData = JSON.parse(response);
+      jsonData.tanglingData = JSON.parse(response);
       break;
     case "tree":
     case "treeMap":
-      data.treeData = JSON.parse(response);
+      jsonData.treeData = JSON.parse(response);
       break;
   }
 
@@ -245,12 +249,12 @@ function openTanglingView(){
         circular: {
           rotateLabel: true
         },
-        data: data.tanglingData.features.map(node => {
+        data: jsonData.tanglingData.features.map(node => {
           /*TODO THESIS dont grow linear*/
           node["symbolSize"] =  (25 * Math.log2(node.tanglingDegree + 1));
             return node;
         }),
-        links: data.tanglingData.tanglingLinks.map(function(link){
+        links: jsonData.tanglingData.tanglingLinks.map(function(link){
           link.lineStyle = {
             color: mixColors(stringToColour(link.source), stringToColour(link.target))
           }
@@ -332,7 +336,7 @@ function openTreemapView(){
           borderColor: '#fff'
         },
         levels: getLevelOption(),
-        data: data.treeData.features.map(feature => convertLineCountToValue(feature)),
+        data: jsonData.treeData.features.map(feature => convertLineCountToValue(feature)),
 
       }
     ]
@@ -356,7 +360,7 @@ function openTreeView(){
         type: 'tree',
         id: 0,
         name: 'tree1',
-        data: data.treeData.features,
+        data: jsonData.treeData.features,
         top: '10%',
         left: '20%',
         bottom: '22%',
@@ -510,6 +514,47 @@ function getTextColor(getInverse = false){
   return state.isDarkmode ? dark : light;
 }
 
+function getFeatureData(featureLpq){
+  let result = jsonData.tanglingData.features.find((feature) => {
+    return feature.id === featureLpq;
+  })
+  return result;
+}
+
+function showFeatureInWindow(featureLpq){
+  var lpqNameText = document.getElementById("featureLpqNameText");
+  var nameText = document.getElementById("featureNameText");
+  var tanglingText = document.getElementById("tanglingText");
+  var locationList = document.getElementById("featureLocationList");
+
+  var featureData = getFeatureData(featureLpq);
+  lpqNameText.innerText = featureData.id;
+  nameText.innerText = featureData.name;
+  tanglingText.innerText = featureData.tanglingDegree;
+
+  while(locationList.firstChild){
+    locationList.removeChild(locationList.firstChild);
+  }
+
+  for(const location of featureData.locations){
+    var listElement = document.createElement("li");
+    //add path
+    let pathName = document.createElement("p");
+    pathName.innerText = location.path;
+    pathName.classList.add("pathName");
+    listElement.appendChild(pathName);
+    //add blocks
+    for(const block of location.blocks){
+      let subListElement = document.createElement("li");
+      let lines = document.createElement("p");
+      lines.innerText = "  Lines: " + (block.start + 1) + " - " + (block.end + 1);
+      subListElement.appendChild(lines);
+      listElement.appendChild(subListElement);
+    }
+    locationList.appendChild(listElement);
+  }
+}
+
 function toggleNav() {
   state.isNav ? closeNav() : openNav();
 }
@@ -532,6 +577,17 @@ function toggleTheme(){
   state.isDarkmode = !state.isDarkmode;
   echarts.dispose(myChart);
   myChart = echarts.init(chartDom, state.isDarkmode ? "dark" : "");
+
+  // Handle click event
+  myChart.on('click', function (params) {
+    onFeatureSelect(params);
+  });
+
+  myChart.on("contextmenu", function(params){
+    if(params.dataType !== "node")
+      return;
+    console.log("opened console menu for " + params.data);
+  })
 
   switch(state.currentChart){
     case state.treeChart:{
@@ -568,6 +624,10 @@ const stringToColour = (str) => {
   }
   return colour
 }
+
+//TODO THESIS
+// function to search for feature name and lpq to highlight
+
 
 /**
  * Function that takes the average of two given colors

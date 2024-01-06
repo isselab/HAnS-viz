@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
   <head>
     <meta charset="utf-8" />
     <title>ECharts</title>
@@ -21,6 +21,25 @@
         <li><a href="#" onclick="openTanglingView()">Tangling</a></li>
         <li><a href="#" onclick="toggleTheme()">Switch Theme</a></li>
       </ul>
+      <div id= "featureInfoDiv">
+        <div id="lpqDiv">
+          <label id="lpqNameLabel">LPQ-Name</label>
+          <p id="featureLpqNameText">-</p>
+        </div>
+        <div id="nameDiv">
+          <label id="nameLabel">Name</label>
+          <p id="featureNameText">-</p>
+        </div>
+        <div id="tanglingDiv">
+          <label id="tanglingLabel">Tangling Degree</label>
+          <p id="tanglingText">-</p>
+        </div>
+        <div id="locationDiv">
+          <label id="locationLabel">Locations</label>
+        <ul id="featureLocationList">
+        </ul>
+        </div>
+      </div>
       <div class="docked">
         <i class="uil uil-search search-icon" id="searchIcon"></i>
         <div class="search-box">

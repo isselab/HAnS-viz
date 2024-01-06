@@ -10,6 +10,50 @@
   height:95vh;
   margin-top: 5vh;
 }
+
+/*TODO THESIS add horitzontal scrollbar to featureInfoDiv*/
+/*TODO THESIS customize scrollbar  - this can probably be hard for jcef*/
+
+#featureInfoDiv{
+  padding: 5px;
+  background-color: rgba(240, 240, 240, 0.8);
+  border-radius: 10px;
+  position: fixed;
+  font-size: 12px;
+  bottom: 5%;
+  left: 0%;
+  height: 40%;
+  max-height: 40%;
+  width: 30%;
+  max-width: 30%;
+  overflow: auto;
+}
+#featureInfoDiv > div{
+  text-align: center;
+  margin-bottom: 10px;
+}
+#featureInfoDiv > #locationDiv *{
+  text-align: left;
+}
+
+#featureInfoDiv label{
+  margin-right: 10px;
+  font-weight: bolder;
+  font-size: 14px;
+}
+
+.pathName {
+  font-weight: bolder;
+  margin-bottom: 3px;
+}
+
+#locationDiv li, #featureInfoDiv > div{
+  background-color: #e1e1e1;
+  padding: 5px;
+  border-radius: 10px;
+  margin-bottom: 5px;
+}
+
 .nav {
   position: fixed;
   top: 0;
@@ -131,9 +175,9 @@ a:hover {
   }
   .nav .nav-links {
     position: fixed;
-    top: 0;
+    top: 5%;
     right:-100%;
-    height: 100%;
+    height: 95%;
     max-width: 280px;
     width: 100%;
     padding-top: 100px;
