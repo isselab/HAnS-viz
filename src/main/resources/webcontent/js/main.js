@@ -128,10 +128,19 @@ function highlightItem(input){
 
   if(input === "")
     return;
-  myChart.dispatchAction({
-    type: "highlight",
-    name: input
-  })
+  if(state.currentChart === state.treeChart || state.currentChart === state.treeMapChart){
+    myChart.dispatchAction({
+      type: "highlight",
+      name: input
+    })
+  }
+  else if(state.currentChart === state.treeMapChart){
+    myChart.dispatchAction({
+      type: "select",
+      name: input,
+    });
+  }
+
 }
 
 // TODO THESIS: requestData(option)
@@ -215,7 +224,7 @@ function openTanglingView(){
         },
         data: data.tanglingData.features.map(node => {
           /*TODO THESIS dont grow linear*/
-            node["symbolSize"] = node.tanglingDegree * 20 + 20;
+            node["symbolSize"] =  (25 * Math.log2(node.tanglingDegree + 1));
             return node;
         }),
         links: data.tanglingData.tanglingLinks.map(function(link){
