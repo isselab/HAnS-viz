@@ -31,7 +31,7 @@ var option;
 
 
 //initialize first view
-myChart.showLoading();
+myChart.showLoading({text: "Wait for indexing to finish"});
 
 
 // Handle click event
@@ -58,6 +58,7 @@ window.addEventListener('resize', function() {
 });
 
 searchIcon.addEventListener("click", () => {
+  //TODO THESIS focus searchbar on open
   nav.classList.toggle("openSearch");
   nav.classList.remove("openNav");
   if (nav.classList.contains("openSearch")) {
@@ -76,6 +77,10 @@ navCloseBtn.addEventListener("click", () => {
   nav.classList.remove("openNav");
   chartDom.classList.remove("dumb");
 });
+
+refreshBtn.addEventListener("click", () => {
+  fetchAllData(refresh);
+})
 
 searchbar.addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
@@ -163,7 +168,7 @@ function highlightItem(input){
 
 // TODO THESIS: requestData(option)
 function requestData(option, callback) {
-  myChart.showLoading();
+  myChart.showLoading({text: "fetching data"});
   window.java({
     request: option,
     persistent: false,
@@ -242,7 +247,7 @@ function openTanglingView(){
         },
         data: data.tanglingData.features.map(node => {
           /*TODO THESIS dont grow linear*/
-            node["symbolSize"] = node.tanglingDegree * 20 + 20;
+          node["symbolSize"] =  (25 * Math.log2(node.tanglingDegree + 1));
             return node;
         }),
         links: data.tanglingData.tanglingLinks.map(function(link){
