@@ -21,28 +21,6 @@
         <li><a href="#" onclick="openTanglingView()">Tangling</a></li>
         <li><a href="#" onclick="toggleTheme()">Switch Theme</a></li>
       </ul>
-      <div id= "featureInfoDiv">
-        <div id="featureButtonDiv">
-          <button id="featureInfoButton" onclick="toggleFeatureWindow()">toggle</button>
-        </div>
-        <div id="lpqDiv">
-          <label id="lpqNameLabel">LPQ-Name</label>
-          <p id="featureLpqNameText">-</p>
-        </div>
-        <div id="nameDiv">
-          <label id="nameLabel">Name</label>
-          <p id="featureNameText">-</p>
-        </div>
-        <div id="tanglingDiv">
-          <label id="tanglingLabel">Tangling Degree</label>
-          <p id="tanglingText">-</p>
-        </div>
-        <div id="locationDiv">
-          <label id="locationLabel">Locations</label>
-        <ul id="featureLocationList">
-        </ul>
-        </div>
-      </div>
       <div class="docked">
         <i class="uil uil-search search-icon" id="searchIcon"></i>
         <div class="search-box">
@@ -54,6 +32,28 @@
         <i class="uil uil-bars navOpenBtn"></i>
       </div>
     </nav>
+    <div id= "featureInfoDiv" class="featureWindowDark">
+      <div id="featureButtonDiv">
+        <button id="featureInfoButton" onclick="toggleFeatureWindow()">toggle</button>
+      </div>
+      <div id="lpqDiv">
+        <label id="lpqNameLabel">LPQ-Name</label>
+        <p id="featureLpqNameText">-</p>
+      </div>
+      <div id="nameDiv">
+        <label id="nameLabel">Name</label>
+        <p id="featureNameText">-</p>
+      </div>
+      <div id="tanglingDiv">
+        <label id="tanglingLabel">Tangling Degree</label>
+        <p id="tanglingText">-</p>
+      </div>
+      <div id="locationDiv">
+        <label id="locationLabel">Locations</label>
+        <ul id="featureLocationList">
+        </ul>
+      </div>
+    </div>
   </body>
   <script src="js/main2.js"></script>
   <script type="text/javascript">
