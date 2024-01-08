@@ -95,7 +95,7 @@
 .nav {
   justify-content: space-between;
 }
-a {
+a, label {
   color: #fff;
   text-decoration: none;
 }
