@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.cef.callback.CefQueryCallback;
+import org.jetbrains.annotations.TestOnly;
 import se.isselab.HAnS.HAnSCallback;
 import se.isselab.HAnS.Logger;
 import se.isselab.HAnS.featureExtension.FeatureService;
@@ -23,6 +24,9 @@ public class JSONHandler implements HAnSCallback {
     private CefQueryCallback callback;
     private JSONType jsonType;
     private Project project;
+
+    private static FeatureService featureService;
+
     @Override
     public void onComplete(FeatureMetrics featureMetrics) {
         JSONObject dataJSON = new JSONObject();
@@ -83,7 +87,7 @@ public class JSONHandler implements HAnSCallback {
         this.project = project;
         this.jsonType = type;
         this.callback = callback;
-        FeatureService featureService = project.getService(FeatureService.class);
+        featureService = project.getService(FeatureService.class);
         featureService.getFeatureFileMappingAndTanglingMap(this);
     }
 
@@ -102,7 +106,6 @@ public class JSONHandler implements HAnSCallback {
         var tangledFeatureMap = tanglingMap.get(feature);
         int tanglingDegree = tangledFeatureMap != null ? tangledFeatureMap.size() : 0;
 
-        FeatureService featureService = new FeatureService();
         List<FeatureModelFeature> childFeatureList = featureService.getChildFeatures(feature);
 
         //recursively get all child features
@@ -113,7 +116,7 @@ public class JSONHandler implements HAnSCallback {
         obj.put("children", childArr);
         obj.put("tanglingDegree", tanglingDegree);
         obj.put("lines", fileMapping.get(feature.getLPQText()).getTotalFeatureLineCount());
-        obj.put("totalLines", featureService.getTotalLineCountWithChilds(feature));
+        obj.put("totalLines", getTotalLineCountWithChilds(feature, fileMapping));
 
         //put locations and their line count into array
         JSONArray locations = new JSONArray();
@@ -137,5 +140,33 @@ public class JSONHandler implements HAnSCallback {
         }
         obj.put("locations", locations);
         return obj;
+    }
+
+    private static JSONArray getChildFeaturesAsJson(FeatureModelFeature parentFeature, HashMap<String, FeatureFileMapping> fileMapping) {
+        JSONArray children = new JSONArray();
+        var childFeatureList = featureService.getChildFeatures(parentFeature);
+
+        //iterate over each child and recursively get its childs
+        for(var child : childFeatureList){
+            //get linecount of feature via mapping
+
+            JSONObject childJson = new JSONObject();
+            childJson.put("name", child.getLPQText());
+            childJson.put("value", getTotalLineCountWithChilds(child,fileMapping));
+            childJson.put("children", getChildFeaturesAsJson(child, fileMapping));
+            children.add(childJson);
+        }
+        return children;
+    }
+
+
+    private static int getTotalLineCountWithChilds(FeatureModelFeature parent, HashMap<String, FeatureFileMapping> fileMapping){
+        int total = 0;
+        for(var child : featureService.getChildFeatures(parent)){
+            total += getTotalLineCountWithChilds(child, fileMapping);
+        }
+        if(fileMapping.containsKey(parent.getLPQText()))
+            total += fileMapping.get(parent.getLPQText()).getTotalFeatureLineCount();
+        return total;
     }
 }
