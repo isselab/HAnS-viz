@@ -57,7 +57,7 @@ public class BrowserViewerWindow {
         webView = new JBCefBrowser();
         registerAppSchemeHandler();
         initialiseJSHandler(webView.getCefBrowser().getClient());
-        webView.loadURL("http://hans/index3.html");
+        webView.loadURL("http://hans/index.html");
 
 
 

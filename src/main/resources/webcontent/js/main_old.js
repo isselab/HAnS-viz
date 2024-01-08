@@ -1,13 +1,6 @@
-/*var testButton = document.getElementById("testButton");*/
+var testButton = document.getElementById("testButton");
 var chartDom = document.getElementById('main');
 var searchbar = document.getElementById("searchbar");
-var refreshBtn = document.getElementById("refresh-button");
-
-
-const nav = document.querySelector(".nav"),
-    searchIcon = document.querySelector("#searchIcon"),
-    navOpenBtn = document.querySelector(".navOpenBtn"),
-    navCloseBtn = document.querySelector(".navCloseBtn");
 
 const state = {
   isInitialized: false,
@@ -16,11 +9,10 @@ const state = {
   treeMapChart: 1,
   tanglingChart: 2,
   isDarkmode: true,
-  isNav: false,
-  isFeatureWindow: false
+  isNav: false
 }
 
-const jsonData = {
+const data = {
   tanglingData: "",
   treeData: ""
 }
@@ -32,11 +24,18 @@ var option;
 
 
 //initialize first view
-myChart.showLoading({text: "Wait for indexing to finish"});
+myChart.showLoading();
+
 
 // Handle click event
 myChart.on('click', function (params) {
-  onFeatureSelect(params);
+  //check type of clicked element
+  if (params.dataType === 'node') {
+    var clickedNode = params.data;
+    console.log('Clicked node:', clickedNode);
+
+    //open window to show information about the clicked node
+  }
 });
 
 myChart.on("contextmenu", function(params){
@@ -51,44 +50,15 @@ window.addEventListener('resize', function() {
   myChart.resize();
 });
 
-searchIcon.addEventListener("click", () => {
-  //TODO THESIS focus searchbar on open
-  nav.classList.toggle("openSearch");
-  nav.classList.remove("openNav");
-  if (nav.classList.contains("openSearch")) {
-    searchIcon.classList.replace("uil-search", "uil-times");
-    document.getElementById("searchbar").focus();
-    return;
-
-  }
-  searchIcon.classList.replace("uil-times", "uil-search");
-});
-
-navOpenBtn.addEventListener("click", () => {
-  nav.classList.add("openNav");
-  nav.classList.remove("openSearch");
-  searchIcon.classList.replace("uil-times", "uil-search");
-  chartDom.classList.add("dumb");
-});
-navCloseBtn.addEventListener("click", () => {
-  nav.classList.remove("openNav");
-  chartDom.classList.remove("dumb");
-});
-
-refreshBtn.addEventListener("click", () => {
-  fetchAllData(refresh);
-})
-
-searchbar.addEventListener("keypress", function (event) {
-  if (event.key === "Enter") {
+searchbar.addEventListener("keypress", function(event) {
+  if(event.key === "Enter"){
     let input = searchbar.value;
     highlightItem(input);
   }
 });
 
-
-searchbar.onkeyup = function () {
-  if (searchbar.value === "") {
+searchbar.onkeyup = function(){
+  if(searchbar.value === ""){
     highlightItem("");
   }
 }
@@ -96,6 +66,7 @@ searchbar.onkeyup = function () {
 
 // TODO THESIS: This function gets called by HAnsDumbModeListener after finishing indexing. display style from main should be changed
 function startPlotting() {
+
   if(state.isInitialized){
     return;
   }
@@ -106,9 +77,9 @@ function startPlotting() {
 
 
   // testButton.addEventListener("click", highlightItem);
-  /*testButton.addEventListener("click", () => {
+  testButton.addEventListener("click", () => {
     fetchAllData();
-  });*/
+  });
 
   //get latest data
   fetchAllData(function(code) {
@@ -129,31 +100,7 @@ function fetchAllData(callback){
   requestData("tree", callback);
 }
 
-function onFeatureSelect(params){
-  //check type of clicked element
-  var clickedNode = params.data;
-  console.log('Clicked node:', clickedNode);
-  showFeatureInWindow(clickedNode.id);
-  //open window to show information about the clicked node
-
-}
-
-function toggleFeatureWindow(){
-  let featureWindow = document.getElementById("featureInfoDiv");
-  state.isFeatureWindow = !state.isFeatureWindow;
-  if(state.isFeatureWindow){
-    featureWindow.style.height = "40%"
-    featureWindow.style.overflow = "auto";
-  }
-  else {
-    featureWindow.style.height = "3%";
-    featureWindow.style.overflow = "hidden";
-  }
-
-}
-
 function refresh(){
-  myChart.showLoading();
   switch(state.currentChart){
     case state.treeChart:{
       openTreeView();
@@ -170,7 +117,6 @@ function refresh(){
     default:
       openTreeView();
   }
-  myChart.hideLoading();
 }
 
 function highlightItem(input){
@@ -182,15 +128,24 @@ function highlightItem(input){
 
   if(input === "")
     return;
-  myChart.dispatchAction({
-    type: "highlight",
-    name: [input]
-  })
+  if(state.currentChart === state.treeChart || state.currentChart === state.treeMapChart){
+    myChart.dispatchAction({
+      type: "highlight",
+      name: input
+    })
+  }
+  else if(state.currentChart === state.treeMapChart){
+    myChart.dispatchAction({
+      type: "select",
+      name: input,
+    });
+  }
+
 }
 
 // TODO THESIS: requestData(option)
 function requestData(option, callback) {
-  myChart.showLoading({text: "fetching data"});
+  myChart.showLoading();
   window.java({
     request: option,
     persistent: false,
@@ -220,11 +175,11 @@ function handleData(option, response) {
       // handle tangling degree data
       break;
     case "tangling":
-      jsonData.tanglingData = JSON.parse(response);
+      data.tanglingData = JSON.parse(response);
       break;
     case "tree":
     case "treeMap":
-      jsonData.treeData = JSON.parse(response);
+      data.treeData = JSON.parse(response);
       break;
   }
 
@@ -234,6 +189,46 @@ function handleData(option, response) {
 }
 
 
+
+
+
+
+//helper function for the treemap
+function getLevelOption() {
+  return [
+    {
+      itemStyle: {
+        borderColor: '#777',
+        borderWidth: 0,
+        gapWidth: 1
+      },
+      upperLabel: {
+        show: false
+      }
+    },
+    {
+      itemStyle: {
+        borderColor: '#555',
+        borderWidth: 5,
+        gapWidth: 1
+      },
+      emphasis: {
+        itemStyle: {
+          borderColor: '#ddd'
+        }
+      }
+    },
+    {
+      colorSaturation: [0.35, 0.5],
+      itemStyle: {
+        borderWidth: 5,
+        gapWidth: 1,
+        borderColorSaturation: 0.6
+      }
+    }
+  ];
+}
+
 function getTextColor(getInverse = false){
   let light = "#17142c";
   let dark = "#ffffff"
@@ -242,47 +237,6 @@ function getTextColor(getInverse = false){
     return state.isDarkmode ? light : dark;
   }
   return state.isDarkmode ? dark : light;
-}
-
-function getFeatureData(featureLpq){
-  let result = jsonData.tanglingData.features.find((feature) => {
-    return feature.id === featureLpq;
-  })
-  return result;
-}
-
-function showFeatureInWindow(featureLpq){
-  var lpqNameText = document.getElementById("featureLpqNameText");
-  var nameText = document.getElementById("featureNameText");
-  var tanglingText = document.getElementById("tanglingText");
-  var locationList = document.getElementById("featureLocationList");
-
-  var featureData = getFeatureData(featureLpq);
-  lpqNameText.innerText = featureData.id;
-  nameText.innerText = featureData.name;
-  tanglingText.innerText = featureData.tanglingDegree;
-
-  while(locationList.firstChild){
-    locationList.removeChild(locationList.firstChild);
-  }
-
-  for(const location of featureData.locations){
-    var listElement = document.createElement("li");
-    //add path
-    let pathName = document.createElement("p");
-    pathName.innerText = location.path;
-    pathName.classList.add("pathName");
-    listElement.appendChild(pathName);
-    //add blocks
-    for(const block of location.blocks){
-      let subListElement = document.createElement("li");
-      let lines = document.createElement("p");
-      lines.innerText = "  Lines: " + (block.start + 1) + " - " + (block.end + 1);
-      subListElement.appendChild(lines);
-      listElement.appendChild(subListElement);
-    }
-    locationList.appendChild(listElement);
-  }
 }
 
 function toggleNav() {
@@ -301,23 +255,13 @@ function closeNav(){
 
 function toggleTheme(){
   //apply darkmode to the chart container
-  var elem = document.getElementById("main");
+  let elem = document.getElementById("main");
   elem.classList.toggle("dark-mode");
 
   state.isDarkmode = !state.isDarkmode;
+
   echarts.dispose(myChart);
   myChart = echarts.init(chartDom, state.isDarkmode ? "dark" : "");
-
-  // Handle click event
-  myChart.on('click', function (params) {
-    onFeatureSelect(params);
-  });
-
-  myChart.on("contextmenu", function(params){
-    if(params.dataType !== "node")
-      return;
-    console.log("opened console menu for " + params.data);
-  })
 
   switch(state.currentChart){
     case state.treeChart:{
@@ -354,10 +298,6 @@ const stringToColour = (str) => {
   }
   return colour
 }
-
-//TODO THESIS
-// function to search for feature name and lpq to highlight
-
 
 /**
  * Function that takes the average of two given colors
@@ -430,12 +370,12 @@ function openTanglingView(){
         circular: {
           rotateLabel: true
         },
-        data: jsonData.tanglingData.features.map(node => {
+        data: data.tanglingData.features.map(node => {
           /*TODO THESIS dont grow linear*/
-          node["symbolSize"] =  Math.max(25 * Math.log2(node.tanglingDegree + 1), 10);
+          node["symbolSize"] =  (25 * Math.log2(node.tanglingDegree + 1));
           return node;
         }),
-        links: jsonData.tanglingData.tanglingLinks.map(function(link){
+        links: data.tanglingData.tanglingLinks.map(function(link){
           link.lineStyle = {
             color: mixColors(stringToColour(link.source), stringToColour(link.target))
           }
@@ -517,7 +457,7 @@ function openTreemapView(){
           borderColor: '#fff'
         },
         levels: getLevelOption(),
-        data: jsonData.treeData.features.map(feature => convertLineCountToValue(feature)),
+        data: data.treeData.features.map(feature => convertLineCountToValue(feature)),
 
       }
     ]
@@ -541,7 +481,7 @@ function openTreeView(){
         type: 'tree',
         id: 0,
         name: 'tree1',
-        data: jsonData.treeData.features,
+        data: data.treeData.features,
         top: '10%',
         left: '20%',
         bottom: '22%',
@@ -583,40 +523,65 @@ function openTreeView(){
   state.currentChart = state.treeChart;
 }
 
-
-
-//helper function for the treemap
-function getLevelOption() {
-  return [
-    {
-      itemStyle: {
-        borderColor: '#777',
-        borderWidth: 0,
-        gapWidth: 1
-      },
-      upperLabel: {
-        show: false
-      }
+function openTanglingWithResponse(response){
+  myChart.hideLoading();
+  let data = JSON.parse(response);
+  myChart.clear();
+  option = {
+    title: {
+      text: 'Tangling Degree',
+      subtext: 'Circular layout',
+      top: 'bottom',
+      left: 'right'
     },
-    {
-      itemStyle: {
-        borderColor: '#555',
-        borderWidth: 5,
-        gapWidth: 1
-      },
-      emphasis: {
-        itemStyle: {
-          borderColor: '#ddd'
+    tooltip: {
+      show: true,
+      formatter: function (params) {
+        if(params.dataType === "node"){
+          return `${params.marker}${params.data.name}<br>Tangling Degree: ${params.data.tanglingDegree}<br>Total Lines: ${params.data.totalLines}`;
+        }
+        else {
+          return `${params.data.source} > ${params.data.target}`;
         }
       }
     },
-    {
-      colorSaturation: [0.35, 0.5],
-      itemStyle: {
-        borderWidth: 5,
-        gapWidth: 1,
-        borderColorSaturation: 0.6
+    animationDurationUpdate: 1500,
+    animationEasingUpdate: 'quinticInOut',
+    series: [
+      {
+        name: 'Tangling Degree',
+        type: 'graph',
+        layout: 'circular',
+        circular: {
+          rotateLabel: true
+        },
+        data: data.features.map(node => {
+          node["symbolSize"] = node.tanglingDegree * 20 + 20;
+          return node;
+        }),
+        links: data.tanglingLinks.map(function(link){
+          link.lineStyle = {
+            color: mixColors(stringToColour(link.source), stringToColour(link.target))
+          }
+          return link;
+        }),
+        roam: true,
+        label: {
+          show: true, // Show label by default
+          position: 'right',
+          formatter: '{b}'
+        },
+        itemStyle: {
+          color: function (params) {
+            // Generate a random color
+            return stringToColour(params.data.id);
+          }
+        },
+        lineStyle: {
+          curveness: 0.3
+        }
       }
-    }
-  ];
+    ]
+  };
+  option && myChart.setOption(option);
 }
