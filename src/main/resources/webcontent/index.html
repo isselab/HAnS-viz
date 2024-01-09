@@ -32,24 +32,34 @@
     <div class="feature-info-window dark-mode">
       <div class="feature-info-panel">
         <div class="feature-info-div" id="lpqDiv">
-          <label id="lpqNameLabel">LPQ-Name</label>
+          <label id="lpqNameLabel" class="underline">LPQ-Name</label>
           <p id="featureLpqNameText">-</p>
         </div>
         <div class="feature-info-div" id="nameDiv">
-          <label id="nameLabel">Name</label>
+          <label id="nameLabel" class="underline">Name</label>
           <p id="featureNameText">-</p>
         </div>
+        <!--div class="feature-info-div" id="showInEditorDiv">
+          <label id="showInEditorLabel" onclick="showInEditor()">SHOW IN EDITOR</label>
+        </div-->
         <div class="feature-info-div" id="tanglingDiv">
-          <label id="tanglingLabel">Tangling Degree</label>
+          <label id="tanglingLabel" class="underline">Tangling Degree</label>
           <p id="tanglingText">-</p>
         </div>
+        <div class="feature-info-div" id="scatteringDiv">
+          <label id="scatteringLabel" class="underline">Scattering Degree</label>
+          <p id="scatteringText">-</p>
+        </div>
         <div class="feature-info-div" id="locationDiv">
-          <label id="locationLabel">Locations</label>
+          <label id="locationLabel" class="underline">Locations</label>
           <ul id="featureLocationList">
           </ul>
         </div>
       </div>
-      <span class="material-symbols-outlined feature-info-button">keyboard_double_arrow_right</span>
+      <div id="toggleFeatureWindowDiv">
+        <p id="toggleFeatureWindowText">Feature Info</p>
+        <span class="material-symbols-outlined feature-info-button" id="toggleFeatureWindowButton">keyboard_double_arrow_right</span>
+      </div>
     </div>
     <div id="main" class="dark-mode"></div>
     <!-- Prepare a DOM with a defined width and height for ECharts -->

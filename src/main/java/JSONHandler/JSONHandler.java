@@ -8,6 +8,7 @@ import org.jetbrains.annotations.TestOnly;
 import se.isselab.HAnS.HAnSCallback;
 import se.isselab.HAnS.Logger;
 import se.isselab.HAnS.featureExtension.FeatureService;
+import se.isselab.HAnS.featureExtension.Mode;
 import se.isselab.HAnS.featureLocation.FeatureFileMapping;
 import se.isselab.HAnS.featureLocation.FeatureLocationManager;
 import se.isselab.HAnS.featureModel.psi.FeatureModelFeature;
@@ -88,7 +89,7 @@ public class JSONHandler implements HAnSCallback {
         this.jsonType = type;
         this.callback = callback;
         featureService = project.getService(FeatureService.class);
-        featureService.getFeatureFileMappingAndTanglingMap(this);
+        featureService.getFeatureMetrics(this, (Mode.FILEMAPPING | Mode.TANGLINGMAP));
     }
 
     /**
@@ -121,6 +122,7 @@ public class JSONHandler implements HAnSCallback {
         //put locations and their line count into array
         JSONArray locations = new JSONArray();
         var fileMappings = fileMapping.get(feature.getLPQText()).getAllFeatureLocations();
+        int scatteringDegree = 0;
         for(String path : fileMappings.keySet()){
             JSONArray blocks = new JSONArray();
             for(var block : fileMappings.get(path).second){
@@ -128,6 +130,7 @@ public class JSONHandler implements HAnSCallback {
                 blockObj.put("start", block.getStartLine());
                 blockObj.put("end", block.getEndLine());
                 blocks.add(blockObj);
+                scatteringDegree++;
             }
             //get the linecount of a feature for each file and add it
             JSONObject locationObj = new JSONObject();
@@ -138,6 +141,7 @@ public class JSONHandler implements HAnSCallback {
             locationObj.put("path", path);
             locations.add(locationObj);
         }
+        obj.put("scatteringDegree", scatteringDegree);
         obj.put("locations", locations);
         return obj;
     }

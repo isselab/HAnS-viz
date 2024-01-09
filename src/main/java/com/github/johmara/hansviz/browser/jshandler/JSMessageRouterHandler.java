@@ -2,13 +2,18 @@ package com.github.johmara.hansviz.browser.jshandler;
 
 import JSONHandler.JSONHandler;
 
+import com.intellij.codeInsight.navigation.NavigationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
+import com.intellij.psi.PsiElement;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
 import org.cef.callback.CefQueryCallback;
 import org.cef.handler.CefMessageRouterHandlerAdapter;
+import se.isselab.HAnS.featureModel.FeatureModelUtil;
+import se.isselab.HAnS.featureModel.psi.FeatureModelFeature;
 
+import java.util.List;
 
 
 public class JSMessageRouterHandler extends CefMessageRouterHandlerAdapter {
@@ -21,7 +26,7 @@ public class JSMessageRouterHandler extends CefMessageRouterHandlerAdapter {
      * @param browser CefBrowser
      * @param frame CefFrame
      * @param queryId long
-     * @param request String: This request will be handeled
+     * @param request String: This request will be handled
      * @param persistent boolean
      * @param callback CefQueryCallback: function that is called after success
      * @return boolean
@@ -29,7 +34,8 @@ public class JSMessageRouterHandler extends CefMessageRouterHandlerAdapter {
     @Override
     public boolean onQuery(CefBrowser browser, CefFrame frame, long queryId, String request, boolean persistent, CefQueryCallback callback) {
         System.out.println("Request: " + request); // For testing purposes
-        switch (request) {
+        String[] requestTokens = request.split(",");
+        switch (requestTokens[0]) {
             // Add all queries that need to be handled
             case "buttonClicked" -> {
                 System.out.println("Button Clicked!");
@@ -49,6 +55,23 @@ public class JSMessageRouterHandler extends CefMessageRouterHandlerAdapter {
             }
             case "tree" -> {
                 new JSONHandler(project, JSONHandler.JSONType.Tree, callback);
+                return true;
+            }
+            case "highlightPsiElement" -> {
+                if(requestTokens.length < 2)
+                    return false;
+                List<FeatureModelFeature> selectedFeature = FeatureModelUtil.findLPQ(project, requestTokens[1]);
+                PsiElement[] test = new PsiElement[selectedFeature.size()];
+                int i = 0;
+                for(var feature : selectedFeature){
+                    test[i] = feature;
+                    i++;
+                }
+                if(selectedFeature.isEmpty())
+                    return false;
+
+                NavigationUtil.openFileWithPsiElement(selectedFeature.get(0), false, false);
+                callback.success("");
                 return true;
             }
         }
