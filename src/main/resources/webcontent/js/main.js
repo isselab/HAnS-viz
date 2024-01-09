@@ -16,6 +16,9 @@ const nav = document.querySelector(".nav"),
     searchBoxSettings = document.querySelector(".search-box-settings");
     darkModeToggle = document.querySelector(".dark-mode-toggle");
     innerSearchIcon = document.querySelector("#inner-search-icon");
+    featureInfoBtn = document.querySelector(".feature-info-button");
+    featureInfoPanel = document.querySelector(".feature-info-panel");
+    featureInfoWindow = document.querySelector(".feature-info-window");
 
 const state = {
     isInitialized: false,
@@ -93,6 +96,16 @@ function getSearchPos(){
     var xPx = x +"px"
     searchBoxSettings.style.left = xPx;
 }
+featureInfoBtn.addEventListener("click", () => {
+    featureInfoWindow.classList.toggle("openFeatureWindow");
+    if(featureInfoWindow.classList.contains("openFeatureWindow")) {
+        featureInfoBtn.textContent = "collapse_content";
+    }
+    else {
+        featureInfoBtn.textContent = "expand_content";
+    }
+    
+});
 navOpenBtn.addEventListener("click", () => {
     nav.classList.add("openNav");
     nav.classList.remove("openSearch");

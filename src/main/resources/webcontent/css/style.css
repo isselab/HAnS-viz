@@ -14,7 +14,7 @@
 /*TODO THESIS add horitzontal scrollbar to featureInfoDiv*/
 /*TODO THESIS customize scrollbar  - this can probably be hard for jcef*/
 
-#featureInfoDiv{
+/* #featureInfoDiv{
   padding: 5px;
   border-radius: 10px;
   position: absolute;
@@ -32,7 +32,7 @@
 #featureInfoDiv > div{
   text-align: center;
   margin-bottom: 10px;
-}
+} */
 #featureInfoDiv > #locationDiv *{
   text-align: left;
 }
@@ -153,6 +153,41 @@ a:hover {
   margin-left: auto;
   display:flex;
 }
+.feature-info-window {
+  position:absolute;
+  display: inline-flex;
+  
+  height: 40%;
+  /* width: 100px; */
+  bottom:20%;
+  left:0;
+  z-index: 2;
+}
+.feature-info-window .feature-info-panel {
+  background-color: #4a98f7;
+  height: 100%;
+  /* width:80px; */
+  display:none;
+  overflow:auto;
+}
+.feature-info-window.openFeatureWindow .feature-info-panel  {
+  display: block;
+}
+.feature-info-div {
+  text-align: center;
+  margin-bottom: 10px;
+  border-radius: 3px;
+  background-color: aliceblue;
+  overflow:auto;
+}
+.feature-info-window .feature-info-button {
+  /* margin:50px; */
+  z-index: 2;
+  height:25px;
+  background-color: #f5f5;
+  border-radius: 3px;
+}
+
 .search-box-settings {
   opacity: 0;
   pointer-events: none;

@@ -29,6 +29,28 @@
           <label>Case-Sensitive</label>
       </div>
     </div>
+    <div class="feature-info-window">
+      <div class="feature-info-panel">
+        <div class="feature-info-div" id="lpqDiv">
+          <label id="lpqNameLabel">LPQ-Name</label>
+          <p id="featureLpqNameText">-</p>
+        </div>
+        <div class="feature-info-div" id="nameDiv">
+          <label id="nameLabel">Name</label>
+          <p id="featureNameText">-</p>
+        </div>
+        <div class="feature-info-div" id="tanglingDiv">
+          <label id="tanglingLabel">Tangling Degree</label>
+          <p id="tanglingText">-</p>
+        </div>
+        <div class="feature-info-div" id="locationDiv">
+          <label id="locationLabel">Locations</label>
+          <ul id="featureLocationList">
+          </ul>
+        </div>
+      </div>
+      <span class="material-symbols-outlined feature-info-button">expand_content</span>
+    </div>
     <div id="main" class="dark-mode"></div>
     <!-- Prepare a DOM with a defined width and height for ECharts -->
     <nav class="nav">
@@ -60,10 +82,10 @@
         <span class="material-symbols-outlined navOpenBtn">menu</span>
       </div>
     </nav>
-    <div class="feature-window-panel">
-      <!-- <div id="featureButtonDiv">
+    <!-- <div class="feature-window-panel">
+      <div id="featureButtonDiv">
         <button id="featureInfoButton" onclick="toggleFeatureWindow()">toggle</button>
-      </div> -->
+      </div> 
       <button class="side-panel-toggle" type="button"></button>
       <div class="side-panel">
         <div id="lpqDiv">
@@ -84,7 +106,7 @@
           </ul>
         </div>
       </div>
-    </div>
+    </div>-->
   </body>
   <script src="js/main.js"></script>
   <script type="text/javascript">
