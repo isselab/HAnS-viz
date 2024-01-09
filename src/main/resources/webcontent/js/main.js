@@ -19,6 +19,7 @@ const nav = document.querySelector(".nav"),
     featureInfoBtn = document.querySelector(".feature-info-button");
     featureInfoPanel = document.querySelector(".feature-info-panel");
     featureInfoWindow = document.querySelector(".feature-info-window");
+    lastFetchTimestamp = document.querySelector(".last-fetch-timestamp");
 
 const state = {
     isInitialized: false,
@@ -28,7 +29,8 @@ const state = {
     tanglingChart: 2,
     isDarkmode: true,
     isNav: false,
-    isFeatureWindow: false
+    isFeatureWindow: false,
+    isFetching: false
 }
 
 const jsonData = {
@@ -45,6 +47,7 @@ const searchOptions = {
 
 var myChart = echarts.init(chartDom, state.isDarkmode ? "dark" : "");
 
+var timestamp = new Date();
 
 var option;
 
@@ -118,6 +121,8 @@ navCloseBtn.addEventListener("click", () => {
 });
 
 refreshBtn.addEventListener("click", () => {
+    state.isFetching = true;
+    updateTimestamp();
     fetchAllData(refresh);
 })
 
@@ -154,15 +159,18 @@ function startPlotting() {
     /*testButton.addEventListener("click", () => {
     fetchAllData();
   });*/
-
+    state.isFetching = true;
     //get latest data
     fetchAllData(function (code) {
         if (code === 0) {    //open start page
             openTreeView();
             myChart.hideLoading();
+            timestamp = new Date();
+            updateTimestamp();
         } else {
             alert("could not fetch data " + code)
         }
+        state.isFetching = false;
     });
 }
 
@@ -214,8 +222,34 @@ function refresh() {
             openTreeView();
     }
     myChart.hideLoading();
-    getFeatureIndicesByString("File");
+    state.isFetching = false;
+    timestamp = new Date();
+    updateTimestamp();
+    // getFeatureIndicesByString("File");
 }
+
+function updateTimestamp() {
+    if(state.isFetching) {
+        lastFetchTimestamp.textContent = "fetching...";
+        return;
+    }
+    var currentTime = new Date();
+    var timeDifference = currentTime - timestamp;
+    if(timeDifference < 60000) {
+        lastFetchTimestamp.textContent = "Last fetch few seconds ago";
+    }
+    else if(timeDifference >= 60000) {
+        minutes = timeDifference / 60000;
+        if(minutes<2) {
+            lastFetchTimestamp.textContent = "Last fetch 1 minute ago";
+        }
+        else {
+            lastFetchTimestamp.textContent = "Last fetch " + parseInt(minutes) + " minutes ago";
+        }
+    }
+}
+
+setInterval(updateTimestamp, 10000);
 
 function highlightItem(input) {
 
@@ -417,6 +451,7 @@ function toggleTheme() {
     var elem = document.getElementById("main");
     elem.classList.toggle("dark-mode");
     featureInfoWindow.classList.toggle("dark-mode");
+    lastFetchTimestamp.classList.toggle("dark-mode");
 
     state.isDarkmode = !state.isDarkmode;
     echarts.dispose(myChart);
