@@ -210,11 +210,17 @@ a:hover {
   overflow:auto;
 }
 
+.feature-info-div label {
+  color: white;
+  font-weight: bolder;
+  font-size: larger;
+}
+
 .feature-info-window .feature-info-button {
   margin-top:5px;
   z-index: 2;
   height:25px;
-  background-color: rgba(0, 0, 0, 0.7);;
+  background-color: rgba(0, 0, 0, 0.7);
   color: white;
   border-radius: 3px;
 }
@@ -309,7 +315,6 @@ a:hover {
 .nav .navCloseBtn {
   display: none;
 }
-
 
 /* responsive */
 @media screen and (max-width: 1160px) {
