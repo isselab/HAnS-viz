@@ -99,10 +99,10 @@ function getSearchPos(){
 featureInfoBtn.addEventListener("click", () => {
     featureInfoWindow.classList.toggle("openFeatureWindow");
     if(featureInfoWindow.classList.contains("openFeatureWindow")) {
-        featureInfoBtn.textContent = "collapse_content";
+        featureInfoBtn.textContent = "keyboard_double_arrow_left";
     }
     else {
-        featureInfoBtn.textContent = "expand_content";
+        featureInfoBtn.textContent = "keyboard_double_arrow_right";
     }
     
 });
@@ -416,6 +416,7 @@ function toggleTheme() {
     //apply darkmode to the chart container
     var elem = document.getElementById("main");
     elem.classList.toggle("dark-mode");
+    featureInfoWindow.classList.toggle("dark-mode");
 
     state.isDarkmode = !state.isDarkmode;
     echarts.dispose(myChart);
