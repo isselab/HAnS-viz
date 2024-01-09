@@ -1,106 +1,328 @@
-
-html, body {
+*{
+  padding: 0;
   margin: 0;
-  height:100vh;
-  position:absolute;
-  top:0;
-  right:0;
-  bottom:0;
-  left:0;
+  box-sizing: border-box;
+  font-family: "Lato", sans-serif;
+  overflow: hidden;
 }
-
-
 #main {
   width: 100%;
   height:95vh;
-}
-#idle {
-  width: 100%;
-  height:100%;
-  text-align: center;
-}
-
-button {
-  margin-top: 5px;
-  margin-bottom: 5px;
-  border-radius: 5px;
-  background-color: #a9a9a9;
-}
-
-#navbar {
-  display: flex;
-  width:100%;
-  height:5vh;
-  gap: 5%;
-
-  background: black;
-}
-
-#pluginNameDiv {
-  display: flex;
-  margin-left: 5px
-}
-
-.dark-mode {
-  /*background-color: #323232;
-  color: white;*/
-}
-
-#searchbar {
-  margin-top: 1vh;
-  margin-bottom: 1vh;
-  margin-left: auto;
-}
-
-/*SIDEBAR*/
-
-.sidepanel  {
-  width: 0;
-  position: fixed;
-  z-index: 1;
   margin-top: 5vh;
-  height: 95vh;
+}
+
+/*TODO THESIS add horitzontal scrollbar to featureInfoDiv*/
+/*TODO THESIS customize scrollbar  - this can probably be hard for jcef*/
+
+#featureInfoDiv{
+  padding: 5px;
+  border-radius: 10px;
+  position: absolute;
+  font-size: 12px;
+  bottom: 5%;
+  left: 0;
+  height: 40%;
+  width: 30%;
+  overflow: auto;
+}
+#featureInfoButton{
+  border-radius: 10px;
+  background-color: #e1e1e1;
+}
+#featureInfoDiv > div{
+  text-align: center;
+  margin-bottom: 10px;
+}
+#featureInfoDiv > #locationDiv *{
+  text-align: left;
+}
+#featureInfoDiv label{
+  margin-right: 10px;
+  font-weight: bolder;
+  font-size: 14px;
+}
+.pathName {
+  font-weight: bolder;
+  margin-bottom: 3px;
+}
+#locationDiv li, #featureInfoDiv > div{
+  /*background-color: #e1e1e1;*/
+  padding: 5px;
+  border-radius: 10px;
+  margin-bottom: 5px;
+}
+
+
+#locationDiv{
+  overflow-x: auto;
+}
+
+.featureWindowDark label, p{
+  color: white;
+}
+.featureWindowDark{
+  background-color: rgba(0, 0, 0, 0.7);
+}
+.featureWindowDark div {
+  background-color: darkslateblue;
+}
+
+.featureWindowDark label, p{
+  color: black;
+}
+.featureWindowLight{
+  background-color: rgba(200, 200, 200, 0.7);
+}
+.featureWindowLight div {
+  background-color: #818181;
+}
+
+
+.nav {
+  position: fixed;
   top: 0;
-  right: 0;
-  background-color: #111;
-  overflow-x: hidden;
-  transition: 0.5s;
-  padding-top: 60px;
+  left: 0;
+  width: 100%;
+  height: 5vh;
+  padding: 15px 200px;
+  background: black;
+  /*box shadow?*/
 }
-
-.sidepanel * {
-  font-family: "Lato", sans-serif;
+.nav,
+.nav .nav-links {
+  display: flex;
+  align-items: center;
 }
-
-.sidepanel a {
-  padding: 32px 8px 8px 32px;
+.nav {
+  justify-content: space-between;
+}
+a {
+  color: #fff;
   text-decoration: none;
-  font-size: 25px;
-  color: #818181;
-  display: block;
-  transition: 0.3s;
+}
+a:hover {
+  color: #f5f5;
 }
 
-.sidepanel a:hover {
-  color: #f1f1f1;
+.nav .logo {
+  width: 5vh;
+  height: 5vh;
+}
+.nav .search-box {
+  height: 3vh;
+  width:200px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s linear;
+  display: none;
+  border: none;
+  outline: none;
+  border-radius: 6px;
+  background-color: #fff;
+  align-items: center;
+}
+.nav .nav-links {
+  column-gap: 20px;
+  list-style: none;
+}
+.nav .docked {
+  display: flex;
+  justify-content: space-between;
+  gap:10px;
 }
 
-.openbtn {
-  margin-left: 0;
+/* .nav .nav-links a {
+  transition: all 0.2s linear;
+} */
+.nav.openSearch {
+  justify-content: space-evenly;
+}
+.nav.openSearch .nav-links a {
+  opacity: 0;
+  pointer-events: none;
+}
+.nav .search-icon {
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.nav.openSearch .search-box {
+  opacity: 1;
+  pointer-events: auto;
+  margin-left: auto;
+  display:flex;
+}
+.search-box-settings {
+  opacity: 0;
+  pointer-events: none;
+  display:none;
+}
+.search-box-settings.openSettings{
+  opacity: 1;
+  pointer-events: auto;
+  position: absolute;
+  top: 6vh;
+  padding: 5px 0 5px 0;
+  display:block;
+  z-index: 1000000;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+  transition: all 0.5s linear;
+}
+.search-box-settings.openSettings > div{
+  padding: 2px 5px 2px 5px;
+  color: white;
+}
+.search-box .search-icon {
+  font-size: 20px;
+  color: #4a98f7;
+  padding: 0 0 0 10px;
+  cursor: auto;
+}
+.search-box .search-settings-toggle {
+  font-size: 20px;
+  color: #4a98f7;
+  padding: 0 10px 0 5px;
+  cursor: pointer;
+}
+.search-box input {
+  height: 100%;
+  width: 100%;
+  border: none;
+  outline: none;
+  border-radius: 6px;
+  background-color: #fff;
+  padding: 0 15px 0 15px;
+}
+.refresh-button, .dark-mode-toggle {
+  color: #fff;
   font-size: 20px;
   cursor: pointer;
-  background-color: #111;
-  color: white;
-  padding: 10px 15px;
-  border: none;
 }
 
-.openbtn:hover {
-  background-color:#444;
+.nav .navOpenBtn,
+.nav .navCloseBtn {
+  display: none;
 }
 
-#toggleThemeDiv {
-  margin-left: 10px;
-  display: flex;
+
+/* responsive */
+@media screen and (max-width: 1160px) {
+  .nav {
+    padding: 15px 100px;
+  }
+  .nav .search-box {
+    /* right: 150px; */
+  }
+  .nav.openSearch .nav-links {
+    display: none;
+  }
+  .nav .nav-links {
+    display: flex;
+  }
+}
+@media screen and (max-width: 950px) {
+  .nav {
+    padding: 15px 50px;
+  }
+  .nav .search-box {
+    /* right: 100px; */
+    /* max-width: 400px; */
+  }
+  .nav.openSearch .nav-links {
+    display: none;
+  }
+  .nav .nav-links {
+    display: flex;
+  }
+}
+@media screen and (max-width: 630px) {
+  .nav .navOpenBtn,
+  .nav .navCloseBtn {
+    display: block;
+  }
+  .nav {
+    padding: 15px 20px;
+  }
+  .nav .nav-links {
+    position: fixed;
+    top: 5%;
+    right:-100%;
+    height: 95%;
+    max-width: 280px;
+    width: 100%;
+    padding-top: 100px;
+    row-gap: 30px;
+    flex-direction: column;
+    background-color: #11101d;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease;
+    z-index: 1;
+  }
+  .nav.openNav .nav-links {
+    right:0;
+    z-index:1;
+  }
+  .dumb {
+    pointer-events: none;
+    z-index:0;
+  }
+  .nav .navOpenBtn {
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  .nav .navCloseBtn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .nav .search-box {
+    opacity: 1;
+    right: 80px;
+    max-width: 250px;
+  }
+
+  /*.nav .search-box {
+    top: calc(100% + 10px);
+    max-width: calc(100% - 20px);
+    right: 50%;
+    transform: translateX(50%);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }*/
+}
+@media screen and (max-width: 500px) {
+  .nav .search-box {
+    opacity: 1;
+    right: 80px;
+    max-width: 250px;
+  }
+ 
+}
+@media screen and (max-width: 430px) {
+  .nav .search-box {
+    opacity: 1;
+    right: 80px;
+    max-width: 150px;
+  }
+}
+/*@media screen and (max-width: 400px) {
+  .nav .search-box {
+    opacity: 1;
+    right: 80px;
+    max-width: 250px;
+  }
+}*/
+@media screen and (max-width: 350px) {
+  .nav .search-box {
+    opacity: 0;
+  }
+  .nav .search-icon {
+    opacity: 0;
+  }
 }
 

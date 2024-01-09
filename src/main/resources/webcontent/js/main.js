@@ -12,6 +12,10 @@ const nav = document.querySelector(".nav"),
     searchIcon = document.querySelector("#searchIcon"),
     navOpenBtn = document.querySelector(".navOpenBtn"),
     navCloseBtn = document.querySelector(".navCloseBtn");
+    searchSettingsToggle = document.querySelector("#search-settings");
+    searchBoxSettings = document.querySelector(".search-box-settings");
+    darkModeToggle = document.querySelector(".dark-mode-toggle");
+    innerSearchIcon = document.querySelector("#inner-search-icon");
 
 const state = {
     isInitialized: false,
@@ -59,23 +63,36 @@ myChart.on("contextmenu", function (params) {
 // Handle resize event
 window.addEventListener('resize', function () {
     // Resize the chart when the window size changes
+    searchBoxSettings.classList.remove("openSettings");
+    nav.classList.remove("openSearch");
+    searchIcon.textContent = "search";
     myChart.resize();
 });
-
-
+darkModeToggle.addEventListener("click", toggleTheme);
 searchIcon.addEventListener("click", () => {
-    //TODO THESIS focus searchbar on open
-    nav.classList.toggle("openSearch");
-    nav.classList.remove("openNav");
-    if (nav.classList.contains("openSearch")) {
-        searchIcon.classList.replace("uil-search", "uil-times");
-        document.getElementById("searchbar").focus();
-        return;
+  //TODO THESIS focus searchbar on open
+  nav.classList.toggle("openSearch");
+  nav.classList.remove("openNav");
+  if (nav.classList.contains("openSearch")) {
+    // searchIcon.classList.replace("uil-search", "uil-times");
+    searchIcon.textContent = "close";
+    searchbar.focus();
+    return;
 
     }
-    searchIcon.classList.replace("uil-times", "uil-search");
+    searchIcon.textContent = "search";
+    searchBoxSettings.classList.remove("openSettings");
 });
-
+searchSettingsToggle.addEventListener("click", () => {
+    getSearchPos();
+    searchBoxSettings.classList.toggle("openSettings");
+});
+function getSearchPos(){
+    var rect = innerSearchIcon.getBoundingClientRect();
+    var x = rect.left + window.scrollX;
+    var xPx = x +"px"
+    searchBoxSettings.style.left = xPx;
+}
 navOpenBtn.addEventListener("click", () => {
     nav.classList.add("openNav");
     nav.classList.remove("openSearch");
