@@ -1,25 +1,48 @@
-/*var testButton = document.getElementById("testButton");*/
-var chartDom = document.getElementById('main');
-var searchbar = document.getElementById("searchbar");
-var refreshBtn = document.getElementById("refresh-button");
-var regExCheckBox = document.getElementById("regExCheckBox");
-var incSearchCheckBox = document.getElementById("incrementalSearchCheckBox");
-var exactMatchCheckBox = document.getElementById("exactMatchCheckBox");
-var caseSensitiveCheckBox = document.getElementById("caseSensitiveCheckBox");
+const chartDom = document.getElementById('main');
 
-
+const body = document.querySelector(".box");
+/* nav elements */
 const nav = document.querySelector(".nav"),
     searchIcon = document.querySelector("#searchIcon"),
     navOpenBtn = document.querySelector(".navOpenBtn"),
-    navCloseBtn = document.querySelector(".navCloseBtn");
-    searchSettingsToggle = document.querySelector("#search-settings");
-    searchBoxSettings = document.querySelector(".search-box-settings");
-    darkModeToggle = document.querySelector(".dark-mode-toggle");
-    innerSearchIcon = document.querySelector("#inner-search-icon");
-    featureInfoBtn = document.querySelector(".feature-info-button");
-    featureInfoPanel = document.querySelector(".feature-info-panel");
+    navCloseBtn = document.querySelector(".navCloseBtn"),
+    settingsBtn = document.querySelector(".settings"),
+    refreshBtn = document.getElementById("refresh-button");
+
+/* search elements */
+const searchBox = document.querySelector(".search-box"),
+    searchSettingsToggle = document.querySelector("#search-settings"),
+    searchBoxSettings = document.querySelector(".search-box-settings"),
+    closeSearchBtn = document.querySelector("#close-search"),
+    innerSearchIcon = document.querySelector("#inner-search-icon"),
+    searchbar = document.getElementById("searchbar"),
+    regExCheckBox = document.getElementById("regExCheckBox"),
+    incSearchCheckBox = document.getElementById("incrementalSearchCheckBox"),
+    exactMatchCheckBox = document.getElementById("exactMatchCheckBox"),
+    caseSensitiveCheckBox = document.getElementById("caseSensitiveCheckBox");
+
+/* last Fetch Timestamp */
+const lastFetchTimestamp = document.querySelector(".last-fetch-timestamp");    
+    
+/* feature info window elements */
+const featureInfoBtn = document.querySelector(".feature-info-button"),
+    featureInfoPanel = document.querySelector(".feature-info-panel"),
     featureInfoWindow = document.querySelector(".feature-info-window");
-    lastFetchTimestamp = document.querySelector(".last-fetch-timestamp");
+
+/* settings */
+const settingsBox = document.querySelector(".settings-box");
+
+/* settings toggle elements */
+const automatedFetchToggle = document.querySelector("#automated-fetch-toggle"),
+    darkModeToggle = document.querySelector("#dark-mode-toggle"),
+    /* TODO: change ID name and name of variable of dummy */
+    toggle2 = document.querySelector("#toggle-dummy2"),
+    toggle3 = document.querySelector("#toggle-dummy3")
+
+/* settings helper */
+const fetchingIntervalRange = document.querySelector("#automated-fetch-range"),
+    fetchingIntervalValue = document.querySelector("#fetching-interval-value"),
+    fetchingIntervalGetter = document.querySelector("#fetching-interval");
 
 const state = {
     isInitialized: false,
@@ -52,53 +75,99 @@ var timestamp = new Date();
 var option;
 
 
-//initialize first view
-myChart.showLoading({text: "Wait for indexing to finish"});
+/* init eventlisteners */
 
-// Handle click event
-myChart.on('click', function (params) {
-    onFeatureSelect(params);
+/* navigation bar */
+searchIcon.addEventListener("click", () => {
+    searchBox.classList.toggle("openSearch");
+    searchIcon.classList.add("openSearch");
+    if (nav.classList.contains("openSearch")) {
+      searchIcon.style.opacity = 0;
+      searchbar.focus();
+      return;  
+      }
+      searchIcon.textContent = "search";
+      searchBoxSettings.classList.remove("openSettings");
+});
+navOpenBtn.addEventListener("click", () => {
+    nav.classList.add("openNav");
+    nav.classList.remove("openSearch");
+    searchIcon.classList.replace("uil-times", "uil-search");
+    chartDom.classList.add("dumb");
+    settingsBox.classList.remove("active");
+});
+navCloseBtn.addEventListener("click", () => {
+    nav.classList.remove("openNav");
+    chartDom.classList.remove("dumb");
+});
+refreshBtn.addEventListener("click", () => {
+    state.isFetching = true;
+    updateTimestamp();
+    fetchAllData(refresh);
+});
+settingsBtn.addEventListener("click", () => {
+    settingsBox.classList.toggle("active");
+
 });
 
-myChart.on("contextmenu", function (params) {
-    if (params.dataType !== "node")
-        return;
-    console.log("opened console menu for " + params.data);
+/* settings */
+/* dark mode */
+darkModeToggle.addEventListener("click", () => {
+    toggleTheme();
+    darkModeToggle.classList.toggle('active');
+});
+
+/* automated fetch */
+automatedFetchToggle.addEventListener("click", () => {
+    fetchingIntervalRange.classList.toggle("automated-fetch-disabled");
+    automatedFetchToggle.classList.toggle('active');
+});
+fetchingIntervalGetter.addEventListener("input", () => {
+    let value = fetchingIntervalGetter.value;
+    if(value <10){
+        fetchingIntervalValue.textContent = " 0" + value + " min";
+    }
+    else fetchingIntervalValue.textContent = " " + value + " min";
+});
+fetchingIntervalGetter.addEventListener("change", () => {
+    let value = fetchingIntervalGetter.value;
+    /* TODO David: fetching interval übernehmen */
+});
+
+/* TODO: change ID name and name of variable of dummy */
+toggle2.addEventListener("click", () => {
+    toggle2.classList.toggle('active');
+})
+/* TODO: change ID name and name of variable of dummy */
+toggle3.addEventListener("click", () => {
+    toggle3.classList.toggle('active');
 })
 
-// Handle resize event
-window.addEventListener('resize', function () {
-    // Resize the chart when the window size changes
-    searchBoxSettings.classList.remove("openSettings");
-    nav.classList.remove("openSearch");
-    searchIcon.textContent = "search";
-    myChart.resize();
-});
-darkModeToggle.addEventListener("click", toggleTheme);
-searchIcon.addEventListener("click", () => {
-  //TODO THESIS focus searchbar on open
-  nav.classList.toggle("openSearch");
-  nav.classList.remove("openNav");
-  if (nav.classList.contains("openSearch")) {
-    // searchIcon.classList.replace("uil-search", "uil-times");
-    searchIcon.textContent = "close";
-    searchbar.focus();
-    return;
-
-    }
-    searchIcon.textContent = "search";
-    searchBoxSettings.classList.remove("openSettings");
-});
+/* search */
 searchSettingsToggle.addEventListener("click", () => {
-    getSearchPos();
     searchBoxSettings.classList.toggle("openSettings");
 });
-function getSearchPos(){
-    var rect = innerSearchIcon.getBoundingClientRect();
-    var x = rect.left + window.scrollX;
-    var xPx = x +"px"
-    searchBoxSettings.style.left = xPx;
+searchbar.addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+        let input = searchbar.value;
+        highlightItem(input);
+    }
+});
+searchbar.onkeyup = function () {
+    if (searchbar.value === "") {
+        highlightItem("");
+    }
+    else if(incSearchCheckBox.checked){
+        highlightItem(searchbar.value);
+    }
 }
+closeSearchBtn.addEventListener("click", () => {
+    searchBox.classList.remove("openSearch");
+    searchIcon.classList.remove("openSearch");
+    searchBoxSettings.remove("openSettings");
+});
+
+/* feature info window */
 featureInfoBtn.addEventListener("click", () => {
     featureInfoWindow.classList.toggle("openFeatureWindow");
     if(featureInfoWindow.classList.contains("openFeatureWindow")) {
@@ -109,87 +178,38 @@ featureInfoBtn.addEventListener("click", () => {
     }
     
 });
-navOpenBtn.addEventListener("click", () => {
-    nav.classList.add("openNav");
-    nav.classList.remove("openSearch");
-    searchIcon.classList.replace("uil-times", "uil-search");
-    chartDom.classList.add("dumb");
+
+/* ECharts */
+// Handle click event
+myChart.on('click', function (params) {
+    onFeatureSelect(params);
 });
-navCloseBtn.addEventListener("click", () => {
-    nav.classList.remove("openNav");
-    chartDom.classList.remove("dumb");
-});
-
-refreshBtn.addEventListener("click", () => {
-    state.isFetching = true;
-    updateTimestamp();
-    fetchAllData(refresh);
-})
-
-searchbar.addEventListener("keypress", function (event) {
-    if (event.key === "Enter") {
-        let input = searchbar.value;
-        highlightItem(input);
-    }
-});
-
-
-searchbar.onkeyup = function () {
-    if (searchbar.value === "") {
-        highlightItem("");
-    }
-    else if(incSearchCheckBox.checked){
-        highlightItem(searchbar.value);
-    }
-}
-
-
-// TODO THESIS: This function gets called by HAnsDumbModeListener after finishing indexing. display style from main should be changed
-function startPlotting() {
-    if (state.isInitialized) {
+myChart.on("contextmenu", function (params) {
+    if (params.dataType !== "node")
         return;
-    }
+    console.log("opened console menu for " + params.data);
+})
+// Handle resize event
+window.addEventListener('resize', function () {
+    // Resize the chart when the window size changes
+    searchBoxSettings.classList.remove("openSettings");
+    nav.classList.remove("openSearch");
+    searchIcon.textContent = "search";
+    myChart.resize();
+});
 
 
-    //TODO prevent onClick from loading
-    state.isInitialized = true;
+//initialize first view
+myChart.showLoading({text: "Wait for indexing to finish"});
+
+// Timestamp refreshing intreval
+setInterval(updateTimestamp, 10000);
 
 
-    // testButton.addEventListener("click", highlightItem);
-    /*testButton.addEventListener("click", () => {
-    fetchAllData();
-  });*/
-    state.isFetching = true;
-    //get latest data
-    fetchAllData(function (code) {
-        if (code === 0) {    //open start page
-            openTreeView();
-            myChart.hideLoading();
-            timestamp = new Date();
-            updateTimestamp();
-        } else {
-            alert("could not fetch data " + code)
-        }
-        state.isFetching = false;
-    });
-}
+/* functions */
+/* UI helper functions */
 
-//TODO THESIS
-// the callback is just for testing purposes.  can be removed later but we need another way of calling something after every request is done within fetch
-function fetchAllData(callback) {
-    requestData("tangling");
-    requestData("tree", callback);
-}
-
-function onFeatureSelect(params) {
-    //check type of clicked element
-    var clickedNode = params.data;
-    console.log('Clicked node:', clickedNode);
-    showFeatureInWindow(clickedNode.id);
-    //open window to show information about the clicked node
-
-}
-
+/* Feature Info Window */
 function toggleFeatureWindow() {
     let featureWindow = document.getElementById("featureInfoDiv");
     state.isFeatureWindow = !state.isFeatureWindow;
@@ -200,205 +220,7 @@ function toggleFeatureWindow() {
         featureWindow.style.height = "3%";
         featureWindow.style.overflow = "hidden";
     }
-
 }
-
-function refresh() {
-    myChart.showLoading();
-    switch (state.currentChart) {
-        case state.treeChart: {
-            openTreeView();
-            break;
-        }
-        case state.treeMapChart: {
-            openTreemapView();
-            break;
-        }
-        case state.tanglingChart: {
-            openTanglingView();
-            break;
-        }
-        default:
-            openTreeView();
-    }
-    myChart.hideLoading();
-    state.isFetching = false;
-    timestamp = new Date();
-    updateTimestamp();
-    // getFeatureIndicesByString("File");
-}
-
-function updateTimestamp() {
-    if(state.isFetching) {
-        lastFetchTimestamp.textContent = "fetching...";
-        return;
-    }
-    var currentTime = new Date();
-    var timeDifference = currentTime - timestamp;
-    if(timeDifference < 60000) {
-        lastFetchTimestamp.textContent = "Last fetch few seconds ago";
-    }
-    else if(timeDifference >= 60000) {
-        minutes = timeDifference / 60000;
-        if(minutes<2) {
-            lastFetchTimestamp.textContent = "Last fetch 1 minute ago";
-        }
-        else {
-            lastFetchTimestamp.textContent = "Last fetch " + parseInt(minutes) + " minutes ago";
-        }
-    }
-}
-
-setInterval(updateTimestamp, 10000);
-
-function highlightItem(input) {
-
-    myChart.dispatchAction({
-        type: "downplay",
-        seriesIndex: 0
-    });
-
-    if (input === "")
-        return;
-
-    let isRegEx = regExCheckBox.checked;
-    let isExact = exactMatchCheckBox.checked;
-    let isCase = caseSensitiveCheckBox.checked;
-
-    let indices = getFeatureIndicesByString(input, isRegEx, isExact, isCase);
-
-    if(state.currentChart === state.treeChart || state.currentChart === state.treeMapChart){
-        myChart.dispatchAction({
-            type: "highlight",
-            dataIndex: indices.hierarchical
-        })
-    }
-    else {
-        myChart.dispatchAction({
-            type: "highlight",
-            dataIndex: indices.nonHierarchical
-        })
-    }
-}
-
-// TODO THESIS: requestData(option)
-function requestData(option, callback) {
-    myChart.showLoading({text: "fetching data"});
-    window.java({
-        request: option,
-        persistent: false,
-        onSuccess: function (response) {
-            // response should contain JSON
-            //alert("response is there!");
-            handleData(option, response);
-            if (callback != null) {
-                callback(0);
-            }
-        },
-        onFailure: function (error_code, error_message) {
-            alert("could not retrieve data for " + option + "  " + error_code + "  " + error_message)
-            callback(error_code)
-            console.log(error_code, error_message);
-            myChart.hideLoading();
-        }
-    })
-}
-
-function handleData(option, response) {
-    switch (option) {
-        case "refresh":
-            // handle refresh data
-            break;
-        case "tanglingdegree":
-            // handle tangling degree data
-            break;
-        case "tangling":
-            jsonData.tanglingData = JSON.parse(response);
-            break;
-        case "tree":
-        case "treeMap":
-            jsonData.treeData = JSON.parse(response);
-            break;
-    }
-
-    //TODO THESIS
-    // refresh current chart
-
-}
-
-
-function getTextColor(getInverse = false) {
-    let light = "#17142c";
-    let dark = "#ffffff"
-
-    if (getInverse) {
-        return state.isDarkmode ? light : dark;
-    }
-    return state.isDarkmode ? dark : light;
-}
-
-function getFeatureIndicesByString(string, isRegEx, isExactMatch, isCaseSensitive) {
-    let result = {
-        hierarchical: [],
-        nonHierarchical: []
-    }
-
-    //get hierarchical indices
-    for(const [index, feature] of jsonData.tanglingData.features.entries()){
-        let featureName = feature.name.toString();
-        //TODO THESIS
-        // maybe change the invalid string to something more reliable
-        //if current chart is a tree-like-chart then dont check for the lpq
-        let featureLpq = (state.currentChart === state.treeChart || state.currentChart === state.treeMapChart) ? "$INVALID%_%HAnS%_%String$" : feature.id.toString();
-        let checkPattern = string.toString();
-
-        //check reges
-        if(isRegEx){
-            //TODO THESIS add regex
-            let regEx = RegExp(checkPattern,
-                isCaseSensitive ? "" : "i",
-                isExactMatch ? "" : "g"
-                )
-
-            if(featureName.match(regEx) || featureLpq.match(regEx)){
-                result.nonHierarchical.push(index);
-                result.hierarchical.push(index + 1);
-            }
-        }
-        //normal search
-        else{
-            if(!isCaseSensitive){
-                featureName = featureName.toLowerCase();
-                featureLpq = featureLpq.toLowerCase();
-                checkPattern = checkPattern.toLowerCase();
-            }
-
-            if(isExactMatch){
-                if (featureName === checkPattern || featureLpq === checkPattern) {
-                    result.nonHierarchical.push(index);
-                    result.hierarchical.push(index + 1);
-                }
-            }
-            else{
-                if(featureName.includes(checkPattern) || featureLpq.includes(checkPattern)){
-                    result.nonHierarchical.push(index);
-                    result.hierarchical.push(index + 1);
-                }
-            }
-        }
-    }
-
-    return result;
-}
-
-
-function getFeatureData(featureLpq) {
-    let result = jsonData.tanglingData.features.find((feature) => {
-        return feature.id === featureLpq;
-    })
-    return result;
-}
-
 function showFeatureInWindow(featureLpq) {
     var lpqNameText = document.getElementById("featureLpqNameText");
     var nameText = document.getElementById("featureNameText");
@@ -454,9 +276,12 @@ function closeNav() {
     state.isNav = false;
 }
 
+
+/* toggle Theme -> dark mode -> light mode */
 function toggleTheme() {
     //apply darkmode to the chart container
     var elem = document.getElementById("main");
+    body.classList.toggle("dark-mode");
     elem.classList.toggle("dark-mode");
     featureInfoWindow.classList.toggle("dark-mode");
     lastFetchTimestamp.classList.toggle("dark-mode");
@@ -493,7 +318,240 @@ function toggleTheme() {
             openTreeView();
     }
 }
+/* Refresh after fetching new data */
+function refresh() {
+    myChart.showLoading();
+    switch (state.currentChart) {
+        case state.treeChart: {
+            openTreeView();
+            break;
+        }
+        case state.treeMapChart: {
+            openTreemapView();
+            break;
+        }
+        case state.tanglingChart: {
+            openTanglingView();
+            break;
+        }
+        default:
+            openTreeView();
+    }
+    myChart.hideLoading();
+    state.isFetching = false;
+    timestamp = new Date();
+    updateTimestamp();
+    // getFeatureIndicesByString("File");
+}
+function updateTimestamp() {
+    if(state.isFetching) {
+        lastFetchTimestamp.textContent = "fetching...";
+        return;
+    }
+    var currentTime = new Date();
+    var timeDifference = currentTime - timestamp;
+    if(timeDifference < 60000) {
+        lastFetchTimestamp.textContent = "Last fetch few seconds ago";
+    }
+    else if(timeDifference >= 60000) {
+        minutes = timeDifference / 60000;
+        if(minutes<2) {
+            lastFetchTimestamp.textContent = "Last fetch 1 minute ago";
+        }
+        else {
+            lastFetchTimestamp.textContent = "Last fetch " + parseInt(minutes) + " minutes ago";
+        }
+    }
+}
 
+/* ECharts helper functions */
+// TODO THESIS: This function gets called by HAnsDumbModeListener after finishing indexing. display style from main should be changed
+function startPlotting() {
+    if (state.isInitialized) {
+        return;
+    }
+
+    //TODO prevent onClick from loading
+    state.isInitialized = true;
+    state.isFetching = true;
+
+    //get latest data
+    fetchAllData(function (code) {
+        if (code === 0) {    //open start page
+            openTreeView();
+            myChart.hideLoading();
+            timestamp = new Date();
+            updateTimestamp();
+        } else {
+            alert("could not fetch data " + code)
+        }
+        state.isFetching = false;
+    });
+}
+//TODO THESIS
+// the callback is just for testing purposes.  can be removed later but we need another way of calling something after every request is done within fetch
+function fetchAllData(callback) {
+    requestData("tangling");
+    requestData("tree", callback);
+}
+
+function onFeatureSelect(params) {
+    //check type of clicked element
+    var clickedNode = params.data;
+    console.log('Clicked node:', clickedNode);
+    showFeatureInWindow(clickedNode.id);
+    //open window to show information about the clicked node
+}
+
+function highlightItem(input) {
+
+    myChart.dispatchAction({
+        type: "downplay",
+        seriesIndex: 0
+    });
+
+    if (input === "")
+        return;
+
+    let isRegEx = regExCheckBox.checked;
+    let isExact = exactMatchCheckBox.checked;
+    let isCase = caseSensitiveCheckBox.checked;
+
+    let indices = getFeatureIndicesByString(input, isRegEx, isExact, isCase);
+
+    if(state.currentChart === state.treeChart || state.currentChart === state.treeMapChart){
+        myChart.dispatchAction({
+            type: "highlight",
+            dataIndex: indices.hierarchical
+        })
+    }
+    else {
+        myChart.dispatchAction({
+            type: "highlight",
+            dataIndex: indices.nonHierarchical
+        })
+    }
+}
+function getFeatureIndicesByString(string, isRegEx, isExactMatch, isCaseSensitive) {
+    let result = {
+        hierarchical: [],
+        nonHierarchical: []
+    }
+
+    //get hierarchical indices
+    for(const [index, feature] of jsonData.tanglingData.features.entries()){
+        let featureName = feature.name.toString();
+        //TODO THESIS
+        // maybe change the invalid string to something more reliable
+        //if current chart is a tree-like-chart then dont check for the lpq
+        let featureLpq = (state.currentChart === state.treeChart || state.currentChart === state.treeMapChart) ? "$INVALID%_%HAnS%_%String$" : feature.id.toString();
+        let checkPattern = string.toString();
+
+        //check reges
+        if(isRegEx){
+            //TODO THESIS add regex
+            let regEx = RegExp(checkPattern,
+                isCaseSensitive ? "" : "i",
+                isExactMatch ? "" : "g"
+                )
+
+            if(featureName.match(regEx) || featureLpq.match(regEx)){
+                result.nonHierarchical.push(index);
+                result.hierarchical.push(index + 1);
+            }
+        }
+        //normal search
+        else{
+            if(!isCaseSensitive){
+                featureName = featureName.toLowerCase();
+                featureLpq = featureLpq.toLowerCase();
+                checkPattern = checkPattern.toLowerCase();
+            }
+
+            if(isExactMatch){
+                if (featureName === checkPattern || featureLpq === checkPattern) {
+                    result.nonHierarchical.push(index);
+                    result.hierarchical.push(index + 1);
+                }
+            }
+            else{
+                if(featureName.includes(checkPattern) || featureLpq.includes(checkPattern)){
+                    result.nonHierarchical.push(index);
+                    result.hierarchical.push(index + 1);
+                }
+            }
+        }
+    }
+
+    return result;
+}
+
+function getTextColor(getInverse = false) {
+    let light = "#17142c";
+    let dark = "#ffffff"
+
+    if (getInverse) {
+        return state.isDarkmode ? light : dark;
+    }
+    return state.isDarkmode ? dark : light;
+}
+function getFeatureData(featureLpq) {
+    let result = jsonData.tanglingData.features.find((feature) => {
+        return feature.id === featureLpq;
+    })
+    return result;
+}
+
+
+
+/* interface to Java-Code in HAnS-Viz */
+
+// TODO THESIS: requestData(option)
+function requestData(option, callback) {
+    myChart.showLoading({text: "fetching data"});
+    window.java({
+        request: option,
+        persistent: false,
+        onSuccess: function (response) {
+            // response should contain JSON
+            //alert("response is there!");
+            handleData(option, response);
+            if (callback != null) {
+                callback(0);
+            }
+        },
+        onFailure: function (error_code, error_message) {
+            alert("could not retrieve data for " + option + "  " + error_code + "  " + error_message)
+            callback(error_code)
+            console.log(error_code, error_message);
+            myChart.hideLoading();
+        }
+    })
+}
+
+function handleData(option, response) {
+    switch (option) {
+        case "refresh":
+            // handle refresh data
+            break;
+        case "tanglingdegree":
+            // handle tangling degree data
+            break;
+        case "tangling":
+            jsonData.tanglingData = JSON.parse(response);
+            break;
+        case "tree":
+        case "treeMap":
+            jsonData.treeData = JSON.parse(response);
+            break;
+    }
+
+    //TODO THESIS
+    // refresh current chart
+
+}
+
+/* ECharts plotting functions */
 /**
  * String to color hashfunction to create consistent colors for features to make it not to random
  * @param str

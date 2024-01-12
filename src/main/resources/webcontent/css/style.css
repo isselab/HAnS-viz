@@ -11,71 +11,22 @@
   margin-top: 5vh;
 }
 
-/*TODO THESIS add horitzontal scrollbar to featureInfoDiv*/
-/*TODO THESIS customize scrollbar  - this can probably be hard for jcef*/
-
-/* #featureInfoDiv{
-  padding: 5px;
-  border-radius: 10px;
-  position: absolute;
-  font-size: 12px;
-  bottom: 5%;
-  left: 0;
-  height: 40%;
-  width: 30%;
-  overflow: auto;
+/* color settings for floating panels*/
+/* background color */
+.settings-box, 
+.search-box, 
+.last-fetch-timestamp, 
+.feature-info-window {
+  background-color: rgba(159, 159, 159, 0.90);
 }
-#featureInfoButton{
-  border-radius: 10px;
-  background-color: #e1e1e1;
-}
-#featureInfoDiv > div{
-  text-align: center;
-  margin-bottom: 10px;
-} */
-/* #featureInfoDiv > #locationDiv *{
-  text-align: left;
-}
-#featureInfoDiv label{
-  margin-right: 10px;
-  font-weight: bolder;
-  font-size: 14px;
-}
-.pathName {
-  font-weight: bolder;
-  margin-bottom: 3px;
-}
-#locationDiv li, #featureInfoDiv > div{
-  /*background-color: #e1e1e1;
-  padding: 5px;
-  border-radius: 10px;
-  margin-bottom: 5px;
+.box.dark-mode .settings-box, 
+.box.dark-mode .search-box, 
+.box.dark-mode .last-fetch-timestamp,
+.box.dark-mode .feature-info-window {
+  background-color: rgba(255, 255, 255, 0.9);
 }
 
-
-#locationDiv{
-  overflow-x: auto;
-}
-
-.featureWindowDark label, p{
-  color: white;
-}
-.featureWindowDark{
-  background-color: rgba(0, 0, 0, 0.7);
-}
-.featureWindowDark div {
-  background-color: darkslateblue;
-}
-
-.featureWindowDark label, p{
-  color: black;
-}
-.featureWindowLight{
-  background-color: rgba(200, 200, 200, 0.7);
-}
-.featureWindowLight div {
-  background-color: #818181;
-} */
+/* navigation bar setup */
 
 .nav {
   position: fixed;
@@ -85,7 +36,6 @@
   height: 5vh;
   padding: 15px 200px;
   background: black;
-  /*box shadow?*/
 }
 .nav,
 .nav .nav-links {
@@ -107,19 +57,7 @@ a:hover {
   width: 5vh;
   height: 5vh;
 }
-.nav .search-box {
-  height: 3vh;
-  width:200px;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.2s linear;
-  display: none;
-  border: none;
-  outline: none;
-  border-radius: 6px;
-  background-color: #fff;
-  align-items: center;
-}
+
 .nav .nav-links {
   column-gap: 20px;
   list-style: none;
@@ -129,48 +67,188 @@ a:hover {
   justify-content: space-between;
   gap:10px;
 }
-.last-fetch-timestamp {
+
+/* settings box set up */
+.settings-box {
+  opacity:0;
   position: absolute;
   top:6vh;
-  transform: translateY(-30%);
-  right:5px;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 5px 10px;
-  border-radius: 10px;
+  right:0;
+  width: 29%;
+  pointer-events: none;
+  transition: all 0.2s linear;
+  border: none;
+  outline: none;
+  border-radius: 6px;
+  align-items: center;
+  display:block;
   z-index: 2;
 }
-.last-fetch-timestamp.dark-mode {
-  background-color: rgba(255, 255, 255, 0.9);
-  color: black;
+
+.settings-box.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.settings-row {
+  display: flex;
+  gap: 10px;
+  padding: 15px;
+  align-items: center;
+  transition: 0.5s;
+  font-size: 14px;
+}
+.settings-row.automated-fetch-disabled {
+  display: none;
 }
 
-/* .nav .nav-links a {
+/* search box set up */
+.search-box {
+  opacity:0;
+  position: absolute;
+  top:6vh;
+  left:30%;
+  width: 40%;
+  height: 5vh;
+  pointer-events: none;
   transition: all 0.2s linear;
-} */
-.nav.openSearch {
-  justify-content: space-evenly;
+  border: none;
+  outline: none;
+  border-radius: 6px;
+  align-items: center;
+  display:flex;
+  z-index: 2;
 }
-.nav.openSearch .nav-links a {
+
+.search-box .search-icon {
+  font-size: 20px;
+  color: #4a98f7;
+  padding: 0 10px 0 10px;
+  cursor: auto;
+}
+.search-box .search-settings-toggle,
+.search-box .close-search {
+  font-size: 20px;
+  color: #4a98f7;
+  padding: 0 10px 0 5px;
+  cursor: pointer;
+}
+.search-box input {
+  height: 70%;
+  width: 100%;
+  border: none;
+  outline: none;
+  border-radius: 6px;
+  background-color: #fff;
+  padding: 4px 15px 4px 15px;
+}
+.search-box.openSearch {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* searchbox settings setup */
+.search-box-settings {
   opacity: 0;
   pointer-events: none;
+  display:none;
+}
+.search-box-settings.openSettings{
+  opacity: 1;
+  pointer-events: auto;
+  position: absolute;
+  /* TODO: maybe change to default width */
+  width:25%;
+  top: 11vh;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 0 5px 0;
+  display:block;
+  z-index: 1000000;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+  transition: all 0.5s linear;
+}
+.search-box-settings.openSettings > div{
+  padding: 2px 5px 2px 5px;
+  color: white;
+}
+
+/* toggle animation */
+.toggle {
+  position: relative;
+  display: block;
+  width: 30px;
+  height: 15px;
+  border-radius: 15px;
+  background:#7d7d7d;
+  transition: 0.5s;
+  cursor: pointer;
+  box-shadow: inset 0 8px 60px rgba(0,0,0,0.1),
+              inset 0 8px 8px rgba(0,0,0,0.1),
+              inset 0 -4px 4px rgba(0,0,0,0.1);
+}
+.toggle .indicator{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to bottom, #ffffff, #f0f0f0);
+  border-radius: 50%;
+  transform: scale(0.8);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5),
+              inset 0 4px 4px rgba(255,255,255,0.2),
+              inset 0 -4px 4px rgba(255,255,255,0.2);
+  transition: 0.5s;
+
+}
+.toggle.active .indicator{
+  left:15px;
+  background: linear-gradient(to bottom, #c0ffc2, #4afd50);    
+}
+
+/* docked elements */
+.docked > * {
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.nav .navOpenBtn,
+.nav .navCloseBtn {
+  display: none;
 }
 .nav .search-icon {
   color: #fff;
   font-size: 24px;
   cursor: pointer;
 }
-
-.nav.openSearch .search-box {
-  opacity: 1;
-  pointer-events: auto;
-  margin-left: auto;
-  display:flex;
+.nav .search-icon.openSearch {
+  opacity: 0;
+  pointer-events: none;
 }
+
+/* last-fetch timestamp setup*/
+
+.last-fetch-timestamp {
+  position: absolute;
+  top:6vh;
+  left:0;
+  max-width: 30%;
+  color: black;
+  padding: 5px 10px;
+  border-radius: 10px;
+  z-index: 2;
+  font-size: 14px;
+}
+
+
+
+/* feature-info window setup */
+
 .feature-info-window {
   position:absolute;
   display: inline-flex;
-  
   height: 40%;
   /* width: 100px; */
   bottom:0%;
@@ -178,27 +256,23 @@ a:hover {
   z-index: 2;
 }
 #toggleFeatureWindowDiv{
-  background-color: black;
   border-radius: 0 10px 10px 0;
   padding: 5px 1px 5px 1px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
-
 #toggleFeatureWindowText{
-  color: white;
   writing-mode: vertical-lr;
   text-orientation: upright;
   font-family: "Lato", sans-serif;
   font-weight: bolder;
 }
-
 .feature-info-window .feature-info-panel {
   height: 100%;
-  /* width:80px; */
   display:none;
-  overflow:hidden;
-  /*border-radius: 10px;*/
+  overflow:auto;
   font-size: 12px;
 }
+
 .feature-info-window.openFeatureWindow .feature-info-panel  {
   display: block;
 }
@@ -206,31 +280,21 @@ a:hover {
   text-align: center;
   margin: 4px 5px 6px 5px;
   padding: 2px;
-  color: white;
   overflow:auto;
 }
-
 .feature-info-div label {
-  color: white;
   font-weight: bolder;
   font-size: larger;
 }
-
 .feature-info-window .feature-info-button {
   margin-top:5px;
   z-index: 2;
   height:25px;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
   border-radius: 3px;
 }
-
-
 .feature-info-window {
-  background-color: rgba(0, 0, 0, 0.9);
   border-radius: 0 10px 10px 0;
 }
-
 .underline::after {
 
   text-decoration: none;
@@ -246,7 +310,6 @@ a:hover {
 #locationDiv ul > li {
   padding: 10px 10px 10px 10px
 }
-
 #locationDiv ul > li .pathName::after {
   text-decoration: none;
   content: "";
@@ -255,95 +318,23 @@ a:hover {
   height: 1px;
   background: linear-gradient(to right, #5e42a6, #b74e91)
 }
-
-
 .pathName {
-  color: white;
+  /* color: white; */
   font-weight: bolder;
   margin-bottom: 3px;
 }
 
-.search-box-settings {
-  opacity: 0;
-  pointer-events: none;
-  display:none;
-}
-.search-box-settings.openSettings{
-  opacity: 1;
-  pointer-events: auto;
-  position: absolute;
-  top: 6vh;
-  padding: 5px 0 5px 0;
-  display:block;
-  z-index: 1000000;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 6px;
-  transition: all 0.5s linear;
-}
-.search-box-settings.openSettings > div{
-  padding: 2px 5px 2px 5px;
-  color: white;
-}
-.search-box .search-icon {
-  font-size: 20px;
-  color: #4a98f7;
-  padding: 0 0 0 10px;
-  cursor: auto;
-}
-.search-box .search-settings-toggle {
-  font-size: 20px;
-  color: #4a98f7;
-  padding: 0 10px 0 5px;
-  cursor: pointer;
-}
-.search-box input {
-  height: 100%;
-  width: 100%;
-  border: none;
-  outline: none;
-  border-radius: 6px;
-  background-color: #fff;
-  padding: 0 15px 0 15px;
-}
-.refresh-button, .dark-mode-toggle {
-  color: #fff;
-  font-size: 20px;
-  cursor: pointer;
-}
 
-.nav .navOpenBtn,
-.nav .navCloseBtn {
-  display: none;
-}
 
 /* responsive */
 @media screen and (max-width: 1160px) {
   .nav {
     padding: 15px 100px;
   }
-  .nav .search-box {
-    /* right: 150px; */
-  }
-  .nav.openSearch .nav-links {
-    display: none;
-  }
-  .nav .nav-links {
-    display: flex;
-  }
 }
 @media screen and (max-width: 950px) {
   .nav {
     padding: 15px 50px;
-  }
-  .nav .search-box {
-    /* right: 100px; */
-    /* max-width: 400px; */
-  }
-  .nav.openSearch .nav-links {
-    display: none;
-  }
-  .nav .nav-links {
-    display: flex;
   }
 }
 @media screen and (max-width: 630px) {
@@ -353,13 +344,15 @@ a:hover {
   }
   .nav {
     padding: 15px 20px;
+    z-index: 50;
   }
+  
   .nav .nav-links {
     position: fixed;
     top: 5%;
     right:-100%;
     height: 95%;
-    max-width: 280px;
+    max-width: 200px;
     width: 100%;
     padding-top: 100px;
     row-gap: 30px;
@@ -371,8 +364,8 @@ a:hover {
   }
   .nav.openNav .nav-links {
     right:0;
-    z-index:1;
   }
+  /* ECharts turned dumb */
   .dumb {
     pointer-events: none;
     z-index:0;
@@ -390,19 +383,6 @@ a:hover {
     font-size: 20px;
     cursor: pointer;
   }
-  .nav .search-box {
-    opacity: 1;
-    right: 80px;
-    max-width: 250px;
-  }
-
-  /*.nav .search-box {
-    top: calc(100% + 10px);
-    max-width: calc(100% - 20px);
-    right: 50%;
-    transform: translateX(50%);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }*/
 }
 @media screen and (max-width: 500px) {
   .nav .search-box {
@@ -419,13 +399,6 @@ a:hover {
     max-width: 150px;
   }
 }
-/*@media screen and (max-width: 400px) {
-  .nav .search-box {
-    opacity: 1;
-    right: 80px;
-    max-width: 250px;
-  }
-}*/
 @media screen and (max-width: 350px) {
   .nav .search-box {
     opacity: 0;
@@ -434,4 +407,6 @@ a:hover {
     opacity: 0;
   }
 }
-
+@media screen and (max-height: 520px) {
+  /* TODO THESIS: Handle */
+}

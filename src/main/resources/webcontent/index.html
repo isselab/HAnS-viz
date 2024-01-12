@@ -10,9 +10,47 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
   </head>
-  <body class="box">
+  <body class="box dark-mode">
     <div class="last-fetch-timestamp dark-mode">
       fetching...
+    </div>
+    <div class="search-box">
+      <span class="material-symbols-outlined search-icon" id="inner-search-icon">search</span>
+      <input placeholder="Search here..." id="searchbar"/>
+      <span class="material-symbols-outlined search-settings-toggle" id="search-settings">tune</span>
+      <span class="material-symbols-outlined close-search" id ="close-search">close</span>
+    </div>
+    <div class="settings-box">
+      <div class="settings-row" id="dark-mode-settings">
+        <div class="toggle active" id ="dark-mode-toggle">
+          <i class = "indicator"></i>
+        </div>
+        <span>Dark Mode</span>
+      </div>
+      <div class="settings-row">
+        <div class="toggle" id ="automated-fetch-toggle">
+          <i class = "indicator"></i>
+        </div>
+        <span>Automated fetch</span>
+      </div>
+      <div class="settings-row automated-fetch-disabled" id="automated-fetch-range">
+        <p><span>Fetching interval: </span><span id="fetching-interval-value">10 min</span></p>
+        <input type="range" id="fetching-interval" min="1" max="60" value="10">
+      </div>
+      <div class="settings-row">
+        <!-- TODO: change ID name of dummy -->
+        <div class="toggle" id ="toggle-dummy2">
+          <i class = "indicator"></i>
+        </div>
+        <span>Search</span>
+      </div>
+      <div class="settings-row">
+        <!-- TODO: change ID name of dummy -->
+        <div class="toggle" id ="toggle-dummy3">
+          <i class = "indicator"></i>
+        </div>
+        <span>Search</span>
+      </div>
     </div>
     <div class="search-box-settings">
       <div>
@@ -32,7 +70,7 @@
           <label>Case-Sensitive</label>
       </div>
     </div>
-    <div class="feature-info-window dark-mode">
+    <div class="feature-info-window">
       <div class="feature-info-panel">
         <div class="feature-info-div" id="lpqDiv">
           <label id="lpqNameLabel" class="underline">LPQ-Name</label>
@@ -82,53 +120,14 @@
         <li><a href="#" onclick="openTreeView()">Tree View</a></li>
         <li><a href="#" onclick="openTreemapView()">Treemap View</a></li>
         <li><a href="#" onclick="openTanglingView()">Tangling</a></li>
-        <li><a href="#" onclick="openTanglingView()">Scattering</a></li>
       </ul>
-      <div class="search-box">
-        <span class="material-symbols-outlined search-icon" id="inner-search-icon">search</span>
-        <input placeholder="Search here..." id="searchbar"/>
-        <span class="material-symbols-outlined search-settings-toggle" id="search-settings">settings</span>
-      </div>
       <div class="docked">
-        <!-- <i class="uil uil-search search-icon" id="searchIcon"></i> -->
         <span class="material-symbols-outlined search-icon" id="searchIcon">search</span>
-        <!-- <div class="search-box">
-          <span class="material-symbols-outlined search-icon">search</span>
-          <input placeholder="Search here..." id="searchbar"/>
-        </div> -->
-
-        <!-- <i class="uil uil-sync refresh-button" id="refresh-button"></i> -->
-        <!-- <i class="material-symbols-outlined navOpenBtn"></i> -->
         <span class="material-symbols-outlined refresh-button" id="refresh-button">refresh</span>
-        <span class="material-symbols-outlined dark-mode-toggle">contrast</span>
+        <span class="material-symbols-outlined settings">settings</span>
         <span class="material-symbols-outlined navOpenBtn">menu</span>
       </div>
     </nav>
-    <!-- <div class="feature-window-panel">
-      <div id="featureButtonDiv">
-        <button id="featureInfoButton" onclick="toggleFeatureWindow()">toggle</button>
-      </div> 
-      <button class="side-panel-toggle" type="button"></button>
-      <div class="side-panel">
-        <div id="lpqDiv">
-          <label id="lpqNameLabel">LPQ-Name</label>
-          <p id="featureLpqNameText">-</p>
-        </div>
-        <div id="nameDiv">
-          <label id="nameLabel">Name</label>
-          <p id="featureNameText">-</p>
-        </div>
-        <div id="tanglingDiv">
-          <label id="tanglingLabel">Tangling Degree</label>
-          <p id="tanglingText">-</p>
-        </div>
-        <div id="locationDiv">
-          <label id="locationLabel">Locations</label>
-          <ul id="featureLocationList">
-          </ul>
-        </div>
-      </div>
-    </div>-->
   </body>
   <script src="js/main.js"></script>
   <script type="text/javascript">
