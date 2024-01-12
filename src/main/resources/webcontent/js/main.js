@@ -168,7 +168,7 @@ closeSearchBtn.addEventListener("click", () => {
 });
 
 /* feature info window */
-featureInfoBtn.addEventListener("click", () => {
+featureInfoWindow.addEventListener("click", () => {
     featureInfoWindow.classList.toggle("openFeatureWindow");
     if(featureInfoWindow.classList.contains("openFeatureWindow")) {
         featureInfoBtn.textContent = "keyboard_double_arrow_left";
@@ -200,10 +200,7 @@ window.addEventListener('resize', function () {
 
 
 //initialize first view
-myChart.showLoading({text: "Wait for indexing to finish"});
-
-// Timestamp refreshing intreval
-setInterval(updateTimestamp, 10000);
+myChart.showLoading({text: "Loading..."});
 
 
 /* functions */
@@ -283,8 +280,6 @@ function toggleTheme() {
     var elem = document.getElementById("main");
     body.classList.toggle("dark-mode");
     elem.classList.toggle("dark-mode");
-    featureInfoWindow.classList.toggle("dark-mode");
-    lastFetchTimestamp.classList.toggle("dark-mode");
 
     state.isDarkmode = !state.isDarkmode;
     echarts.dispose(myChart);
@@ -365,27 +360,33 @@ function updateTimestamp() {
 }
 
 /* ECharts helper functions */
+function waitForIndexing(){
+    myChart.showLoading({text: "Wait for Indexing..."});
+    lastFetchTimestamp.textContent = "Wait for Indexing...";
+}
 // TODO THESIS: This function gets called by HAnsDumbModeListener after finishing indexing. display style from main should be changed
 function startPlotting() {
     if (state.isInitialized) {
         return;
     }
-
     //TODO prevent onClick from loading
     state.isInitialized = true;
     state.isFetching = true;
-
+    lastFetchTimestamp.textContent = "fetching..."
     //get latest data
     fetchAllData(function (code) {
         if (code === 0) {    //open start page
-            openTreeView();
-            myChart.hideLoading();
+            state.isFetching = false;
             timestamp = new Date();
             updateTimestamp();
+            // Timestamp refreshing interval
+            setInterval(updateTimestamp, 10000);
+            openTreeView();
+            myChart.hideLoading();
         } else {
+            state.isFetching = false;
             alert("could not fetch data " + code)
         }
-        state.isFetching = false;
     });
 }
 //TODO THESIS

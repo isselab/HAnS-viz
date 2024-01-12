@@ -16,13 +16,15 @@
 .settings-box, 
 .search-box, 
 .last-fetch-timestamp, 
-.feature-info-window {
-  background-color: rgba(159, 159, 159, 0.90);
+.feature-info-window,
+.search-box-settings {
+  background-color: rgba(185, 192, 218, 0.9);
 }
 .box.dark-mode .settings-box, 
 .box.dark-mode .search-box, 
 .box.dark-mode .last-fetch-timestamp,
-.box.dark-mode .feature-info-window {
+.box.dark-mode .feature-info-window,
+.box.dark-mode .search-box-settings{
   background-color: rgba(255, 255, 255, 0.9);
 }
 
@@ -158,19 +160,17 @@ a:hover {
   position: absolute;
   /* TODO: maybe change to default width */
   width:25%;
-  top: 11vh;
+  top: 12vh;
   left: 50%;
   transform: translateX(-50%);
   padding: 5px 0 5px 0;
   display:block;
   z-index: 1000000;
-  background-color: rgba(0, 0, 0, 0.5);
   border-radius: 6px;
   transition: all 0.5s linear;
 }
 .search-box-settings.openSettings > div{
   padding: 2px 5px 2px 5px;
-  color: white;
 }
 
 /* toggle animation */

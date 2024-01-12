@@ -15,6 +15,7 @@
 package com.github.johmara.hansviz.browser;
 
 import com.github.johmara.hansviz.browser.jshandler.JSMessageRouterHandler;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.ui.jcef.JBCefBrowser;
@@ -35,6 +36,8 @@ public class BrowserViewerWindow {
 
     private final Box content;
     private final Project project;
+    private boolean viewInit = false;
+    private boolean browserReady = false;
 
     /**
      * Singleton, while there is only one BrowserViewerWindow for a project.
@@ -53,7 +56,7 @@ public class BrowserViewerWindow {
      * @param service The parent service of the view
      * @param project The project the view is for
      */
-    private BrowserViewerWindow(BrowserViewerService service, Project project) {
+    public BrowserViewerWindow(BrowserViewerService service, Project project) {
         webView = new JBCefBrowser();
         registerAppSchemeHandler();
         initialiseJSHandler(webView.getCefBrowser().getClient());
@@ -107,14 +110,24 @@ public class BrowserViewerWindow {
         return content;
     }
 
-
+    public boolean isViewInit(){
+        return viewInit;
+    }
+    public void setViewInit(){
+        viewInit = true;
+    }
+    public boolean isBrowserReady(){
+        return browserReady;
+    }
+    public void setBrowserReady(){
+        browserReady = true;
+    }
     /**
      * Can call a javascript function of current view. Parameter function has to be in js-format, e.g. "function();"
      * @param function String
      */
-    public static void runJavascript(String function) {
+    public void runJavascript(String function) {
         System.out.println(function);
-        getInstance().webView.getCefBrowser().executeJavaScript(function, null, 0);
-
+        webView.getCefBrowser().executeJavaScript(function, null, 0);
     }
 }
