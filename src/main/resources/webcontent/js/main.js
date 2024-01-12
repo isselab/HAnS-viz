@@ -27,7 +27,10 @@ const lastFetchTimestamp = document.querySelector(".last-fetch-timestamp");
 /* feature info window elements */
 const featureInfoBtn = document.querySelector(".feature-info-button"),
     featureInfoPanel = document.querySelector(".feature-info-panel"),
-    featureInfoWindow = document.querySelector(".feature-info-window");
+    featureInfoWindow = document.querySelector(".feature-info-window"),
+    featureInfoSideBar = document.querySelector("#toggleFeatureWindowDiv"),
+    showScattering = document.querySelector(".show-scattering"),
+    scatteringWindow = document.querySelector(".scattering-window");
 
 /* settings */
 const settingsBox = document.querySelector(".settings-box");
@@ -168,7 +171,7 @@ closeSearchBtn.addEventListener("click", () => {
 });
 
 /* feature info window */
-featureInfoWindow.addEventListener("click", () => {
+featureInfoSideBar.addEventListener("click", () => {
     featureInfoWindow.classList.toggle("openFeatureWindow");
     if(featureInfoWindow.classList.contains("openFeatureWindow")) {
         featureInfoBtn.textContent = "keyboard_double_arrow_left";
@@ -177,6 +180,9 @@ featureInfoWindow.addEventListener("click", () => {
         featureInfoBtn.textContent = "keyboard_double_arrow_right";
     }
     
+});
+showScattering.addEventListener("click", () => {
+    openScattering();
 });
 
 /* ECharts */
@@ -252,6 +258,10 @@ function showFeatureInWindow(featureLpq) {
         }
         locationList.appendChild(listElement);
     }
+}
+function openScattering(){
+    // TODO: open Scattering window
+    scatteringWindow.classList.toggle("active");
 }
 
 function showInEditor(){
