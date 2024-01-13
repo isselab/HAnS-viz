@@ -302,7 +302,7 @@ a:hover {
   display: block;
   width: 100%;
   height: 2px;
-  background: linear-gradient(to right, #5e42a6, #b74e91)
+  background: linear-gradient(to right, rebeccapurple, #5e42a6)
 }
 #locationDiv ul{
   text-align: left;
@@ -316,7 +316,7 @@ a:hover {
   display: block;
   width: 100%;
   height: 1px;
-  background: linear-gradient(to right, #5e42a6, #b74e91)
+  background: linear-gradient(to right, rebeccapurple, #5e42a6)
 }
 .pathName {
   /* color: white; */

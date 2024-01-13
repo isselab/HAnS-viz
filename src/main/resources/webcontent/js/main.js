@@ -39,8 +39,8 @@ const settingsBox = document.querySelector(".settings-box");
 const automatedFetchToggle = document.querySelector("#automated-fetch-toggle"),
     darkModeToggle = document.querySelector("#dark-mode-toggle"),
     /* TODO: change ID name and name of variable of dummy */
-    toggle2 = document.querySelector("#toggle-dummy2"),
-    toggle3 = document.querySelector("#toggle-dummy3")
+    lpqNameToggle = document.querySelector("#toggle-dummy2"),
+    circularTanglingToggle = document.querySelector("#toggle-dummy3")
 
 /* settings helper */
 const fetchingIntervalRange = document.querySelector("#automated-fetch-range"),
@@ -56,7 +56,9 @@ const state = {
     isDarkmode: true,
     isNav: false,
     isFeatureWindow: false,
-    isFetching: false
+    isFetching: false,
+    showLpqNames: false,
+    showTanglingAsNormalGraph: false,
 }
 
 const jsonData = {
@@ -121,6 +123,15 @@ darkModeToggle.addEventListener("click", () => {
     darkModeToggle.classList.toggle('active');
 });
 
+/* hide LPQ names */
+lpqNameToggle.addEventListener("click", () => {
+    toggleHideLpq();
+});
+
+circularTanglingToggle.addEventListener("click", () => {
+    toggleTanglingGraphMode();
+})
+
 /* automated fetch */
 automatedFetchToggle.addEventListener("click", () => {
     fetchingIntervalRange.classList.toggle("automated-fetch-disabled");
@@ -139,12 +150,12 @@ fetchingIntervalGetter.addEventListener("change", () => {
 });
 
 /* TODO: change ID name and name of variable of dummy */
-toggle2.addEventListener("click", () => {
-    toggle2.classList.toggle('active');
+lpqNameToggle.addEventListener("click", () => {
+    lpqNameToggle.classList.toggle('active');
 })
 /* TODO: change ID name and name of variable of dummy */
-toggle3.addEventListener("click", () => {
-    toggle3.classList.toggle('active');
+circularTanglingToggle.addEventListener("click", () => {
+    circularTanglingToggle.classList.toggle('active');
 })
 
 /* search */
@@ -365,6 +376,24 @@ function refresh() {
     updateTimestamp();
     // getFeatureIndicesByString("File");
 }
+
+/* toggle hide LPQ for tangling chart */
+function toggleHideLpq(){
+    let before = state.showLpqNames;
+    state.showLpqNames = !lpqNameToggle.classList.contains("active");
+    //reload if it has changed and current chart is the tangling view
+    if(before !== state.showLpqNames && state.currentChart === state.tanglingChart)
+        toggleChart(state.tanglingChart);
+}
+/* toggles the tangling graph to either circular or non-circular graph*/
+function toggleTanglingGraphMode(){
+    let before = state.showTanglingAsNormalGraph;
+    state.showTanglingAsNormalGraph = !circularTanglingToggle.classList.contains("active");
+    //reload if it has changed and current chart is the tangling view
+    if(before !== state.showTanglingAsNormalGraph && state.currentChart === state.tanglingChart)
+        toggleChart(state.tanglingChart);
+}
+
 function updateTimestamp() {
     if(state.isFetching) {
         lastFetchTimestamp.textContent = "fetching...";
@@ -488,16 +517,15 @@ function getFeatureIndicesByString(string, isRegEx, isExactMatch, isCaseSensitiv
         //TODO THESIS
         // maybe change the invalid string to something more reliable
         //if current chart is a tree-like-chart then dont check for the lpq
-        let featureLpq = (state.currentChart === state.treeChart || state.currentChart === state.treeMapChart) ? "$INVALID%_%HAnS%_%String$" : feature.id.toString();
+        let featureLpq = (state.currentChart === state.treeChart || state.currentChart === state.treeMapChart) ? "$INVALID%_%HAnS%_%String_1$" : feature.id.toString();
         let checkPattern = string.toString();
 
         //check reges
         if(isRegEx){
             //TODO THESIS add regex
             let regEx = RegExp(checkPattern,
-                isCaseSensitive ? "" : "i",
-                isExactMatch ? "" : "g"
-                )
+                isCaseSensitive ? "" : "i"
+            )
 
             if(featureName.match(regEx) || featureLpq.match(regEx)){
                 result.nonHierarchical.push(index);
@@ -506,6 +534,8 @@ function getFeatureIndicesByString(string, isRegEx, isExactMatch, isCaseSensitiv
         }
         //normal search
         else{
+            if(!state.showLpqNames)
+                featureLpq = "$INVALID%_%HAnS%_%String_1$";
             if(!isCaseSensitive){
                 featureName = featureName.toLowerCase();
                 featureLpq = featureLpq.toLowerCase();
@@ -678,9 +708,14 @@ function openTanglingView() {
             {
                 name: 'Tangling Degree',
                 type: 'graph',
-                layout: 'circular',
+                layout: state.showTanglingAsNormalGraph ? "force" : "circular",
                 circular: {
                     rotateLabel: true
+                },
+                force: {
+                    initLayout: "circular",
+                    repulsion: 1000,
+                    edgeLength: [1, 100],
                 },
                 data: jsonData.tanglingData.features.map(node => {
                     /*TODO THESIS dont grow linear*/
@@ -698,7 +733,10 @@ function openTanglingView() {
                     show: true, // Show label by default
                     position: 'right',
                     formatter: function(params) {
+                        if(state.showLpqNames)
                             return `${params.data.id}`;
+                        else
+                            return`${params.data.name}`;
                     }
                 },
                 itemStyle: {
@@ -708,16 +746,19 @@ function openTanglingView() {
                     }
                 },
                 lineStyle: {
-                    curveness: 0.3
+                    curveness: 0.3,
+                    width: state.showTanglingAsNormalGraph ? 5 : 1
                 },
                 zoom: 0.7,
                 emphasis: {
                     focus: 'adjacency',
                     label: {
-                        position: 'right',
+                        position: 'top',
                         show: true,
                         fontSize: 30,
-                        color: getTextColor()
+                        color: getTextColor(),
+                        textBorderColor: "rebeccapurple",
+                        textBorderWidth: 10,
                     }
                 }
             }
