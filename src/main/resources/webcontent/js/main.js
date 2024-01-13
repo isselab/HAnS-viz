@@ -786,7 +786,7 @@ function openTanglingView() {
                 },
                 lineStyle: {
                     curveness: 0.3,
-                    width: state.showTanglingAsNormalGraph ? 5 : 1
+                    width: state.showTanglingAsNormalGraph ? 5 : 2
                 },
                 zoom: 0.7,
                 emphasis: {
