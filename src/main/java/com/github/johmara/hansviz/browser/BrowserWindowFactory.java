@@ -33,6 +33,7 @@ public class BrowserWindowFactory implements ToolWindowFactory {
                         Thread.sleep(1000);
                         // Code ausführen nach 2 Sekunden
                         // Dieser Code wird ausgeführt.
+                        browserViewerWindow.setInitPlottingDone();
                         browserViewerWindow.runJavascript("startPlotting();");
                     } catch (InterruptedException e) {
                         e.printStackTrace();

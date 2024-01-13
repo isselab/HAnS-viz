@@ -20,6 +20,7 @@ public class HanSDumbModeListener implements DumbService.DumbModeListener {
                 Thread delayThread = new Thread(() -> {
                     try {
                         Thread.sleep(1000);
+                        browserViewerWindow.setInitPlottingDone();
                         browserViewerWindow.runJavascript("startPlotting();");
                     } catch (InterruptedException e) {
                         e.printStackTrace();

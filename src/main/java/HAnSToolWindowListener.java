@@ -15,9 +15,15 @@ public class HAnSToolWindowListener implements ToolWindowManagerListener {
             ToolWindow toolWindow = toolWindowManager.getToolWindow(browserViewerWindow.getToolWindowId());
 
             if (toolWindow != null) {
-                if (toolWindow.isVisible() && !browserViewerWindow.isToolWindowOpen()) {
-                    browserViewerWindow.setToolWindowOpen(true);
-                    System.out.println("Tool Window wurde geöffnet!");
+                if (toolWindow.isVisible()) {
+                    if(!browserViewerWindow.isToolWindowOpen()){
+                        System.out.println("Tool Window wurde geöffnet!");
+                        browserViewerWindow.setToolWindowOpen(true);
+                        if(browserViewerWindow.isViewInit() && browserViewerWindow.isBrowserReady() && browserViewerWindow.isInitPlottingDone()) {
+                            browserViewerWindow.runJavascript("fetchAllData(refresh);");
+                        }
+                        else System.out.println("keine daten gefetcht");
+                    }
                 } else {
                     browserViewerWindow.setToolWindowOpen(false);
                 }

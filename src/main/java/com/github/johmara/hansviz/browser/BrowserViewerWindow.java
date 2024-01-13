@@ -39,6 +39,7 @@ public class BrowserViewerWindow {
     private boolean viewInit = false;
     private boolean browserReady = false;
     private boolean toolWindowOpen = false;
+    private boolean initPlottingDone = false;
     private String toolWindowId;
 
     /**
@@ -112,30 +113,79 @@ public class BrowserViewerWindow {
         return content;
     }
 
+    /**
+     * Returns the ID of the associated toolWindow
+     * @return
+     */
     public String getToolWindowId() {
         return toolWindowId;
     }
 
+    /**
+     * Sets ID of the associated toolWindow
+     * @param toolWindowId
+     */
     public void setToolWindowId(String toolWindowId) {
         this.toolWindowId = toolWindowId;
     }
 
+    /**
+     * Indicates if the associated toolWindow is open
+     * @return
+     */
     public boolean isToolWindowOpen() {
         return toolWindowOpen;
     }
+
+    /**
+     * Sets associated toolWindow indicator to open
+     * @param open
+     */
     public void setToolWindowOpen(boolean open) {
         this.toolWindowOpen = open;
     }
 
+    /**
+     * Blocks startPlotting()-process, if one is called while the other one's thread is sleeping. Works like a mutex
+     * @return
+     */
     public boolean isViewInit(){
         return viewInit;
     }
+
+    /**
+     * Is set before thread starts with startPlotting()
+     */
     public void setViewInit(){
         viewInit = true;
     }
+
+    /**
+     * Indicates if plotting is already done
+     * @return
+     */
+    public boolean isInitPlottingDone() {
+        return initPlottingDone;
+    }
+
+    /**
+     * Can only be called and set to true before startPlotting();
+     */
+    public void setInitPlottingDone() {
+        initPlottingDone = true;
+    }
+
+    /**
+     * Indicates if factory process is done
+     * @return
+     */
     public boolean isBrowserReady(){
         return browserReady;
     }
+
+    /**
+     * Is set after factory process is done
+     */
     public void setBrowserReady(){
         browserReady = true;
     }
