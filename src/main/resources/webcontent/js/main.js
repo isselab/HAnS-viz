@@ -753,7 +753,7 @@ function openTanglingView() {
                 },
                 force: {
                     initLayout: "circular",
-                    repulsion: 1000,
+                    repulsion: 700,
                     edgeLength: [1, 100],
                 },
                 data: jsonData.tanglingData.features.map(node => {
@@ -770,7 +770,7 @@ function openTanglingView() {
                 roam: true,
                 label: {
                     show: true, // Show label by default
-                    position: 'right',
+                    position: 'top',
                     formatter: function(params) {
                         if(state.showLpqNames)
                             return `${params.data.id}`;
