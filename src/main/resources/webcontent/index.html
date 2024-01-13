@@ -124,9 +124,9 @@
       <img class="logo" src="./img/pluginIcon.png" alt="HAnS-Viz">
       <ul class="nav-links">
         <span class="material-symbols-outlined navCloseBtn">close</span>
-        <li><a href="#" onclick="openTreeView()">Tree View</a></li>
-        <li><a href="#" onclick="openTreemapView()">Treemap View</a></li>
-        <li><a href="#" onclick="openTanglingView()">Tangling</a></li>
+        <li><a href="#" onclick="toggleChart(state.treeChart)">Tree View</a></li>
+        <li><a href="#" onclick="toggleChart(state.treeMapChart)">Treemap View</a></li>
+        <li><a href="#" onclick="toggleChart(state.tanglingChart)">Tangling</a></li>
       </ul>
       <div class="docked">
         <span class="material-symbols-outlined search-icon" id="searchIcon">search</span>

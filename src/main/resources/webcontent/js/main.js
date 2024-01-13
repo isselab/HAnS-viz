@@ -196,6 +196,11 @@ myChart.on("contextmenu", function (params) {
         return;
     console.log("opened console menu for " + params.data);
 })
+
+myChart.on("finished", function() {
+    if(searchbar.value !== "")
+        highlightItem(searchbar.value);
+})
 // Handle resize event
 window.addEventListener('resize', function () {
     // Resize the chart when the window size changes
@@ -382,6 +387,22 @@ function updateTimestamp() {
 }
 
 /* ECharts helper functions */
+function toggleChart(chart){
+    switch(chart){
+        case state.treeMapChart:{
+            openTreemapView();
+            break;
+        }
+        case state.treeChart:{
+            openTreeView();
+            break;
+        }
+        case state.tanglingChart:{
+            openTanglingView();
+            break;
+        }
+    }
+}
 function waitForIndexing(){
     myChart.showLoading({text: "Wait for Indexing..."});
     lastFetchTimestamp.textContent = "Wait for Indexing...";
@@ -624,7 +645,7 @@ function convertLineCountToValue(feature) {
         name: feature.name,
         value: feature.totalLines,
         locations: feature.locations,
-        children: feature.children.map(child => convertLineCountToValue(child))
+        children: feature.children.map(child => convertLineCountToValue(child)),
     }
 }
 
@@ -747,7 +768,6 @@ function openTreemapView() {
                     height: 30
                 },
                 itemStyle: {
-                    borderColor: 'transparent',
                     borderWidth: 5,
                     emphasis: {
                         borderColor: '#fafafa',
@@ -755,7 +775,6 @@ function openTreemapView() {
                 },
                 levels: getLevelOption(),
                 data: jsonData.treeData.features.map(feature => convertLineCountToValue(feature)),
-
             }
         ]
     };
@@ -826,18 +845,20 @@ function getLevelOption() {
         {
             itemStyle: {
                 borderColor: '#777',
-                borderWidth: 0,
-                gapWidth: 1
+                borderWidth: 5,
+                gapWidth: 1,
             },
             upperLabel: {
                 show: false
-            }
+            },
         },
         {
+            color: ['#5470c6', '#91cc75', '#fac858',"#ee6666", "#73c0de", "#3ba272", "#fc8452", "#9a60b4", "#ea7ccc"],
             itemStyle: {
                 borderColor: '#555',
                 borderWidth: 5,
-                gapWidth: 1
+                gapWidth: 1,
+                borderColorSaturation: 0.6,
             },
             emphasis: {
                 itemStyle: {
@@ -850,7 +871,27 @@ function getLevelOption() {
             itemStyle: {
                 borderWidth: 5,
                 gapWidth: 1,
-                borderColorSaturation: 0.6
+                borderColorSaturation: 0.5,
+            }
+        },
+        {
+            itemStyle: {
+                borderColorSaturation: 0.4,
+            }
+        },
+        {
+            itemStyle: {
+                borderColorSaturation: 0.3,
+            }
+        },
+        {
+            itemStyle: {
+                borderColorSaturation: 0.2,
+            }
+        },
+        {
+            itemStyle: {
+                borderColorSaturation: 0.1,
             }
         }
     ];
