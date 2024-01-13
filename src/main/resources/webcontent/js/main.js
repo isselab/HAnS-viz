@@ -59,6 +59,13 @@ const state = {
     isFetching: false,
     showLpqNames: false,
     showTanglingAsNormalGraph: false,
+    isAutoFetch: false,
+    fetchIntervall: 10000,
+}
+
+const intervallFunctions = {
+    fetch: null,
+    updateTimestamp: null,
 }
 
 const jsonData = {
@@ -107,9 +114,7 @@ navCloseBtn.addEventListener("click", () => {
     chartDom.classList.remove("dumb");
 });
 refreshBtn.addEventListener("click", () => {
-    state.isFetching = true;
-    updateTimestamp();
-    fetchAllData(refresh);
+    refreshData();
 });
 settingsBtn.addEventListener("click", () => {
     settingsBox.classList.toggle("active");
@@ -136,6 +141,17 @@ circularTanglingToggle.addEventListener("click", () => {
 automatedFetchToggle.addEventListener("click", () => {
     fetchingIntervalRange.classList.toggle("automated-fetch-disabled");
     automatedFetchToggle.classList.toggle('active');
+    state.isAutoFetch = automatedFetchToggle.classList.contains("active");
+    if(state.isAutoFetch){
+        updateFetchIntervall();
+    }
+    else{
+        //clear old fetch functions
+        if(intervallFunctions.fetch != null) {
+            clearInterval(intervallFunctions.fetch)
+            intervallFunctions.fetch = null;
+        }
+    }
 });
 fetchingIntervalGetter.addEventListener("input", () => {
     let value = fetchingIntervalGetter.value;
@@ -146,7 +162,7 @@ fetchingIntervalGetter.addEventListener("input", () => {
 });
 fetchingIntervalGetter.addEventListener("change", () => {
     let value = fetchingIntervalGetter.value;
-    /* TODO David: fetching interval übernehmen */
+    updateFetchIntervall(value);
 });
 
 /* TODO: change ID name and name of variable of dummy */
@@ -432,6 +448,22 @@ function toggleChart(chart){
         }
     }
 }
+
+function updateFetchIntervall(newIntervall){
+    if(newIntervall !== undefined){
+        //convert min to ms
+        state.fetchIntervall = newIntervall * 60 * 1000;
+    }
+    if(state.isAutoFetch){
+        //clear old intervall functions
+        if(intervallFunctions.fetch !== null){
+            clearInterval(intervallFunctions.fetch);
+        }
+        //set new intervall functions
+        intervallFunctions.fetch = setInterval(refreshData, state.fetchIntervall);
+    }
+
+}
 function waitForIndexing(){
     myChart.showLoading({text: "Wait for Indexing..."});
     lastFetchTimestamp.textContent = "Wait for Indexing...";
@@ -452,7 +484,9 @@ function startPlotting() {
             timestamp = new Date();
             updateTimestamp();
             // Timestamp refreshing interval
-            setInterval(updateTimestamp, 10000);
+            intervallFunctions.updateTimestamp = setInterval(updateTimestamp, 10000);
+            if(state.isAutoFetch)
+                updateFetchIntervall()
             openTreeView();
             myChart.hideLoading();
         } else {
@@ -466,6 +500,12 @@ function startPlotting() {
 function fetchAllData(callback) {
     requestData("tangling");
     requestData("tree", callback);
+}
+
+function refreshData(){
+    state.isFetching = true;
+    updateTimestamp();
+    fetchAllData(refresh);
 }
 
 function onFeatureSelect(params) {
@@ -588,7 +628,6 @@ function requestData(option, callback) {
         persistent: false,
         onSuccess: function (response) {
             // response should contain JSON
-            //alert("response is there!");
             handleData(option, response);
             if (callback != null) {
                 callback(0);

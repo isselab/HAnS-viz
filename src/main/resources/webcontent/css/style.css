@@ -204,7 +204,7 @@ a:hover {
 }
 .toggle.active .indicator{
   left:15px;
-  background: linear-gradient(to bottom, #c0ffc2, #4afd50);    
+  background: linear-gradient(to bottom, #aa77dd, rebeccapurple);
 }
 
 /* docked elements */
