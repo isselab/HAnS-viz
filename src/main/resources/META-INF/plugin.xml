@@ -6,7 +6,6 @@
 
     <depends>com.intellij.modules.platform</depends>
     <depends>se.isselab.hans</depends>
-    <!--<resource-bundle>messages.MyBundle</resource-bundle>-->
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="com.github.johmara.hansviz.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
@@ -22,5 +21,6 @@
     </applicationListeners>
     <projectListeners>
         <listener class="HanSDumbModeListener" topic="com.intellij.openapi.project.DumbService$DumbModeListener"/>
+        <listener class="HAnSToolWindowListener" topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener"/>
     </projectListeners>
 </idea-plugin>

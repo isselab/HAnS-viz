@@ -16,6 +16,7 @@ public class BrowserWindowFactory implements ToolWindowFactory {
         BrowserViewerWindow browserViewerWindow = project.getService(BrowserViewerService.class).browserViewerWindow;
         JComponent component = toolWindow.getComponent();
         component.getParent().add(browserViewerWindow.content(),0);
+        browserViewerWindow.setToolWindowId(toolWindow.getId());
 
         // Browser and Window are initialized
         browserViewerWindow.setBrowserReady();

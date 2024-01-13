@@ -38,6 +38,8 @@ public class BrowserViewerWindow {
     private final Project project;
     private boolean viewInit = false;
     private boolean browserReady = false;
+    private boolean toolWindowOpen = false;
+    private String toolWindowId;
 
     /**
      * Singleton, while there is only one BrowserViewerWindow for a project.
@@ -108,6 +110,21 @@ public class BrowserViewerWindow {
     public JComponent content() {
         System.out.println("return content");
         return content;
+    }
+
+    public String getToolWindowId() {
+        return toolWindowId;
+    }
+
+    public void setToolWindowId(String toolWindowId) {
+        this.toolWindowId = toolWindowId;
+    }
+
+    public boolean isToolWindowOpen() {
+        return toolWindowOpen;
+    }
+    public void setToolWindowOpen(boolean open) {
+        this.toolWindowOpen = open;
     }
 
     public boolean isViewInit(){
