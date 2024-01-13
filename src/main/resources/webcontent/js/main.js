@@ -754,7 +754,7 @@ function openTanglingView() {
                 force: {
                     initLayout: "circular",
                     repulsion: 700,
-                    edgeLength: [1, 100],
+                    edgeLength: [60, 200],
                 },
                 data: jsonData.tanglingData.features.map(node => {
                     /*TODO THESIS dont grow linear*/
