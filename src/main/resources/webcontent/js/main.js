@@ -217,6 +217,8 @@ function documentClickHandler(event){
     if(!event.target.matches(".scattering-window") && !event.target.matches(".show-scattering")) {
         if(scatteringWindow.classList.contains("active")){
             scatteringWindow.classList.remove("active");
+            let body = document.getElementById(" mainBody");
+            body.classList.remove("applyBackdrop");
         }
     }
 }
@@ -270,6 +272,8 @@ function showFeatureInWindow(featureLpq) {
 function openScattering(){
     // TODO: open Scattering window
     scatteringWindow.classList.toggle("active");
+    let body = document.getElementById(" mainBody");
+    body.classList.add("applyBackdrop");
 }
 
 function showInEditor(){
@@ -672,7 +676,9 @@ function openTanglingView() {
                 label: {
                     show: true, // Show label by default
                     position: 'right',
-                    formatter: '{b}'
+                    formatter: function(params) {
+                            return `${params.data.id}`;
+                    }
                 },
                 itemStyle: {
                     color: function (params) {

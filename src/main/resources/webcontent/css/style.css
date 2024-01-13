@@ -341,11 +341,18 @@ a:hover {
   z-index: 500000;
   background-color: white;
   box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
-
 }
 .scattering-window.active {
   display: block;
   pointer-events: all;
+}
+
+.applyBackdrop > *:not(.scattering-window)  {
+  filter: blur(4px);
+}
+
+.last-fetch-timestamp {
+  font-size: smaller;
 }
 
 

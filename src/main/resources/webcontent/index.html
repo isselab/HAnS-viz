@@ -10,7 +10,7 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
   </head>
-  <body class="box dark-mode">
+  <body id=" mainBody" class="box dark-mode">
     <div class="scattering-window">
       <div class="scattering-chart"></div>
     </div>
@@ -55,12 +55,13 @@
     </div>
     <div class="search-box-settings">
       <div>
+        <input type="checkbox" checked="true" id="incrementalSearchCheckBox" value="IncrementalSearch">
+        <label>Incremental search</label>
+      </div>
+
+      <div>
         <input type="checkbox" id="regExCheckBox" value="RegEx">
         <label>RegEx</label>
-      </div>
-      <div>
-          <input type="checkbox" id="incrementalSearchCheckBox" value="IncrementalSearch">
-          <label>Incremental search</label>
       </div>
       <div>
           <input type="checkbox" id="exactMatchCheckBox" value="ExactMatch">
@@ -119,7 +120,6 @@
       </div>
     </div>
     <div id="main" class="dark-mode"></div>
-    <!-- Prepare a DOM with a defined width and height for ECharts -->
     <nav class="nav">
       <img class="logo" src="./img/pluginIcon.png" alt="HAnS-Viz">
       <ul class="nav-links">
