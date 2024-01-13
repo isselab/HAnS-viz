@@ -80,6 +80,7 @@ var option;
 
 /* init eventlisteners */
 
+document.addEventListener("click", documentClickHandler);
 /* navigation bar */
 searchIcon.addEventListener("click", () => {
     searchBox.classList.toggle("openSearch");
@@ -212,6 +213,13 @@ myChart.showLoading({text: "Loading..."});
 /* functions */
 /* UI helper functions */
 
+function documentClickHandler(event){
+    if(!event.target.matches(".scattering-window") && !event.target.matches(".show-scattering")) {
+        if(scatteringWindow.classList.contains("active")){
+            scatteringWindow.classList.remove("active");
+        }
+    }
+}
 /* Feature Info Window */
 function toggleFeatureWindow() {
     let featureWindow = document.getElementById("featureInfoDiv");
