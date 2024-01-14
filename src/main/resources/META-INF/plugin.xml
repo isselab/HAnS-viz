@@ -1,26 +1,22 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.johmara.hansviz</id>
-    <name>HAnS-viz Template</name>
-    <vendor>johmara</vendor>
+    <id>se.isselab.hansviz</id>
+    <name>HAnS-Viz</name>
+    <vendor email="johan.t.martinson+HAnS@gmail.com" url="https://github.com/isselab/HAnS">Johan Martinson</vendor>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>se.isselab.hans</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.johmara.hansviz.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
 
-        <toolWindow id="HANS-Vis Browser" factoryClass="com.github.johmara.hansviz.browser.BrowserWindowFactory" anchor="right"/>
+        <toolWindow id="HANS-Vis Browser" factoryClass="se.isselab.hansviz.browser.BrowserWindowFactory" anchor="right"/>
 
-        <projectService id="BrowserViewerService" serviceImplementation="com.github.johmara.hansviz.browser.BrowserViewerService"/>
+        <projectService id="BrowserViewerService" serviceImplementation="se.isselab.hansviz.browser.BrowserViewerService"/>
     </extensions>
 
 
-    <applicationListeners>
-        <listener class="com.github.johmara.hansviz.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
     <projectListeners>
-        <listener class="HanSDumbModeListener" topic="com.intellij.openapi.project.DumbService$DumbModeListener"/>
-        <listener class="HAnSToolWindowListener" topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener"/>
+        <listener class="se.isselab.hansviz.listener.HanSDumbModeListener" topic="com.intellij.openapi.project.DumbService$DumbModeListener"/>
+        <listener class="se.isselab.hansviz.listener.HAnSToolWindowListener" topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener"/>
     </projectListeners>
 </idea-plugin>

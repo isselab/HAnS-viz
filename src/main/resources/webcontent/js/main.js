@@ -291,6 +291,7 @@ function showFeatureInWindow(featureLpq) {
 }
 function openScattering(){
     /*TODO: adjust size to make chart fit into window */
+    /*TODO: resize window at resize event*/
     //get current feature lpq
     let lpqName = document.getElementById("featureLpqNameText").innerText;
     let feature = getFeatureData(lpqName);
