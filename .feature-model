@@ -1,10 +1,18 @@
 HAnSViz
     JSONHandler
+        Request
     HAnSData
         Service
-    Plotting
-        TreeMap
-        Scattering
-        Tangling
+    Visualization
+        FeatureInfoWindow
+        Coloring
+        Graph
+            Tree
+            TreeMap
+            Scattering
+            Tangling
     Browser
+        ToolWindowHandler
+            Open
+        DumbModeHandler
         JSHandler

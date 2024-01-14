@@ -16,7 +16,13 @@
 
 
     <projectListeners>
-        <listener class="se.isselab.hansviz.listener.HanSDumbModeListener" topic="com.intellij.openapi.project.DumbService$DumbModeListener"/>
-        <listener class="se.isselab.hansviz.listener.HAnSToolWindowListener" topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener"/>
+        <!-- &begin[DumbModeHandler]-->
+        <listener class="se.isselab.hansviz.listener.HanSDumbModeListener"
+                  topic="com.intellij.openapi.project.DumbService$DumbModeListener"/>
+        <!-- &end[DumbModeHandler]-->
+        <!-- &begin[ToolWindowHandler]-->
+        <listener class="se.isselab.hansviz.listener.HAnSToolWindowListener"
+                  topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener"/>
+        <!-- &end[ToolWindowHandler]-->
     </projectListeners>
 </idea-plugin>

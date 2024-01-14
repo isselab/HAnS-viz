@@ -21,6 +21,8 @@ public class JSMessageRouterHandler extends CefMessageRouterHandlerAdapter {
     private final Project project = ProjectManager.getInstance().getOpenProjects()[0];
     //private final FeatureService service = ProjectManager.getInstance().getOpenProjects()[0].getService(FeatureService.class);
 
+    // &begin[Request]
+
     /**
      * Request on javascript side (that are called with window.java or window.javacancel are handeled here
      * @param browser CefBrowser
@@ -77,4 +79,5 @@ public class JSMessageRouterHandler extends CefMessageRouterHandlerAdapter {
         }
         return false;
     }
+    // &end[Request]
 }

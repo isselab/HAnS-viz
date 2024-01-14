@@ -185,6 +185,7 @@ closeSearchBtn.addEventListener("click", () => {
 });
 
 /* feature info window */
+// &begin[FeatureInfoWindow]
 featureInfoSideBar.addEventListener("click", () => {
     featureInfoWindow.classList.toggle("openFeatureWindow");
     if(featureInfoWindow.classList.contains("openFeatureWindow")) {
@@ -195,9 +196,12 @@ featureInfoSideBar.addEventListener("click", () => {
     }
     
 });
+// &end[FeatureInfoWindow]
+// &begin[Scattering]
 showScattering.addEventListener("click", () => {
     openScattering();
 });
+// &end[Scattering]
 
 /* ECharts */
 // Handle click event
@@ -243,6 +247,8 @@ function documentClickHandler(event){
     }
 }
 /* Feature Info Window */
+
+// &begin[FeatureInfoWindow]
 function toggleFeatureWindow() {
     let featureWindow = document.getElementById("featureInfoDiv");
     state.isFeatureWindow = !state.isFeatureWindow;
@@ -254,6 +260,10 @@ function toggleFeatureWindow() {
         featureWindow.style.overflow = "hidden";
     }
 }
+
+// &end[FeatureInfoWindow]
+
+// &begin[FeatureInfoWindow]
 function showFeatureInWindow(featureLpq) {
     var lpqNameText = document.getElementById("featureLpqNameText");
     var nameText = document.getElementById("featureNameText");
@@ -289,6 +299,8 @@ function showFeatureInWindow(featureLpq) {
         locationList.appendChild(listElement);
     }
 }
+
+// &end[FeatureInfoWindow]
 function openScattering(){
     /*TODO: adjust size to make chart fit into window */
     /*TODO: resize window at resize event*/
@@ -300,6 +312,7 @@ function openScattering(){
     let body = document.getElementById(" mainBody");
     body.classList.add("applyBackdrop");
     /* TODO: dispose before opening a new chart for theme */
+    // &begin[Scattering]
     let scatteringChart = echarts.init(scatteringWindow, state.isDarkmode ? "dark" : "");
     scatteringChart.clear();
 
@@ -431,7 +444,7 @@ function openScattering(){
         ]
     };
     scatterChartOptions && scatteringChart.setOption(scatterChartOptions);
-
+    // &end[Scattering]
 }
 
 function showInEditor(){
@@ -594,6 +607,9 @@ function waitForIndexing(){
     myChart.showLoading({text: "Wait for Indexing..."});
     lastFetchTimestamp.textContent = "Wait for Indexing...";
 }
+
+
+// &begin[DumbModeHandler]
 function startPlotting() {
     if (state.isInitialized) {
         return;
@@ -619,6 +635,7 @@ function startPlotting() {
         }
     });
 }
+// &end[DumbModeHandler]
 
 /**
  * Fetches data from the BrowserResourceHandler
@@ -736,16 +753,17 @@ function getTextColor(getInverse = false) {
     return state.isDarkmode ? dark : light;
 }
 function getFeatureData(featureLpq) {
-    let result = jsonData.tanglingData.features.find((feature) => {
+    return jsonData.tanglingData.features.find((feature) => {
         return feature.id === featureLpq;
     })
-    return result;
+
 }
 
 
 
 /* interface to Java-Code in HAnS-Viz */
 
+// &begin[Request]
 /**
  * requests data from the BrowserResourceHandler and calls handleData on success.
  * the callback function gets called with the status code  of 0 if success - otherwise it gets called with the error_code
@@ -772,7 +790,9 @@ function requestData(option, callback) {
         }
     })
 }
+// &end[Request]
 
+// &begin[Request]
 function handleData(option, response) {
     switch (option) {
         case "refresh":
@@ -791,7 +811,10 @@ function handleData(option, response) {
     }
 }
 
+// &end[Request]
+
 /* ECharts plotting functions */
+// &begin[Coloring]
 /**
  * String to color hashfunction to create consistent colors for features to make it not to random
  * @param str
@@ -809,7 +832,9 @@ const stringToColour = (str) => {
     }
     return colour
 }
+// &end[Coloring]
 
+// &begin[Coloring]
 /**
  * Function that takes the average of two given colors
  * @param colorA
@@ -825,6 +850,8 @@ function mixColors(colorA, colorB, amount = 0.5) {
     const b = Math.round(bA + (bB - bA) * amount).toString(16).padStart(2, '0');
     return '#' + r + g + b;
 }
+
+// &end[Coloring]
 
 /**
  * Helperfunction to change properties to fit with echarts
@@ -843,6 +870,7 @@ function convertLineCountToValue(feature) {
 
 
 // options for the tangling view
+// &begin[Tangling]
 function openTanglingView() {
     if (!state.isInitialized)
         return;
@@ -929,7 +957,10 @@ function openTanglingView() {
     state.currentChart = state.tanglingChart;
 }
 
+// &end[Tangling]
+
 //options for the treemap view
+// &begin[TreeMap]
 function openTreemapView() {
     if (!state.isInitialized)
         return;
@@ -984,7 +1015,10 @@ function openTreemapView() {
     state.currentChart = state.treeMapChart;
 }
 
+// &end[TreeMap]
+
 //options for the tree view
+// &begin[Tree]
 function openTreeView() {
     if (!state.isInitialized)
         return;
@@ -1041,7 +1075,10 @@ function openTreeView() {
     state.currentChart = state.treeChart;
 }
 
+// &end[Tree]
+
 //helper function for the treemap
+// &begin[TreeMap]
 function getLevelOption() {
     return [
         {
@@ -1098,3 +1135,5 @@ function getLevelOption() {
         }
     ];
 }
+
+// &end[TreeMap]

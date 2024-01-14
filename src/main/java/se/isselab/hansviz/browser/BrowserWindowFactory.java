@@ -21,7 +21,7 @@ public class BrowserWindowFactory implements ToolWindowFactory {
         // Browser and Window are initialized
         browserViewerWindow.setBrowserReady();
 
-        if(!DumbService.isDumb(project)) {
+        if(!DumbService.isDumb(project)) { // &line[DumbModeHandler]
             if(!browserViewerWindow.isViewInit()){
                 browserViewerWindow.setViewInit();
                 // Dieser Code wird NICHT ausgeführt.
