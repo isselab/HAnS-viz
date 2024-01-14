@@ -248,6 +248,7 @@ myChart.showLoading({text: "Loading..."});
 /* UI helper functions */
 
 function documentClickHandler(event){
+    /* TODO: if the scattering window contains a chart then it does not recognize the click and still closes itself*/
     if(!event.target.matches(".scattering-window") && !event.target.matches(".show-scattering")) {
         if(scatteringWindow.classList.contains("active")){
             scatteringWindow.classList.remove("active");
@@ -305,9 +306,144 @@ function showFeatureInWindow(featureLpq) {
 }
 function openScattering(){
     // TODO: open Scattering window
+    //get current feature lpq
+    let lpqName = document.getElementById("featureLpqNameText").innerText;
+    let feature = getFeatureData(lpqName);
+
     scatteringWindow.classList.toggle("active");
     let body = document.getElementById(" mainBody");
     body.classList.add("applyBackdrop");
+    let scatteringChart = echarts.init(scatteringWindow, state.isDarkmode ? "dark" : "");
+    scatteringChart.clear();
+
+    let plotData = [];
+    let links = [];
+    plotData.push({
+        id: feature.id,
+        name: feature.name,
+        type: "feature",
+        scatteringDegree: feature.scatteringDegree,
+        totalLines: feature.totalLines,
+        lines: feature.lines,
+    });
+
+    for(let location of feature.locations){
+        let counter = 0;
+        for(let block of location.blocks){
+            counter += block.end - block.start + 1;
+        }
+        let coverage = counter / feature.lines;
+        let entry = {
+            id: location.path,
+            type: "location",
+            name: location.path,
+            blocks : location.blocks,
+            /*TODO: lines does not work and always return 0 */
+            /*lines: location.lines*/
+            lines: counter,
+            coverage: coverage
+        }
+        plotData.push(entry);
+
+        links.push({
+            source: feature.id,
+            target: location.path,
+            coverage: coverage
+        })
+    }
+
+    let scatterChartOptions = {
+        title: {
+            text: 'Scattering',
+            subtext: 'Circular layout',
+            top: 'bottom',
+            left: 'right'
+        },
+        tooltip: {
+            show: true,
+            formatter: function (params) {
+                if (params.dataType === "node") {
+                    if(params.data.type === "feature")
+                        return `${params.marker}${params.data.name}<br>Scattering Degree: ${params.data.scatteringDegree}<br>Total Lines: ${params.data.totalLines}`;
+                    else
+                        return `${params.marker}${params.data.name}<br>Feature Lines: ${params.data.lines}<br>Coverage: ${(params.data.coverage * 100).toFixed(2)}%`;
+
+                } else {
+                    let pathName = params.data.source === feature.id ? params.data.target : params.data.source;
+                    return `Feature coverage:<br>File:${pathName}:<br>${(params.data.coverage * 100).toFixed(2)}% `;
+                }
+            }
+
+        },
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        series: [
+            {
+                name: 'Scattering',
+                type: 'graph',
+                /*layout: state.showTanglingAsNormalGraph ? "force" : "circular",*/
+                layout: "force",
+                circular: {
+                    rotateLabel: true
+                },
+                force: {
+                    initLayout: "circular",
+                    repulsion: 700,
+                    /*TODO: adjust enge length to size of nodes*/
+                    edgeLength: [100, 300],
+                },
+                data: plotData.map(entry => {
+                    if(entry.lines === feature.lines)
+                        entry["symbolSize"] = 120;
+                    else
+                        entry["symbolSize"] = (entry.lines / feature.lines) * 120
+                    return entry;
+                }),
+                links: links.map(function (link) {
+                    link.lineStyle = {
+                        color: mixColors(stringToColour(link.source), stringToColour(link.target)),
+                        width: link.coverage * 70 + 1,
+                    }
+                    return link;
+                }),
+                roam: true,
+                label: {
+                    show: true, // Show label by default
+                    position: 'top',
+                    formatter: function(params) {
+                        if(state.showLpqNames)
+                            return `${params.data.id}`;
+                        else
+                            return`${params.data.name}`;
+                    }
+                },
+                itemStyle: {
+                    color: function (params) {
+                        // Generate a random color
+                        return stringToColour(params.data.id);
+                    }
+                },
+                lineStyle: {
+                    curveness: 0.3,
+                    width: state.showTanglingAsNormalGraph ? 5 : 2
+                },
+                zoom: 0.7,
+                emphasis: {
+                    focus: 'adjacency',
+                    label: {
+                        position: 'top',
+                        show: true,
+                        fontSize: 30,
+                        color: "#ffffff",
+                        textBorderColor: "rebeccapurple",
+                        textBorderWidth: 10,
+                    }
+                }
+            }
+        ]
+    };
+    scatterChartOptions && scatteringChart.setOption(scatterChartOptions);
+
 }
 
 function showInEditor(){
