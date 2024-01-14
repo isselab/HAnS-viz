@@ -43,7 +43,10 @@ intellij {
 
     // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
     plugins = properties("platformPlugins").map { it.split(',').map(String::trim).filter(String::isNotEmpty) }
-    plugins.set(listOf(file("C:\\Users\\phili\\Dev\\Bachelorarbeit\\HAnS\\build\\libs\\HAnS-0.0.4.jar"/*), file("C:\\Users\\dstec\\Project\\HAnS\\build\\libs\\HAnS-0.0.4.jar"*/)))
+
+    //TODO IMPORTANT Add plugins.set(listOf(file("LOCATION OF HAnS-0.0.4.jar")))
+    plugins.set(listOf(file("C:\\Users\\dstec\\Project\\HAnS\\build\\libs\\HAnS-0.0.4.jar")))
+
 }
 
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
@@ -105,10 +108,8 @@ tasks {
             }
         }
     }
-    // TODO THESIS
     runIde {
         autoReloadPlugins = true
-
     }
 
     // Configure UI tests plugin

@@ -99,8 +99,6 @@ public class JSONHandler implements HAnSCallback {
      * @return JSONObject of given feature
      */
     private static JSONObject featureToJSON(FeatureModelFeature feature, HashMap<String, FeatureFileMapping> fileMapping, HashMap<FeatureModelFeature, HashSet<FeatureModelFeature>> tanglingMap){
-        //TODO THESIS
-        // put into hans viz
         JSONObject obj = new JSONObject();
         obj.put("id", feature.getLPQText());
         obj.put("name", feature.getFeatureName());
@@ -114,6 +112,7 @@ public class JSONHandler implements HAnSCallback {
         for(var child : childFeatureList){
             childArr.add(featureToJSON(child, fileMapping, tanglingMap));
         }
+        //TODO THESIS use featureService functions
         obj.put("children", childArr);
         obj.put("tanglingDegree", tanglingDegree);
         obj.put("lines", fileMapping.get(feature.getLPQText()).getTotalFeatureLineCount());

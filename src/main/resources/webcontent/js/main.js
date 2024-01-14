@@ -38,9 +38,8 @@ const settingsBox = document.querySelector(".settings-box");
 /* settings toggle elements */
 const automatedFetchToggle = document.querySelector("#automated-fetch-toggle"),
     darkModeToggle = document.querySelector("#dark-mode-toggle"),
-    /* TODO: change ID name and name of variable of dummy */
-    lpqNameToggle = document.querySelector("#toggle-dummy2"),
-    circularTanglingToggle = document.querySelector("#toggle-dummy3")
+    lpqNameToggle = document.querySelector("#lpq-name-toggle"),
+    circularTanglingToggle = document.querySelector("#circular-tangling-toggle")
 
 /* settings helper */
 const fetchingIntervalRange = document.querySelector("#automated-fetch-range"),
@@ -60,7 +59,7 @@ const state = {
     showLpqNames: false,
     showTanglingAsNormalGraph: false,
     isAutoFetch: false,
-    fetchIntervall: 10000,
+    fetchIntervall: 600000,
 }
 
 const intervallFunctions = {
@@ -71,13 +70,6 @@ const intervallFunctions = {
 const jsonData = {
     tanglingData: "",
     treeData: ""
-}
-
-const searchOptions = {
-    RegEx: 1,
-    Incremental: 2,
-    ExactMatch: 4,
-    CaseSensitive: 8
 }
 
 var myChart = echarts.init(chartDom, state.isDarkmode ? "dark" : "");
@@ -94,12 +86,6 @@ document.addEventListener("click", documentClickHandler);
 searchIcon.addEventListener("click", () => {
     searchBox.classList.toggle("openSearch");
     searchIcon.classList.add("openSearch");
-
-    /* TODO: this if never gets called */
-    if (nav.classList.contains("openSearch")) {
-      searchIcon.style.opacity = 0;
-      return;
-    }
 
     searchbar.focus();
     searchIcon.textContent = "search";
@@ -167,11 +153,9 @@ fetchingIntervalGetter.addEventListener("change", () => {
     updateFetchIntervall(value);
 });
 
-/* TODO: change ID name and name of variable of dummy */
 lpqNameToggle.addEventListener("click", () => {
     lpqNameToggle.classList.toggle('active');
 })
-/* TODO: change ID name and name of variable of dummy */
 circularTanglingToggle.addEventListener("click", () => {
     circularTanglingToggle.classList.toggle('active');
 })
@@ -248,6 +232,7 @@ myChart.showLoading({text: "Loading..."});
 /* UI helper functions */
 
 function documentClickHandler(event){
+    /* TODO: prevent events during initialization */
     /* TODO: if the scattering window contains a chart then it does not recognize the click and still closes itself*/
     if(!event.target.matches(".scattering-window") && !event.target.matches(".show-scattering")) {
         if(scatteringWindow.classList.contains("active")){
@@ -305,7 +290,7 @@ function showFeatureInWindow(featureLpq) {
     }
 }
 function openScattering(){
-    // TODO: open Scattering window
+    /*TODO: adjust size to make chart fit into window */
     //get current feature lpq
     let lpqName = document.getElementById("featureLpqNameText").innerText;
     let feature = getFeatureData(lpqName);
@@ -313,6 +298,7 @@ function openScattering(){
     scatteringWindow.classList.toggle("active");
     let body = document.getElementById(" mainBody");
     body.classList.add("applyBackdrop");
+    /* TODO: dispose before opening a new chart for theme */
     let scatteringChart = echarts.init(scatteringWindow, state.isDarkmode ? "dark" : "");
     scatteringChart.clear();
 
@@ -362,6 +348,7 @@ function openScattering(){
         tooltip: {
             show: true,
             formatter: function (params) {
+                /*TODO: show line locations on file hover*/
                 if (params.dataType === "node") {
                     if(params.data.type === "feature")
                         return `${params.marker}${params.data.name}<br>Scattering Degree: ${params.data.scatteringDegree}<br>Total Lines: ${params.data.totalLines}`;
@@ -373,13 +360,12 @@ function openScattering(){
                     return `Feature coverage:<br>File:${pathName}:<br>${(params.data.coverage * 100).toFixed(2)}% `;
                 }
             }
-
         },
         animationDurationUpdate: 1500,
         animationEasingUpdate: 'quinticInOut',
         series: [
             {
-                name: 'Scattering',
+                name: '',
                 type: 'graph',
                 /*layout: state.showTanglingAsNormalGraph ? "force" : "circular",*/
                 layout: "force",
@@ -389,14 +375,15 @@ function openScattering(){
                 force: {
                     initLayout: "circular",
                     repulsion: 700,
-                    /*TODO: adjust enge length to size of nodes*/
-                    edgeLength: [100, 300],
+                    /*TODO: adjust edge length to size of nodes*/
+                    edgeLength: [30, 100],
                 },
                 data: plotData.map(entry => {
+                    let size = 60;
                     if(entry.lines === feature.lines)
-                        entry["symbolSize"] = 120;
+                        entry["symbolSize"] = size;
                     else
-                        entry["symbolSize"] = (entry.lines / feature.lines) * 120
+                        entry["symbolSize"] = Math.min((entry.lines / feature.lines) * size * 2, size);
                     return entry;
                 }),
                 links: links.map(function (link) {
@@ -606,12 +593,10 @@ function waitForIndexing(){
     myChart.showLoading({text: "Wait for Indexing..."});
     lastFetchTimestamp.textContent = "Wait for Indexing...";
 }
-// TODO THESIS: This function gets called by HAnsDumbModeListener after finishing indexing. display style from main should be changed
 function startPlotting() {
     if (state.isInitialized) {
         return;
     }
-    //TODO prevent onClick from loading
     state.isInitialized = true;
     state.isFetching = true;
     lastFetchTimestamp.textContent = "fetching..."
@@ -633,9 +618,13 @@ function startPlotting() {
         }
     });
 }
-//TODO THESIS
-// the callback is just for testing purposes.  can be removed later but we need another way of calling something after every request is done within fetch
+
+/**
+ * Fetches data from the BrowserResourceHandler
+ * @param callback function which should be called after onSuccess
+ */
 function fetchAllData(callback) {
+    //use callback function only in the last requestData
     requestData("tangling");
     requestData("tree", callback);
 }
@@ -692,15 +681,13 @@ function getFeatureIndicesByString(string, isRegEx, isExactMatch, isCaseSensitiv
     //get hierarchical indices
     for(const [index, feature] of jsonData.tanglingData.features.entries()){
         let featureName = feature.name.toString();
-        //TODO THESIS
-        // maybe change the invalid string to something more reliable
+
         //if current chart is a tree-like-chart then dont check for the lpq
         let featureLpq = (state.currentChart === state.treeChart || state.currentChart === state.treeMapChart) ? "$INVALID%_%HAnS%_%String_1$" : feature.id.toString();
         let checkPattern = string.toString();
 
         //check reges
         if(isRegEx){
-            //TODO THESIS add regex
             let regEx = RegExp(checkPattern,
                 isCaseSensitive ? "" : "i"
             )
@@ -758,7 +745,12 @@ function getFeatureData(featureLpq) {
 
 /* interface to Java-Code in HAnS-Viz */
 
-// TODO THESIS: requestData(option)
+/**
+ * requests data from the BrowserResourceHandler and calls handleData on success.
+ * the callback function gets called with the status code  of 0 if success - otherwise it gets called with the error_code
+ * @param option
+ * @param callback function which should be called after request
+ */
 function requestData(option, callback) {
     myChart.showLoading({text: "fetching data"});
     window.java({
@@ -796,10 +788,6 @@ function handleData(option, response) {
             jsonData.treeData = JSON.parse(response);
             break;
     }
-
-    //TODO THESIS
-    // refresh current chart
-
 }
 
 /* ECharts plotting functions */
@@ -820,10 +808,6 @@ const stringToColour = (str) => {
     }
     return colour
 }
-
-//TODO THESIS
-// function to search for feature name and lpq to highlight
-
 
 /**
  * Function that takes the average of two given colors
@@ -895,7 +879,6 @@ function openTanglingView() {
                     edgeLength: [60, 200],
                 },
                 data: jsonData.tanglingData.features.map(node => {
-                    /*TODO THESIS dont grow linear*/
                     node["symbolSize"] = Math.max(25 * Math.log2(node.tanglingDegree + 1), 10);
                     return node;
                 }),
