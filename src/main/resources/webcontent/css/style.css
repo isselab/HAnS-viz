@@ -11,6 +11,10 @@
   margin-top: 5vh;
 }
 
+.dark-mode {
+  background-color: #222222;
+}
+
 /* color settings for floating panels*/
 /* background color */
 .settings-box, 
@@ -353,6 +357,12 @@ a:hover {
 
 .last-fetch-timestamp {
   font-size: smaller;
+}
+
+.material-symbols-outlined {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 
 

@@ -94,13 +94,16 @@ document.addEventListener("click", documentClickHandler);
 searchIcon.addEventListener("click", () => {
     searchBox.classList.toggle("openSearch");
     searchIcon.classList.add("openSearch");
+
+    /* TODO: this if never gets called */
     if (nav.classList.contains("openSearch")) {
       searchIcon.style.opacity = 0;
-      searchbar.focus();
-      return;  
-      }
-      searchIcon.textContent = "search";
-      searchBoxSettings.classList.remove("openSettings");
+      return;
+    }
+
+    searchbar.focus();
+    searchIcon.textContent = "search";
+    searchBoxSettings.classList.remove("openSettings");
 });
 navOpenBtn.addEventListener("click", () => {
     nav.classList.add("openNav");
@@ -118,7 +121,6 @@ refreshBtn.addEventListener("click", () => {
 });
 settingsBtn.addEventListener("click", () => {
     settingsBox.classList.toggle("active");
-
 });
 
 /* settings */
@@ -195,7 +197,7 @@ searchbar.onkeyup = function () {
 closeSearchBtn.addEventListener("click", () => {
     searchBox.classList.remove("openSearch");
     searchIcon.classList.remove("openSearch");
-    searchBoxSettings.remove("openSettings");
+    searchBoxSettings.classList.remove("openSettings");
 });
 
 /* feature info window */
@@ -795,7 +797,7 @@ function openTanglingView() {
                         position: 'top',
                         show: true,
                         fontSize: 30,
-                        color: getTextColor(),
+                        color: "#ffffff",
                         textBorderColor: "rebeccapurple",
                         textBorderWidth: 10,
                     }
