@@ -573,7 +573,7 @@ function toggleHideLpq(){
     state.showLpqNames = !lpqNameToggle.classList.contains("active");
     //reload if it has changed and current chart is the tangling view
     if(before !== state.showLpqNames && state.currentChart === state.tanglingChart)
-        toggleChart(state.tanglingChart);
+        toggleChart(state.tanglingChart, true);
 }
 /* toggles the tangling graph to either circular or non-circular graph*/
 function toggleTanglingGraphMode(){
@@ -581,7 +581,7 @@ function toggleTanglingGraphMode(){
     state.showTanglingAsNormalGraph = !circularTanglingToggle.classList.contains("active");
     //reload if it has changed and current chart is the tangling view
     if(before !== state.showTanglingAsNormalGraph && state.currentChart === state.tanglingChart)
-        toggleChart(state.tanglingChart);
+        toggleChart(state.tanglingChart, true);
 }
 
 function updateTimestamp() {
