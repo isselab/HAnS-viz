@@ -73,6 +73,8 @@ const jsonData = {
 }
 
 var myChart = echarts.init(chartDom, state.isDarkmode ? "dark" : "");
+var scatteringChart = echarts.init(scatteringWindow, state.isDarkmode ? "dark" : "");
+
 
 var timestamp = new Date();
 
@@ -208,6 +210,7 @@ showScattering.addEventListener("click", () => {
 myChart.on('click', function (params) {
     onFeatureSelect(params);
 });
+
 myChart.on("contextmenu", function (params) {
     if (params.dataType !== "node")
         return;
@@ -218,6 +221,14 @@ myChart.on("finished", function() {
     if(searchbar.value !== "")
         highlightItem(searchbar.value);
 })
+
+myChart.on("dblclick", function(params) {
+    if(params.dataType !== "node")
+        return;
+    openScattering();
+})
+
+
 // Handle resize event
 window.addEventListener('resize', function () {
     // Resize the chart when the window size changes
@@ -225,6 +236,7 @@ window.addEventListener('resize', function () {
     nav.classList.remove("openSearch");
     searchIcon.textContent = "search";
     myChart.resize();
+    scatteringChart.resize();
 });
 
 
@@ -313,9 +325,7 @@ function openScattering(){
     body.classList.add("applyBackdrop");
     /* TODO: dispose before opening a new chart for theme */
     // &begin[Scattering]
-    let scatteringChart = echarts.init(scatteringWindow, state.isDarkmode ? "dark" : "");
     scatteringChart.clear();
-
     let plotData = [];
     let links = [];
     plotData.push({
@@ -323,6 +333,7 @@ function openScattering(){
         name: feature.name,
         type: "feature",
         scatteringDegree: feature.scatteringDegree,
+        symbol: "image://./img/pluginIcon_bg_2.png",
         totalLines: feature.totalLines,
         lines: feature.lines,
     });
@@ -339,6 +350,7 @@ function openScattering(){
             name: location.path,
             blocks : location.blocks,
             /*TODO: lines does not work and always return 0 */
+            symbol: "path://M240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h287q16 0 30.5 6t25.5 17l194 194q11 11 17 25.5t6 30.5v447q0 33-23.5 56.5T720-80H240Zm280-560q0 17 11.5 28.5T560-600h160L520-800v160Z",
             lines: location.lines,
             coverage: location.lines / feature.lines
         }
@@ -350,7 +362,7 @@ function openScattering(){
             coverage: entry.coverage
         })
     }
-
+    let size = 60;
     let scatterChartOptions = {
         title: {
             text: 'Scattering',
@@ -387,22 +399,23 @@ function openScattering(){
                 },
                 force: {
                     initLayout: "circular",
+                    layoutAnimation: false,
                     repulsion: 700,
                     /*TODO: adjust edge length to size of nodes*/
                     edgeLength: [30, 100],
                 },
                 data: plotData.map(entry => {
-                    let size = 60;
                     if(entry.lines === feature.lines)
                         entry["symbolSize"] = size;
                     else
-                        entry["symbolSize"] = Math.min((entry.lines / feature.lines) * size * 2, size);
+                        /*entry["symbolSize"] = Math.min((entry.lines / feature.lines) * size * 2, size);*/
+                        entry["symbolSize"] = [0.8 * size, size];
                     return entry;
                 }),
                 links: links.map(function (link) {
                     link.lineStyle = {
                         color: mixColors(stringToColour(link.source), stringToColour(link.target)),
-                        width: link.coverage * 70 + 1,
+                        width: link.coverage * size * 0.5 + 1,
                     }
                     return link;
                 }),
@@ -443,6 +456,7 @@ function openScattering(){
         ]
     };
     scatterChartOptions && scatteringChart.setOption(scatterChartOptions);
+    scatteringChart.resize();
     // &end[Scattering]
 }
 
@@ -476,6 +490,9 @@ function toggleTheme() {
     state.isDarkmode = !state.isDarkmode;
     echarts.dispose(myChart);
     myChart = echarts.init(chartDom, state.isDarkmode ? "dark" : "");
+    echarts.dispose(scatteringChart);
+    scatteringChart = echarts.init(scatteringWindow, state.isDarkmode ? "dark" : "");
+
 
     // Handle click event
     myChart.on('click', function (params) {
@@ -486,6 +503,17 @@ function toggleTheme() {
         if (params.dataType !== "node")
             return;
         console.log("opened console menu for " + params.data);
+    })
+
+    myChart.on("finished", function() {
+        if(searchbar.value !== "")
+            highlightItem(searchbar.value);
+    })
+
+    myChart.on("dblclick", function(params) {
+        if(params.dataType !== "node")
+            return;
+        openScattering();
     })
 
     switch (state.currentChart) {
@@ -903,6 +931,7 @@ function openTanglingView() {
                 },
                 force: {
                     initLayout: "circular",
+                    layoutAnimation: false,
                     repulsion: 700,
                     edgeLength: [60, 200],
                 },
