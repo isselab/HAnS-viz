@@ -63,6 +63,7 @@ const state = {
     showTanglingAsNormalGraph: false,
     isAutoFetch: false,
     fetchIntervall: 600000,
+    isSwitching: false
 }
 
 const intervallFunctions = {
@@ -223,6 +224,9 @@ myChart.on("contextmenu", function (params) {
 })
 
 myChart.on("finished", function() {
+    if(!state.isSwitching)
+        return;
+    state.isSwitching = false;
     if(searchbar.value !== "")
         highlightItem(searchbar.value);
 })
@@ -507,6 +511,9 @@ function toggleTheme() {
     })
 
     myChart.on("finished", function() {
+        if(!state.isSwitching)
+            return;
+        state.isSwitching = false;
         if(searchbar.value !== "")
             highlightItem(searchbar.value);
     })
@@ -519,19 +526,19 @@ function toggleTheme() {
 
     switch (state.currentChart) {
         case state.treeChart: {
-            openTreeView();
+            toggleChart(state.treeChart, true);
             break;
         }
         case state.treeMapChart: {
-            openTreemapView();
+            toggleChart(state.treeMapChart, true);
             break;
         }
         case state.tanglingChart: {
-            openTanglingView();
+            toggleChart(state.tanglingChart, true);
             break;
         }
         default:
-            openTreeView();
+            toggleChart(state.treeChart, true);
     }
 }
 /* Refresh after fetching new data */
@@ -539,19 +546,19 @@ function refresh() {
     myChart.showLoading();
     switch (state.currentChart) {
         case state.treeChart: {
-            openTreeView();
+            toggleChart(state.treeChart, true);
             break;
         }
         case state.treeMapChart: {
-            openTreemapView();
+            toggleChart(state.treeMapChart, true);
             break;
         }
         case state.tanglingChart: {
-            openTanglingView();
+            toggleChart(state.tanglingChart, true);
             break;
         }
         default:
-            openTreeView();
+            toggleChart(state.treeChart, true);
     }
     myChart.hideLoading();
     state.isFetching = false;
@@ -599,21 +606,29 @@ function updateTimestamp() {
 }
 
 /* ECharts helper functions */
-function toggleChart(chart){
+function toggleChart(chart, forceReload = false){
+    if(!forceReload && chart === state.currentChart){
+        return;
+    }
     switch(chart){
         case state.treeMapChart:{
             openTreemapView();
+            state.currentChart = state.treeMapChart;
             break;
         }
         case state.treeChart:{
             openTreeView();
+            state.currentChart = state.treeChart;
             break;
         }
         case state.tanglingChart:{
             openTanglingView();
+            state.currentChart = state.tanglingChart;
             break;
         }
     }
+    state.isSwitching = true;
+
 }
 
 function updateFetchIntervall(newIntervall){
@@ -655,7 +670,7 @@ function startPlotting() {
             intervallFunctions.updateTimestamp = setInterval(updateTimestamp, 10000);
             if(state.isAutoFetch)
                 updateFetchIntervall()
-            openTreeView();
+            toggleChart(state.treeChart, true);
             myChart.hideLoading();
         } else {
             state.isFetching = false;
@@ -983,7 +998,6 @@ function openTanglingView() {
         ]
     };
     option && myChart.setOption(option);
-    state.currentChart = state.tanglingChart;
 }
 
 // &end[Tangling]
@@ -1041,7 +1055,6 @@ function openTreemapView() {
         ]
     };
     option && myChart.setOption(option);
-    state.currentChart = state.treeMapChart;
 }
 
 // &end[TreeMap]
@@ -1101,7 +1114,6 @@ function openTreeView() {
         ]
     };
     option && myChart.setOption(option);
-    state.currentChart = state.treeChart;
 }
 
 // &end[Tree]
