@@ -13,7 +13,7 @@ The visualisations are based on metrics provided by HAnS that also can be shown 
 - Tree View
 - Tree Map
 - Tangling View
-
+<!-- Plugin description end -->
 ## Installation
 Since HAnS-Viz is dependent on HAnS, it is necessary to install HAnS. For further information see:
 [HAnS Plugin on GitHub](https://github.com/isselab/HAnS)

@@ -5,7 +5,7 @@ import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.cef.callback.CefQueryCallback;
 import org.jetbrains.annotations.TestOnly;
-import se.isselab.HAnS.HAnSCallback;
+import se.isselab.HAnS.featureExtension.HAnSCallback;
 import se.isselab.HAnS.Logger;
 import se.isselab.HAnS.featureExtension.FeatureService;
 import se.isselab.HAnS.featureExtension.Mode;
@@ -121,6 +121,7 @@ public class JSONHandler implements HAnSCallback {
         //put locations and their line count into array
         JSONArray locations = new JSONArray();
         var fileMappings = fileMapping.get(feature.getLPQText()).getAllFeatureLocations();
+        // TODO: Use Scattering Degree from HAnS
         int scatteringDegree = 0;
         for(String path : fileMappings.keySet()){
             JSONArray blocks = new JSONArray();
