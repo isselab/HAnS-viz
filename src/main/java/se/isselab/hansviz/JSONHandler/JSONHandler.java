@@ -65,7 +65,7 @@ public class JSONHandler implements HAnSCallback {
         for(var featureToTangledFeatures : tanglingMap.entrySet()){
             for(var tangledFeature : featureToTangledFeatures.getValue()){
                 //add link if id of feature is less than the id of the tangled one
-                if(!featureToId.containsKey(featureToTangledFeatures.getKey()))
+                if(!featureToId.containsKey(featureToTangledFeatures.getKey()) || !featureToId.containsKey(tangledFeature))
                     continue;
                 if(featureToId.get(featureToTangledFeatures.getKey()) < featureToId.get(tangledFeature))
                 {
