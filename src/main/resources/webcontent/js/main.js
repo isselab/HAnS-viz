@@ -28,9 +28,12 @@ const lastFetchTimestamp = document.querySelector(".last-fetch-timestamp");
 const featureInfoBtn = document.querySelector(".feature-info-button"),
     featureInfoPanel = document.querySelector(".feature-info-panel"),
     featureInfoWindow = document.querySelector(".feature-info-window"),
-    featureInfoSideBar = document.querySelector("#toggleFeatureWindowDiv"),
-    showScattering = document.querySelector(".show-scattering"),
-    scatteringWindow = document.querySelector(".scattering-window");
+    featureInfoSideBar = document.querySelector("#toggleFeatureWindowDiv");
+
+const showScattering = document.querySelector(".show-scattering"),
+    scatteringWindow = document.querySelector(".scattering-window"),
+    hideScatteringWindow = document.querySelector(".hide-scattering");
+
 
 /* settings */
 const settingsBox = document.querySelector(".settings-box");
@@ -83,7 +86,6 @@ var option;
 
 /* init eventlisteners */
 
-document.addEventListener("click", documentClickHandler);
 /* navigation bar */
 searchIcon.addEventListener("click", () => {
     searchBox.classList.toggle("openSearch");
@@ -203,6 +205,9 @@ featureInfoSideBar.addEventListener("click", () => {
 showScattering.addEventListener("click", () => {
     openScattering();
 });
+hideScatteringWindow.addEventListener("click", () => {
+    closeScattering();
+})
 // &end[Scattering]
 
 /* ECharts */
@@ -247,17 +252,6 @@ myChart.showLoading({text: "Loading..."});
 /* functions */
 /* UI helper functions */
 
-function documentClickHandler(event){
-    /* TODO: prevent events during initialization */
-    /* TODO: if the scattering window contains a chart then it does not recognize the click and still closes itself*/
-    if(!event.target.matches(".scattering-window") && !event.target.matches(".show-scattering")) {
-        if(scatteringWindow.classList.contains("active")){
-            scatteringWindow.classList.remove("active");
-            let body = document.getElementById(" mainBody");
-            body.classList.remove("applyBackdrop");
-        }
-    }
-}
 /* Feature Info Window */
 
 // &begin[FeatureInfoWindow]
@@ -313,6 +307,7 @@ function showFeatureInWindow(featureLpq) {
 }
 
 // &end[FeatureInfoWindow]
+
 function openScattering(){
     /*TODO: adjust size to make chart fit into window */
     /*TODO: resize window at resize event*/
@@ -320,9 +315,10 @@ function openScattering(){
     let lpqName = document.getElementById("featureLpqNameText").innerText;
     let feature = getFeatureData(lpqName);
 
-    scatteringWindow.classList.toggle("active");
+    scatteringWindow.classList.add("active");
     let body = document.getElementById(" mainBody");
     body.classList.add("applyBackdrop");
+    hideScatteringWindow.classList.add("active");
     /* TODO: dispose before opening a new chart for theme */
     // &begin[Scattering]
     scatteringChart.clear();
@@ -459,7 +455,12 @@ function openScattering(){
     scatteringChart.resize();
     // &end[Scattering]
 }
-
+function closeScattering() {
+    scatteringWindow.classList.remove("active");
+    hideScatteringWindow.classList.remove("active");
+    let body = document.getElementById(" mainBody");
+    body.classList.remove("applyBackdrop");
+}
 function showInEditor(){
     var lpqNameText = document.getElementById("featureLpqNameText");
     requestData("highlightPsiElement" + "," + lpqNameText.innerText, function(){});

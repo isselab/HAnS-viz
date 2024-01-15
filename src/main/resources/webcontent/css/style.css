@@ -170,7 +170,7 @@ a:hover {
   transform: translateX(-50%);
   padding: 5px 0 5px 0;
   display:block;
-  z-index: 1000000;
+  z-index: 10;
   border-radius: 6px;
   transition: all 0.5s linear;
 }
@@ -343,7 +343,7 @@ a:hover {
   top: 15vh;
   bottom: 15vh;
   border-radius: 5vh;
-  z-index: 500000;
+  z-index: 100;
   background-color: white;
   box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
 }
@@ -351,7 +351,19 @@ a:hover {
   display: block;
   pointer-events: all;
 }
-
+.hide-scattering {
+  display: none;
+}
+.hide-scattering.active{
+  /*filter: blur(4px);*/
+  display: block;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  z-index: 50;
+}
 .applyBackdrop > *:not(.scattering-window)  {
   filter: blur(4px);
 }
@@ -385,7 +397,7 @@ a:hover {
   }
   .nav {
     padding: 15px 20px;
-    z-index: 50;
+    z-index: 40;
   }
   
   .nav .nav-links {
