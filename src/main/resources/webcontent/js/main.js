@@ -332,23 +332,22 @@ function openScattering(){
         for(let block of location.blocks){
             counter += block.end - block.start + 1;
         }
-        let coverage = counter / feature.lines;
+
         let entry = {
             id: location.path,
             type: "location",
             name: location.path,
             blocks : location.blocks,
             /*TODO: lines does not work and always return 0 */
-            /*lines: location.lines*/
-            lines: counter,
-            coverage: coverage
+            lines: location.lines,
+            coverage: location.lines / feature.lines
         }
         plotData.push(entry);
 
         links.push({
             source: feature.id,
             target: location.path,
-            coverage: coverage
+            coverage: entry.coverage
         })
     }
 

@@ -135,8 +135,13 @@ public class JSONHandler implements HAnSCallback {
             //get the linecount of a feature for each file and add it
             JSONObject locationObj = new JSONObject();
 
-            locationObj.put("lines", fileMapping.containsKey(path) ? fileMapping.get(path).getFeatureLineCountInFile(path) : 0);
+            if(fileMapping.containsKey(feature.getLPQText())){
+                locationObj.put("lines", fileMapping.get(feature.getLPQText()).getFeatureLineCountInFile(path));
 
+            }
+            else{
+                locationObj.put("lines", 0);
+            }
             locationObj.put("blocks", blocks);
             locationObj.put("path", path);
             locations.add(locationObj);
