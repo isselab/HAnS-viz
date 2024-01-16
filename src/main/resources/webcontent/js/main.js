@@ -93,6 +93,7 @@ searchIcon.addEventListener("click", () => {
     searchIcon.classList.add("openSearch");
 
     searchbar.focus();
+    highlightItem(searchbar.value);
     searchIcon.textContent = "search";
     searchBoxSettings.classList.remove("openSettings");
 });
@@ -187,6 +188,7 @@ closeSearchBtn.addEventListener("click", () => {
     searchBox.classList.remove("openSearch");
     searchIcon.classList.remove("openSearch");
     searchBoxSettings.classList.remove("openSettings");
+    highlightItem("");
 });
 
 /* feature info window */
@@ -227,7 +229,7 @@ myChart.on("finished", function() {
     if(!state.isSwitching)
         return;
     state.isSwitching = false;
-    if(searchbar.value !== "")
+    if(searchbar.value !== "" && searchIcon.classList.contains("openSearch"))
         highlightItem(searchbar.value);
 })
 
@@ -744,7 +746,7 @@ function getFeatureIndicesByString(string, isRegEx, isExactMatch, isCaseSensitiv
         let featureName = feature.name.toString();
 
         //if current chart is a tree-like-chart then dont check for the lpq
-        let featureLpq = (state.currentChart === state.treeChart || state.currentChart === state.treeMapChart) ? "$INVALID%_%HAnS%_%String_1$" : feature.id.toString();
+        let featureLpq = (state.currentChart === state.treeChart || state.currentChart === state.treeMapChart) ? "" : feature.id.toString();
         let checkPattern = string.toString();
 
         //check reges
@@ -761,7 +763,7 @@ function getFeatureIndicesByString(string, isRegEx, isExactMatch, isCaseSensitiv
         //normal search
         else{
             if(!state.showLpqNames)
-                featureLpq = "$INVALID%_%HAnS%_%String_1$";
+                featureLpq = "";
             if(!isCaseSensitive){
                 featureName = featureName.toLowerCase();
                 featureLpq = featureLpq.toLowerCase();
