@@ -93,9 +93,12 @@ searchIcon.addEventListener("click", () => {
     searchIcon.classList.add("openSearch");
 
     searchbar.focus();
-    highlightItem(searchbar.value);
     searchIcon.textContent = "search";
     searchBoxSettings.classList.remove("openSettings");
+
+    if(searchbar.value !== "")
+        highlightItem(searchbar.value);
+
 });
 navOpenBtn.addEventListener("click", () => {
     nav.classList.add("openNav");
