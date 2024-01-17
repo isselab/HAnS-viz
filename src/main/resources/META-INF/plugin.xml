@@ -9,7 +9,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <toolWindow icon="/icons/vizIcon.svg" id="HANS-Vis Browser" factoryClass="se.isselab.hansviz.browser.BrowserWindowFactory" anchor="right"/>
+        <toolWindow icon="/icons/vizIcon.svg" id="HANS-Viz" factoryClass="se.isselab.hansviz.browser.BrowserWindowFactory" anchor="right"/>
 
         <projectService id="BrowserViewerService" serviceImplementation="se.isselab.hansviz.browser.BrowserViewerService"/>
     </extensions>
