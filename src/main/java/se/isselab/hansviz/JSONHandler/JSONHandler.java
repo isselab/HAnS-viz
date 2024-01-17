@@ -34,7 +34,7 @@ public class JSONHandler implements HAnSCallback {
         JSONObject dataJSON = new JSONObject();
         JSONArray nodesJSON = new JSONArray();
         JSONArray linksJSON = new JSONArray();
-        HashMap<String, FeatureFileMapping> fileMapping = featureMetrics.getFileMapping();
+        HashMap<String, FeatureFileMapping> featureFileMappings = featureMetrics.getFeatureFileMappings();
         HashMap<FeatureModelFeature, HashSet<FeatureModelFeature>> tanglingMap = featureMetrics.getTanglingMap();
 
         HashMap<FeatureModelFeature, Integer> featureToId = new HashMap<>();
@@ -44,10 +44,10 @@ public class JSONHandler implements HAnSCallback {
         FeatureService featureService = project.getService(FeatureService.class);
         if(jsonType == JSONType.Default || jsonType == JSONType.Tree || jsonType == JSONType.TreeMap)
             topLevelFeatures = featureService.getRootFeatures();
-
+        // &begin[Tangling]
         else if(jsonType == JSONType.Tangling)
             topLevelFeatures = featureService.getFeatures();
-
+        // &end[Tangling]
         else {
             Logger.print(Logger.Channel.ERROR, "Could not create JSON because of invalid type");
             //return new JSONObject();
@@ -55,7 +55,7 @@ public class JSONHandler implements HAnSCallback {
 
 
         for(var feature : topLevelFeatures) {
-            JSONObject featureObj = featureToJSON(feature, fileMapping, tanglingMap);
+            JSONObject featureObj = featureToJSON(feature, featureFileMappings, tanglingMap);
             nodesJSON.add(featureObj);
             featureToId.put(feature, counter);
             counter++;
@@ -90,16 +90,17 @@ public class JSONHandler implements HAnSCallback {
         this.jsonType = type;
         this.callback = callback;
         featureService = project.getService(FeatureService.class);
-        featureService.getFeatureMetrics(this, (Mode.FILEMAPPING | Mode.TANGLINGMAP));
+        featureService.getFeatureMetricsBackground(this);
     }
-
+    // TODO: HAnS Annotation
     /**
      * Helperfunction to recursively create JSONObjects of features
      * Recursion takes place within the child property of the feature
+     *
      * @param feature feature which should be converted to JSON
      * @return JSONObject of given feature
      */
-    private static JSONObject featureToJSON(FeatureModelFeature feature, HashMap<String, FeatureFileMapping> fileMapping, HashMap<FeatureModelFeature, HashSet<FeatureModelFeature>> tanglingMap){
+    private static JSONObject featureToJSON(FeatureModelFeature feature, HashMap<String, FeatureFileMapping> featureFileMappings, HashMap<FeatureModelFeature, HashSet<FeatureModelFeature>> tanglingMap){
         JSONObject obj = new JSONObject();
         obj.put("id", feature.getLPQText());
         obj.put("name", feature.getFeatureName());
@@ -111,16 +112,16 @@ public class JSONHandler implements HAnSCallback {
         //recursively get all child features
         JSONArray childArr = new JSONArray();
         for(var child : childFeatureList){
-            childArr.add(featureToJSON(child, fileMapping, tanglingMap));
+            childArr.add(featureToJSON(child, featureFileMappings, tanglingMap));
         }
         obj.put("children", childArr);
         obj.put("tanglingDegree", tanglingDegree);
-        obj.put("lines", fileMapping.get(feature.getLPQText()).getTotalFeatureLineCount());
-        obj.put("totalLines", getTotalLineCountWithChilds(feature, fileMapping));
+        obj.put("lines", featureFileMappings.get(feature.getLPQText()).getTotalFeatureLineCount());
+        obj.put("totalLines", getTotalLineCountWithChilds(feature, featureFileMappings));
 
         //put locations and their line count into array
         JSONArray locations = new JSONArray();
-        var fileMappings = fileMapping.get(feature.getLPQText()).getAllFeatureLocations();
+        var fileMappings = featureFileMappings.get(feature.getLPQText()).getAllFeatureLocations();
         // TODO: Use Scattering Degree from HAnS
         int scatteringDegree = 0;
         for(String path : fileMappings.keySet()){
@@ -134,9 +135,9 @@ public class JSONHandler implements HAnSCallback {
             }
             //get the linecount of a feature for each file and add it
             JSONObject locationObj = new JSONObject();
-
-            if(fileMapping.containsKey(feature.getLPQText())){
-                locationObj.put("lines", fileMapping.get(feature.getLPQText()).getFeatureLineCountInFile(path));
+            // TODO: Feature Service Method
+            if(featureFileMappings.containsKey(feature.getLPQText())){
+                locationObj.put("lines", featureFileMappings.get(feature.getLPQText()).getFeatureLineCountInFile(path));
 
             }
             else{
