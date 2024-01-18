@@ -9,6 +9,7 @@ import se.isselab.HAnS.featureExtension.HAnSCallback;
 import se.isselab.HAnS.Logger;
 import se.isselab.HAnS.featureExtension.FeatureService;
 import se.isselab.HAnS.featureLocation.FeatureFileMapping;
+import se.isselab.HAnS.featureLocation.FeatureLocation;
 import se.isselab.HAnS.featureLocation.FeatureLocationManager;
 import se.isselab.HAnS.featureModel.psi.FeatureModelFeature;
 import se.isselab.HAnS.metrics.FeatureMetrics;
@@ -120,12 +121,12 @@ public class JSONHandler implements HAnSCallback {
 
         //put locations and their line count into array
         JSONArray locations = new JSONArray();
-        var fileMappings = featureFileMappings.get(feature.getLPQText()).getAllFeatureLocations();
+        var featureLocations = featureFileMappings.get(feature.getLPQText()).getFeatureLocations();
         // TODO: Use Scattering Degree from HAnS
         int scatteringDegree = 0;
-        for(String path : fileMappings.keySet()){
+        for(FeatureLocation featureLocation : featureLocations){
             JSONArray blocks = new JSONArray();
-            for(var block : fileMappings.get(path).second){
+            for(var block : featureLocation.getFeatureLocations()){
                 JSONObject blockObj = new JSONObject();
                 blockObj.put("start", block.getStartLine());
                 blockObj.put("end", block.getEndLine());
@@ -136,14 +137,14 @@ public class JSONHandler implements HAnSCallback {
             JSONObject locationObj = new JSONObject();
             // TODO: Feature Service Method
             if(featureFileMappings.containsKey(feature.getLPQText())){
-                locationObj.put("lines", featureFileMappings.get(feature.getLPQText()).getFeatureLineCountInFile(path));
+                locationObj.put("lines", featureFileMappings.get(feature.getLPQText()).getFeatureLineCountInFile(featureLocation.getMappedPath()));
 
             }
             else{
                 locationObj.put("lines", 0);
             }
             locationObj.put("blocks", blocks);
-            locationObj.put("path", path);
+            locationObj.put("path", featureLocation.getMappedPath());
             locations.add(locationObj);
         }
         obj.put("scatteringDegree", scatteringDegree);

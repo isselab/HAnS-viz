@@ -515,14 +515,17 @@ function toggleTheme() {
     myChart.on("contextmenu", function (params) {
         if (params.dataType !== "node")
             return;
-        console.log("opened console menu for " + params.data);
+        //TODO THESIS put into its own button action etc
+        //TODO THESIS hide JCEF context menu on rightclick and open HAnS-viz contextmenu
+        //TODO THESIS if a child in the featureModel is already highlighted then the requested one will not get highlighted
+        requestData("highlightFeature," + params.data.id, myChart.hideLoading(), false);
     })
 
     myChart.on("finished", function() {
         if(!state.isSwitching)
             return;
         state.isSwitching = false;
-        if(searchbar.value !== "")
+        if(searchbar.value !== "" && searchIcon.classList.contains("openSearch"))
             highlightItem(searchbar.value);
     })
 
