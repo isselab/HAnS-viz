@@ -116,6 +116,7 @@ public class JSONHandler implements HAnSCallback {
         }
         obj.put("children", childArr);
         obj.put("tanglingDegree", tanglingDegree);
+        obj.put("scatteringDegree", featureService.getFeatureScattering(featureFileMappings.get(feature.getLPQText())));
         obj.put("lines", featureFileMappings.get(feature.getLPQText()).getTotalFeatureLineCount());
         obj.put("totalLines", getTotalLineCountWithChilds(feature, featureFileMappings));
 
@@ -123,7 +124,6 @@ public class JSONHandler implements HAnSCallback {
         JSONArray locations = new JSONArray();
         var featureLocations = featureFileMappings.get(feature.getLPQText()).getFeatureLocations();
         // TODO: Use Scattering Degree from HAnS
-        int scatteringDegree = 0;
         for(FeatureLocation featureLocation : featureLocations){
             JSONArray blocks = new JSONArray();
             for(var block : featureLocation.getFeatureLocations()){
@@ -131,7 +131,6 @@ public class JSONHandler implements HAnSCallback {
                 blockObj.put("start", block.getStartLine());
                 blockObj.put("end", block.getEndLine());
                 blocks.add(blockObj);
-                scatteringDegree++;
             }
             //get the linecount of a feature for each file and add it
             JSONObject locationObj = new JSONObject();
@@ -145,9 +144,10 @@ public class JSONHandler implements HAnSCallback {
             }
             locationObj.put("blocks", blocks);
             locationObj.put("path", featureLocation.getMappedPath());
+            //TODO THESIS add only the name of the file
+            locationObj.put("fileName", "TODO " + featureLocation.getMappedPath());
             locations.add(locationObj);
         }
-        obj.put("scatteringDegree", scatteringDegree);
         obj.put("locations", locations);
         return obj;
     }

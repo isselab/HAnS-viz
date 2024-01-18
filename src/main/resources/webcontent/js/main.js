@@ -303,7 +303,7 @@ function showFeatureInWindow(featureLpq) {
         var listElement = document.createElement("li");
         //add path
         let pathName = document.createElement("p");
-        pathName.innerText = location.path;
+        pathName.innerText = location.fileName;
         pathName.classList.add("pathName");
         listElement.appendChild(pathName);
         //add blocks
@@ -355,7 +355,7 @@ function openScattering(){
         let entry = {
             id: location.path,
             type: "location",
-            name: location.path,
+            name: location.fileName,
             blocks : location.blocks,
             /*TODO: lines does not work and always return 0 */
             symbol: "path://M240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h287q16 0 30.5 6t25.5 17l194 194q11 11 17 25.5t6 30.5v447q0 33-23.5 56.5T720-80H240Zm280-560q0 17 11.5 28.5T560-600h160L520-800v160Z",
@@ -386,7 +386,7 @@ function openScattering(){
                     if(params.data.type === "feature")
                         return `${params.marker}${params.data.name}<br>Scattering Degree: ${params.data.scatteringDegree}<br>Total Lines: ${params.data.totalLines}`;
                     else
-                        return `${params.marker}${params.data.name}<br>Feature Lines: ${params.data.lines}<br>Coverage: ${(params.data.coverage * 100).toFixed(2)}%`;
+                        return `${params.marker}${params.data.id}<br>Feature Lines: ${params.data.lines}<br>Coverage: ${(params.data.coverage * 100).toFixed(2)}%`;
 
                 } else {
                     let pathName = params.data.source === feature.id ? params.data.target : params.data.source;
