@@ -380,6 +380,14 @@ function openScattering(){
         },
         tooltip: {
             show: true,
+            position: function (pos, params, dom, rect, size) {
+                // tooltip will be fixed on the right if mouse hovering on the left,
+                // and on the left if hovering on the right.
+
+                var obj = {bottom: window.getComputedStyle(scatteringWindow).getPropertyValue("border-radius")};
+                obj['left'] = 5;
+                return obj;
+            },
             formatter: function (params) {
                 /*TODO: show line locations on file hover*/
                 if (params.dataType === "node") {
