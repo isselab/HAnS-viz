@@ -1,19 +1,14 @@
 package se.isselab.hansviz.browser.jshandler;
 
+import se.isselab.HAnS.featureExtension.FeatureService;
 import se.isselab.hansviz.JSONHandler.JSONHandler;
 
-import com.intellij.codeInsight.navigation.NavigationUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
-import com.intellij.psi.PsiElement;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
 import org.cef.callback.CefQueryCallback;
 import org.cef.handler.CefMessageRouterHandlerAdapter;
-import se.isselab.HAnS.featureModel.FeatureModelUtil;
-import se.isselab.HAnS.featureModel.psi.FeatureModelFeature;
 
-import java.util.List;
 
 
 public class JSMessageRouterHandler extends CefMessageRouterHandlerAdapter {
@@ -62,21 +57,17 @@ public class JSMessageRouterHandler extends CefMessageRouterHandlerAdapter {
                 new JSONHandler(project, JSONHandler.JSONType.Tree, callback);
                 return true;
             }
-            case "highlightPsiElement" -> {
+            case "highlightFeature" -> {
                 if(requestTokens.length < 2)
                     return false;
-                List<FeatureModelFeature> selectedFeature = FeatureModelUtil.findLPQ(project, requestTokens[1]);
-                PsiElement[] test = new PsiElement[selectedFeature.size()];
-                int i = 0;
-                for(var feature : selectedFeature){
-                    test[i] = feature;
-                    i++;
-                }
-                if(selectedFeature.isEmpty())
+
+                FeatureService featureService = project.getService(FeatureService.class);
+                if(featureService == null)
                     return false;
 
-                NavigationUtil.openFileWithPsiElement(selectedFeature.get(0), false, false);
+                featureService.highlightFeatureInFeatureModel(requestTokens[1]);
                 callback.success("");
+
                 return true;
             }
         }

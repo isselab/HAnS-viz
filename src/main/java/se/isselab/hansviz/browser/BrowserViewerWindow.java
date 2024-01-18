@@ -15,6 +15,7 @@
 package se.isselab.hansviz.browser;
 
 import com.intellij.openapi.ui.Messages;
+import com.intellij.ui.jcef.JBCefBrowserBase;
 import se.isselab.hansviz.browser.jshandler.JSMessageRouterHandler;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
@@ -66,6 +67,7 @@ public class BrowserViewerWindow {
     public BrowserViewerWindow(BrowserViewerService service, Project project) {
         this.project = project;
         webView = new JBCefBrowser();
+        webView.setProperty(JBCefBrowserBase.Properties.NO_CONTEXT_MENU, Boolean.TRUE);
         registerAppSchemeHandler();
         initialiseJSHandler(webView.getCefBrowser().getClient());
         webView.loadURL("http://hans/index.html");

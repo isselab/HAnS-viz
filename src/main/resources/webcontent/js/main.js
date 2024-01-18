@@ -225,7 +225,10 @@ myChart.on('click', function (params) {
 myChart.on("contextmenu", function (params) {
     if (params.dataType !== "node")
         return;
-    console.log("opened console menu for " + params.data);
+    //TODO THESIS put into its own button action etc
+    //TODO THESIS hide JCEF context menu on rightclick and open HAnS-viz contextmenu
+    //TODO THESIS if a child in the featureModel is already highlighted then the requested one will not get highlighted
+    requestData("highlightFeature," + params.data.id, myChart.hideLoading(), false);
 })
 
 myChart.on("finished", function() {
@@ -818,8 +821,9 @@ function getFeatureData(featureLpq) {
  * @param option
  * @param callback function which should be called after request
  */
-function requestData(option, callback) {
-    myChart.showLoading({text: "fetching data"});
+function requestData(option, callback, showLoading = true) {
+    if(showLoading)
+        myChart.showLoading({text: "fetching data"});
     window.java({
         request: option,
         persistent: false,
@@ -832,7 +836,9 @@ function requestData(option, callback) {
         },
         onFailure: function (error_code, error_message) {
             alert("could not retrieve data for " + option + "  " + error_code + "  " + error_message)
-            callback(error_code)
+            if (callback != null) {
+                callback(error_code)
+            }
             console.log(error_code, error_message);
             myChart.hideLoading();
         }
