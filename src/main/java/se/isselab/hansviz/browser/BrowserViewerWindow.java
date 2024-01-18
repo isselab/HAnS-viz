@@ -14,6 +14,7 @@
 
 package se.isselab.hansviz.browser;
 
+import com.intellij.openapi.ui.Messages;
 import se.isselab.hansviz.browser.jshandler.JSMessageRouterHandler;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
@@ -40,11 +41,14 @@ public class BrowserViewerWindow {
     private boolean toolWindowOpen = false;
     private boolean initPlottingDone = false;
     private String toolWindowId;
+/*
 
-    /**
+    */
+/**
      * Singleton, while there is only one BrowserViewerWindow for a project.
      * @return BrowserViewerWindow instance
-     */
+     *//*
+
     public static BrowserViewerWindow getInstance() {
         return browserViewerWindow;
     }
@@ -52,6 +56,7 @@ public class BrowserViewerWindow {
         browserViewerWindow = new BrowserViewerWindow(service, project);
         return browserViewerWindow;
     }
+*/
 
     /**
      * Constructs a JCEF view containing the Feature Localisation View and Tangling View
@@ -59,11 +64,11 @@ public class BrowserViewerWindow {
      * @param project The project the view is for
      */
     public BrowserViewerWindow(BrowserViewerService service, Project project) {
+        this.project = project;
         webView = new JBCefBrowser();
         registerAppSchemeHandler();
         initialiseJSHandler(webView.getCefBrowser().getClient());
         webView.loadURL("http://hans/index.html");
-
 
 
         // Helps IDE with memory management -> avoid "Memory leak detected"
@@ -76,7 +81,6 @@ public class BrowserViewerWindow {
         content = new Box(BoxLayout.Y_AXIS);
         content.add(menuBar);
         content.add(webView.getComponent());
-        this.project = project;
     }
 
     /**
@@ -88,7 +92,7 @@ public class BrowserViewerWindow {
         // create routing point for JS -> window.java ({})
         CefMessageRouter.CefMessageRouterConfig cefMessageRouterConfig = new CefMessageRouter.CefMessageRouterConfig("java","javaCancel");
         CefMessageRouter cefMessageRouter = CefMessageRouter.create(cefMessageRouterConfig);
-        cefMessageRouter.addHandler(new JSMessageRouterHandler(), true);
+        cefMessageRouter.addHandler(new JSMessageRouterHandler(project), true);
         client.addMessageRouter(cefMessageRouter);
     }
 

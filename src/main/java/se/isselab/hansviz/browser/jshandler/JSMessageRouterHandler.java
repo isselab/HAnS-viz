@@ -17,8 +17,11 @@ import java.util.List;
 
 
 public class JSMessageRouterHandler extends CefMessageRouterHandlerAdapter {
+    private final Project project;
+    public JSMessageRouterHandler(Project project){
+        this.project = project;
+    }
 
-    private final Project project = ProjectManager.getInstance().getOpenProjects()[0];
     //private final FeatureService service = ProjectManager.getInstance().getOpenProjects()[0].getService(FeatureService.class);
 
     // &begin[Request]
