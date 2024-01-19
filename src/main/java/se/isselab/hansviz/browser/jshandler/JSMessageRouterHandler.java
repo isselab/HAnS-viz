@@ -70,6 +70,16 @@ public class JSMessageRouterHandler extends CefMessageRouterHandlerAdapter {
 
                 return true;
             }
+            case "openPath" -> {
+                if(requestTokens.length < 2)
+                    return false;
+                FeatureService featureService = project.getService(FeatureService.class);
+                if(featureService == null)
+                    return false;
+                featureService.openFileInProject(requestTokens[1]);
+                callback.success("");
+                return true;
+            }
         }
         return false;
     }

@@ -30,6 +30,8 @@ const featureInfoBtn = document.querySelector(".feature-info-button"),
     featureInfoWindow = document.querySelector(".feature-info-window"),
     featureInfoSideBar = document.querySelector("#toggleFeatureWindowDiv");
 
+const fullPathBox = document.querySelector(".show-full-path");
+
 const showScattering = document.querySelector(".show-scattering"),
     scatteringWindow = document.querySelector(".scattering-window"),
     hideScatteringWindow = document.querySelector(".hide-scattering");
@@ -244,6 +246,11 @@ myChart.on("dblclick", function(params) {
         return;
     openScattering();
 })
+scatteringChart.on("click", function(params){
+    if(params.dataType !== "node") return;
+    requestData("openPath,"+params.data.id,function(){},false);
+
+})
 
 
 // Handle resize event
@@ -303,7 +310,11 @@ function showFeatureInWindow(featureLpq) {
         var listElement = document.createElement("li");
         //add path
         let pathName = document.createElement("p");
+        pathName.addEventListener("mouseover", showFullPath);
+        pathName.addEventListener("mouseout", disableFullPath);
+        pathName.addEventListener("click", openPath);
         pathName.innerText = location.fileName;
+        pathName.title = location.path;
         pathName.classList.add("pathName");
         listElement.appendChild(pathName);
         //add blocks
@@ -320,6 +331,23 @@ function showFeatureInWindow(featureLpq) {
 
 // &end[FeatureInfoWindow]
 
+function showFullPath(e){
+    var object = e.target;
+    var rect = object.getBoundingClientRect();
+    //
+    fullPathBox.innerText = object.title;
+    object.title = '';
+    fullPathBox.style.left = (rect.x)+'px';
+    fullPathBox.style.top = (rect.y-30)+'px';
+    fullPathBox.classList.add("active");
+}
+function disableFullPath(e){
+    fullPathBox.classList.remove("active");
+    e.target.title = fullPathBox.innerText;
+}
+function openPath(e){
+    requestData("openPath" + "," + fullPathBox.innerText, function(){}, false);
+}
 function openScattering(){
     /*TODO: adjust size to make chart fit into window */
     /*TODO: resize window at resize event*/

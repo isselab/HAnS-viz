@@ -21,14 +21,16 @@
 .search-box, 
 .last-fetch-timestamp, 
 .feature-info-window,
-.search-box-settings {
+.search-box-settings,
+.show-full-path{
   background-color: rgba(185, 192, 218, 0.9);
 }
 .box.dark-mode .settings-box, 
 .box.dark-mode .search-box, 
 .box.dark-mode .last-fetch-timestamp,
 .box.dark-mode .feature-info-window,
-.box.dark-mode .search-box-settings{
+.box.dark-mode .search-box-settings,
+.box.dark-mode .show-full-path{
   background-color: rgba(255, 255, 255, 0.9);
 }
 
@@ -327,6 +329,21 @@ a:hover {
   /* color: white; */
   font-weight: bolder;
   margin-bottom: 3px;
+}
+.show-full-path{
+  position: absolute;
+  display: none;
+  left:50%;
+  top:50%;
+  z-index: 5000;
+  align-content: center;
+  font-size: 12px;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+.show-full-path.active{
+  display:flex;
 }
 .show-scattering {
   display: flex;

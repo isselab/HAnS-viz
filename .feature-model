@@ -1,6 +1,7 @@
 HAnSViz
     JSONHandler
         Request
+        PathFormatter
     HAnSData
         Service
     Visualization

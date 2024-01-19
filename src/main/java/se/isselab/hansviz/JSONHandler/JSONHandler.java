@@ -11,6 +11,7 @@ import se.isselab.HAnS.featureExtension.FeatureService;
 import se.isselab.HAnS.featureLocation.FeatureFileMapping;
 import se.isselab.HAnS.featureLocation.FeatureLocation;
 import se.isselab.HAnS.featureLocation.FeatureLocationManager;
+import se.isselab.HAnS.featureLocation.pathFormatter.PathFormatter;
 import se.isselab.HAnS.featureModel.psi.FeatureModelFeature;
 import se.isselab.HAnS.metrics.FeatureMetrics;
 import se.isselab.HAnS.metrics.FeatureTangling;
@@ -27,7 +28,7 @@ public class JSONHandler implements HAnSCallback {
     private JSONType jsonType;
     private Project project;
 
-    private static FeatureService featureService;
+    private FeatureService featureService;
 
     @Override
     public void onComplete(FeatureMetrics featureMetrics) {
@@ -41,7 +42,7 @@ public class JSONHandler implements HAnSCallback {
         int counter = 0;
         List<FeatureModelFeature> topLevelFeatures = null;
 
-        FeatureService featureService = project.getService(FeatureService.class);
+        /*FeatureService featureService = project.getService(FeatureService.class);*/
         if(jsonType == JSONType.Default || jsonType == JSONType.Tree || jsonType == JSONType.TreeMap)
             topLevelFeatures = featureService.getRootFeatures();
         // &begin[Tangling]
@@ -100,7 +101,7 @@ public class JSONHandler implements HAnSCallback {
      * @param feature feature which should be converted to JSON
      * @return JSONObject of given feature
      */
-    private static JSONObject featureToJSON(FeatureModelFeature feature, HashMap<String, FeatureFileMapping> featureFileMappings, HashMap<FeatureModelFeature, HashSet<FeatureModelFeature>> tanglingMap){
+    private JSONObject featureToJSON(FeatureModelFeature feature, HashMap<String, FeatureFileMapping> featureFileMappings, HashMap<FeatureModelFeature, HashSet<FeatureModelFeature>> tanglingMap){
         JSONObject obj = new JSONObject();
         obj.put("id", feature.getLPQText());
         obj.put("name", feature.getFeatureName());
@@ -143,16 +144,16 @@ public class JSONHandler implements HAnSCallback {
                 locationObj.put("lines", 0);
             }
             locationObj.put("blocks", blocks);
-            locationObj.put("path", featureLocation.getMappedPath());
+            locationObj.put("path", PathFormatter.shortenPathToSource(project,featureLocation.getMappedPath()));
             //TODO THESIS add only the name of the file
-            locationObj.put("fileName", "TODO " + featureLocation.getMappedPath());
+            locationObj.put("fileName", PathFormatter.shortenPathToFile(featureLocation.getMappedPath()));
             locations.add(locationObj);
         }
         obj.put("locations", locations);
         return obj;
     }
 
-    private static JSONArray getChildFeaturesAsJson(FeatureModelFeature parentFeature, HashMap<String, FeatureFileMapping> fileMapping) {
+    private JSONArray getChildFeaturesAsJson(FeatureModelFeature parentFeature, HashMap<String, FeatureFileMapping> fileMapping) {
         JSONArray children = new JSONArray();
         var childFeatureList = featureService.getChildFeatures(parentFeature);
 
@@ -170,7 +171,7 @@ public class JSONHandler implements HAnSCallback {
     }
 
 
-    private static int getTotalLineCountWithChilds(FeatureModelFeature parent, HashMap<String, FeatureFileMapping> fileMapping){
+    private int getTotalLineCountWithChilds(FeatureModelFeature parent, HashMap<String, FeatureFileMapping> fileMapping){
         int total = 0;
         for(var child : featureService.getChildFeatures(parent)){
             total += getTotalLineCountWithChilds(child, fileMapping);
