@@ -325,6 +325,10 @@ a:hover {
   height: 1px;
   background: linear-gradient(to right, rebeccapurple, #5e42a6)
 }
+#locationDiv .line {
+  margin-left: 5px;
+  margin-bottom: 5%;
+}
 .pathName {
   /* color: white; */
   font-weight: bolder;
@@ -395,6 +399,17 @@ a:hover {
   user-select: none; /* Standard syntax */
 }
 
+.clickable{
+  /*TODO THESIS pointer does only change for a split second */
+  /*cursor:pointer;*/
+}
+
+.clickable:hover{
+  color: rebeccapurple;
+  /*font-weight: bolder;*/
+  text-shadow: 1px 1px 1px #555;
+  /*text-decoration: underline;*/
+}
 
 /* responsive */
 @media screen and (max-width: 1160px) {

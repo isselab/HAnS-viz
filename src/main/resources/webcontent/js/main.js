@@ -280,6 +280,7 @@ function showFeatureInWindow(featureLpq) {
         locationList.removeChild(locationList.firstChild);
     }
 
+    let listElements = [];
     for (const location of featureData.locations) {
         var listElement = document.createElement("li");
         //add path
@@ -290,12 +291,17 @@ function showFeatureInWindow(featureLpq) {
         pathName.innerText = location.fileName;
         pathName.title = location.path;
         pathName.classList.add("pathName");
+        pathName.classList.add("clickable");
 
         listElement.appendChild(pathName);
+
         //add blocks
+        let blocks = [];
         for (const block of location.blocks) {
             let subListElement = document.createElement("li");
             let lines = document.createElement("p");
+            lines.classList.add("line")
+            lines.classList.add("clickable")
             lines.dataset.startOffset = block.start;
             lines.dataset.endOffset = block.end;
             lines.dataset.path = location.path;
@@ -306,8 +312,9 @@ function showFeatureInWindow(featureLpq) {
                 });
             }
             else{
-                if(block.start === block.end) lines.innerText = "   Line: " + (block.start + 1);
-                else lines.innerText = "  Lines: " + (block.start + 1) + " - " + (block.end + 1);
+
+                if(block.start === block.end) lines.innerText = "   Line: " + (block.start + 1); // the \xa0 is just a whitespace to align the lines
+                else lines.innerText = "  Line: " + (block.start + 1) + " - " + (block.end + 1);
                 lines.addEventListener("click", ()=>{
                     requestData("openPath" + "," + lines.dataset.path + "," + lines.dataset.startOffset + "," + lines.dataset.endOffset, function(){}, false);
                 })
@@ -315,9 +322,34 @@ function showFeatureInWindow(featureLpq) {
 
 
             subListElement.appendChild(lines);
-            listElement.appendChild(subListElement);
+            blocks.push(subListElement);
         }
-        locationList.appendChild(listElement);
+
+        //sort blocks by starting line
+        blocks.sort(function(liA, liB) {
+            let lineA = liA.getElementsByTagName("p")[0].dataset.startOffset;
+            let lineB = liB.getElementsByTagName("p")[0].dataset.startOffset;
+
+            return lineA - lineB;
+        })
+
+        //add blocks to path
+        for(let elem of blocks){
+            listElement.appendChild(elem);
+        }
+        listElements.push(listElement);
+    }
+
+    //sort list elements
+    listElements.sort(function(a, b) {
+        let textA = a.getElementsByClassName("pathName")[0].innerText;
+        let textB = b.getElementsByClassName("pathName")[0].innerText;
+
+        return textA.toString().localeCompare(textB.toString());
+    })
+    //append each list element to main
+    for(let elem of listElements){
+        locationList.appendChild(elem);
     }
 }
 
@@ -787,6 +819,33 @@ function highlightItem(input) {
         })
     }
 }
+
+function toggleSearchSettings(string){
+    switch(string){
+        case "incrementalSearch":{
+            incSearchCheckBox.checked = !incSearchCheckBox.checked;
+            break;
+        }
+        case "regEx":{
+            regExCheckBox.checked = !regExCheckBox.checked;
+            break;
+        }
+        case "exactMatch":{
+            exactMatchCheckBox.checked = !exactMatchCheckBox.checked;
+            break;
+        }
+        case "caseSensitive":{
+            caseSensitiveCheckBox.checked = !caseSensitiveCheckBox.checked;
+            break;
+        }
+    }
+    triggerSearchSettingsChanged();
+}
+
+function triggerSearchSettingsChanged(){
+    highlightItem(searchbar.value);
+}
+
 function getFeatureIndicesByString(string, isRegEx, isExactMatch, isCaseSensitive) {
     let result = {
         hierarchical: [],

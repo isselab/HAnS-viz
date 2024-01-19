@@ -54,22 +54,22 @@
       </div>
     </div>
     <div class="search-box-settings">
-      <div>
+      <div class="clickable">
         <input type="checkbox" checked="true" id="incrementalSearchCheckBox" value="IncrementalSearch">
-        <label>Incremental search</label>
+        <label onclick="toggleSearchSettings('incrementalSearch')">Incremental search</label>
       </div>
 
-      <div>
+      <div class="clickable">
         <input type="checkbox" id="regExCheckBox" value="RegEx">
-        <label>RegEx</label>
+        <label onclick="toggleSearchSettings('regEx')">RegEx</label>
       </div>
-      <div>
+      <div class="clickable">
           <input type="checkbox" id="exactMatchCheckBox" value="ExactMatch">
-          <label>Exact match</label>
+          <label onclick="toggleSearchSettings('exactMatch')">Exact match</label>
       </div>
-      <div>
+      <div class="clickable">
           <input type="checkbox" id="caseSensitiveCheckBox" value="CaseSensitive">
-          <label>Case-Sensitive</label>
+          <label onclick="toggleSearchSettings('caseSensitive')">Case-Sensitive</label>
       </div>
     </div>
     <div class="feature-info-window">
@@ -98,7 +98,7 @@
           </span>
           <label id="scatteringLabel" class="underline">Scattering Degree</label>
           <p id="scatteringText">-</p>
-          <div class="show-scattering">
+          <div class="show-scattering clickable">
             <p class="show-scattering">Open Scattering</p>
             <span class="material-symbols-outlined show-scattering" style="font-size: smaller">
               open_in_new
