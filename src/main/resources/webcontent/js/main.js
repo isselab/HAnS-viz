@@ -404,7 +404,8 @@ function openScattering(){
             text: 'Scattering',
             subtext: 'Circular layout',
             top: 'bottom',
-            left: 'right'
+            left: '50%',
+            textAlign: 'center'
         },
         tooltip: {
             show: true,

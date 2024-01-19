@@ -361,7 +361,7 @@ a:hover {
   bottom: 15vh;
   border-radius: 5vh;
   z-index: 100;
-  background-color: white;
+  // background-color: white;
   box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
 }
 .scattering-window.active {
