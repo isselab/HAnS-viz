@@ -24,11 +24,11 @@ import java.util.List;
 //TODO THESIS use featureService functions for the class
 
 public class JSONHandler implements HAnSCallback {
-    private CefQueryCallback callback;
-    private JSONType jsonType;
-    private Project project;
+    private final CefQueryCallback callback;
+    private final JSONType jsonType;
+    private final Project project;
 
-    private FeatureService featureService;
+    private final FeatureService featureService;
 
     @Override
     public void onComplete(FeatureMetrics featureMetrics) {
@@ -42,7 +42,6 @@ public class JSONHandler implements HAnSCallback {
         int counter = 0;
         List<FeatureModelFeature> topLevelFeatures = null;
 
-        /*FeatureService featureService = project.getService(FeatureService.class);*/
         if(jsonType == JSONType.Default || jsonType == JSONType.Tree || jsonType == JSONType.TreeMap)
             topLevelFeatures = featureService.getRootFeatures();
         // &begin[Tangling]
@@ -105,9 +104,9 @@ public class JSONHandler implements HAnSCallback {
         JSONObject obj = new JSONObject();
         obj.put("id", feature.getLPQText());
         obj.put("name", feature.getFeatureName());
-        var tangledFeatureMap = tanglingMap.get(feature);
+        var tangledFeatureMap = featureService.getTanglingMapOfFeature(tanglingMap, feature);
         int tanglingDegree = tangledFeatureMap != null ? tangledFeatureMap.size() : 0;
-
+        FeatureFileMapping featureFileMapping = featureService.getFeatureFileMappingOfFeature(featureFileMappings, feature);
         List<FeatureModelFeature> childFeatureList = featureService.getChildFeatures(feature);
 
         //recursively get all child features
@@ -115,19 +114,22 @@ public class JSONHandler implements HAnSCallback {
         for(var child : childFeatureList){
             childArr.add(featureToJSON(child, featureFileMappings, tanglingMap));
         }
+
         obj.put("children", childArr);
         obj.put("tanglingDegree", tanglingDegree);
-        obj.put("scatteringDegree", featureService.getFeatureScattering(featureFileMappings.get(feature.getLPQText())));
+        obj.put("scatteringDegree", featureService.getFeatureScattering(featureFileMapping));
+/*
         obj.put("lines", featureFileMappings.get(feature.getLPQText()).getTotalFeatureLineCount());
+*/
+        obj.put("lines", featureService.getTotalFeatureLineCount(featureFileMapping));
         obj.put("totalLines", getTotalLineCountWithChilds(feature, featureFileMappings));
 
         //put locations and their line count into array
         JSONArray locations = new JSONArray();
-        var featureLocations = featureFileMappings.get(feature.getLPQText()).getFeatureLocations();
-        // TODO: Use Scattering Degree from HAnS
+        var featureLocations = featureService.getFeatureLocations(featureFileMapping);
         for(FeatureLocation featureLocation : featureLocations){
             JSONArray blocks = new JSONArray();
-            for(var block : featureLocation.getFeatureLocations()){
+            for(var block : featureService.getListOfFeatureLocationBlock(featureLocation)){
                 JSONObject blockObj = new JSONObject();
                 blockObj.put("start", block.getStartLine());
                 blockObj.put("end", block.getEndLine());
@@ -135,17 +137,14 @@ public class JSONHandler implements HAnSCallback {
             }
             //get the linecount of a feature for each file and add it
             JSONObject locationObj = new JSONObject();
-            // TODO: Feature Service Method
-            if(featureFileMappings.containsKey(feature.getLPQText())){
-                locationObj.put("lines", featureFileMappings.get(feature.getLPQText()).getFeatureLineCountInFile(featureLocation.getMappedPath()));
-
+            if(featureService.isFeatureInFeatureFileMappings(featureFileMappings,feature)){
+                locationObj.put("lines", featureService.getFeatureLineCountInFile(featureFileMapping, featureLocation));
             }
             else{
                 locationObj.put("lines", 0);
             }
             locationObj.put("blocks", blocks);
             locationObj.put("path", PathFormatter.shortenPathToSource(project,featureLocation.getMappedPath()));
-            //TODO THESIS add only the name of the file
             locationObj.put("fileName", PathFormatter.shortenPathToFile(featureLocation.getMappedPath()));
             locations.add(locationObj);
         }
@@ -173,11 +172,12 @@ public class JSONHandler implements HAnSCallback {
 
     private int getTotalLineCountWithChilds(FeatureModelFeature parent, HashMap<String, FeatureFileMapping> fileMapping){
         int total = 0;
+        FeatureFileMapping parentFileMapping = featureService.getFeatureFileMappingOfFeature(fileMapping, parent);
         for(var child : featureService.getChildFeatures(parent)){
             total += getTotalLineCountWithChilds(child, fileMapping);
         }
         if(fileMapping.containsKey(parent.getLPQText()))
-            total += fileMapping.get(parent.getLPQText()).getTotalFeatureLineCount();
+            total += featureService.getTotalFeatureLineCount(parentFileMapping);
         return total;
     }
 }
