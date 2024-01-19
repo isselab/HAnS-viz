@@ -78,6 +78,8 @@ const jsonData = {
     treeData: ""
 }
 
+//TODO THESIS:
+// get IDE theme and set it to state.isDarkmode before the following lines
 var myChart = echarts.init(chartDom, state.isDarkmode ? "dark" : "");
 var scatteringChart = echarts.init(scatteringWindow, state.isDarkmode ? "dark" : "");
 
@@ -220,37 +222,9 @@ hideScatteringWindow.addEventListener("click", () => {
 
 /* ECharts */
 // Handle click event
-myChart.on('click', function (params) {
-    onFeatureSelect(params);
-});
 
-myChart.on("contextmenu", function (params) {
-    if (params.dataType !== "node")
-        return;
-    //TODO THESIS put into its own button action etc
-    //TODO THESIS hide JCEF context menu on rightclick and open HAnS-viz contextmenu
-    //TODO THESIS if a child in the featureModel is already highlighted then the requested one will not get highlighted
-    requestData("highlightFeature," + params.data.id, myChart.hideLoading(), false);
-})
-
-myChart.on("finished", function() {
-    if(!state.isSwitching)
-        return;
-    state.isSwitching = false;
-    if(searchbar.value !== "" && searchIcon.classList.contains("openSearch"))
-        highlightItem(searchbar.value);
-})
-
-myChart.on("dblclick", function(params) {
-    if(params.dataType !== "node")
-        return;
-    openScattering();
-})
-scatteringChart.on("click", function(params){
-    if(params.dataType !== "node") return;
-    requestData("openPath,"+params.data.id,function(){},false);
-
-})
+addMainChartListener();
+addScatteringChartListener();
 
 
 // Handle resize event
@@ -366,6 +340,44 @@ function disableFullPath(e){
 function openPath(e){
     requestData("openPath" + "," + fullPathBox.innerText, function(){}, false);
 }
+
+function addMainChartListener(){
+    myChart.on('click', function (params) {
+        onFeatureSelect(params);
+    });
+
+    myChart.on("contextmenu", function (params) {
+        if (params.dataType !== "node")
+            return;
+        //TODO THESIS put into its own button action etc
+        //TODO THESIS hide JCEF context menu on rightclick and open HAnS-viz contextmenu
+        //TODO THESIS if a child in the featureModel is already highlighted then the requested one will not get highlighted
+        requestData("highlightFeature," + params.data.id, myChart.hideLoading(), false);
+    })
+
+    myChart.on("finished", function() {
+        if(!state.isSwitching)
+            return;
+        state.isSwitching = false;
+        if(searchbar.value !== "" && searchIcon.classList.contains("openSearch"))
+            highlightItem(searchbar.value);
+    })
+
+    myChart.on("dblclick", function(params) {
+        if(params.dataType !== "node")
+            return;
+        openScattering();
+    })
+}
+
+function addScatteringChartListener(){
+    scatteringChart.on("click", function(params){
+        if(params.dataType !== "node") return;
+        requestData("openPath,"+params.data.id,function(){},false);
+
+    })
+}
+
 function openScattering(){
     /*TODO: adjust size to make chart fit into window */
     /*TODO: resize window at resize event*/
@@ -563,32 +575,8 @@ function toggleTheme() {
 
 
     // Handle click event
-    myChart.on('click', function (params) {
-        onFeatureSelect(params);
-    });
-
-    myChart.on("contextmenu", function (params) {
-        if (params.dataType !== "node")
-            return;
-        //TODO THESIS put into its own button action etc
-        //TODO THESIS hide JCEF context menu on rightclick and open HAnS-viz contextmenu
-        //TODO THESIS if a child in the featureModel is already highlighted then the requested one will not get highlighted
-        requestData("highlightFeature," + params.data.id, myChart.hideLoading(), false);
-    })
-
-    myChart.on("finished", function() {
-        if(!state.isSwitching)
-            return;
-        state.isSwitching = false;
-        if(searchbar.value !== "" && searchIcon.classList.contains("openSearch"))
-            highlightItem(searchbar.value);
-    })
-
-    myChart.on("dblclick", function(params) {
-        if(params.dataType !== "node")
-            return;
-        openScattering();
-    })
+    addMainChartListener();
+    addScatteringChartListener();
 
     switch (state.currentChart) {
         case state.treeChart: {
