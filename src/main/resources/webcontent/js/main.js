@@ -316,12 +316,30 @@ function showFeatureInWindow(featureLpq) {
         pathName.innerText = location.fileName;
         pathName.title = location.path;
         pathName.classList.add("pathName");
+
         listElement.appendChild(pathName);
         //add blocks
         for (const block of location.blocks) {
             let subListElement = document.createElement("li");
             let lines = document.createElement("p");
-            lines.innerText = "  Lines: " + (block.start + 1) + " - " + (block.end + 1);
+            lines.dataset.startOffset = block.start;
+            lines.dataset.endOffset = block.end;
+            lines.dataset.path = location.path;
+            if(block.type === "file") {
+                lines.innerText = "   Feature file";
+                lines.addEventListener("click", ()=>{
+                    requestData("openPath" + "," + lines.dataset.path, function(){}, false);
+                });
+            }
+            else{
+                if(block.start === block.end) lines.innerText = "   Line: " + (block.start + 1);
+                else lines.innerText = "  Lines: " + (block.start + 1) + " - " + (block.end + 1);
+                lines.addEventListener("click", ()=>{
+                    requestData("openPath" + "," + lines.dataset.path + "," + lines.dataset.startOffset + "," + lines.dataset.endOffset, function(){}, false);
+                })
+            }
+
+
             subListElement.appendChild(lines);
             listElement.appendChild(subListElement);
         }

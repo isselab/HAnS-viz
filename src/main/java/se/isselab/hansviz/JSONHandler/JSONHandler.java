@@ -133,6 +133,7 @@ public class JSONHandler implements HAnSCallback {
                 JSONObject blockObj = new JSONObject();
                 blockObj.put("start", block.getStartLine());
                 blockObj.put("end", block.getEndLine());
+                blockObj.put("type", featureLocation.getAnnotationType().toString());
                 blocks.add(blockObj);
             }
             //get the linecount of a feature for each file and add it
