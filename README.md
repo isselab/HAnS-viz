@@ -10,9 +10,25 @@ HAnS-Viz is a plugin that aims to help developers with visualizing features that
 See also: [HAnS Plugin](https://plugins.jetbrains.com/plugin/22759)
 
 The visualisations are based on metrics provided by HAnS that also can be shown as
-- Tree View
-- Tree Map
-- Tangling View
+- [Tree View](https://github.com/isselab/HAnS-viz/assets/79728213/396c24d9-d090-437b-b1e1-f8c3dd71fce5)
+- [Tree Map](https://github.com/isselab/HAnS-viz/assets/79728213/855fd803-5d48-4181-b501-296a9aa83972)
+- [Tangling View circular](https://github.com/isselab/HAnS-viz/assets/79728213/658733f5-fd7d-4368-b466-21daeacd73f9)
+- [Tangling View non-circular](https://github.com/isselab/HAnS-viz/assets/79728213/e0242ae4-3108-46b0-a2a0-d384040491a5)
+
+
+
+
+HAnS-Viz also provides a [Feature Info Window](https://github.com/isselab/HAnS-viz/assets/79728213/a2e01eed-4f1b-4fa1-bc65-1d8df93aa13c)
+ on the lower left side to provide insight into various feature-specific information, such as
+- Tangling Degree
+- Scattering Degree
+- Locations of annotated software assets
+
+The Feature Info Window also allows to navigate to files or lines of code annotated by a specific feature by clicking on one of the entries under "Locations" or by clicking on them in the [Scattering chart](https://github.com/isselab/HAnS-viz/assets/79728213/64268e0e-58b7-44c5-9996-abf4c9d6b98d)
+.
+
+The width of the edges between the nodes within the Scattering chart indicates the proportion of lines annotated in the given feature file in relation to the total lines annotated by the feature. This is also determined by the "Feature coverage" property
+
 <!-- Plugin description end -->
 ## Installation
 Since HAnS-Viz is dependent on HAnS, it is necessary to install HAnS. For further information see:
