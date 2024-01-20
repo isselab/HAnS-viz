@@ -254,6 +254,7 @@ a:hover {
 /* feature-info window setup */
 
 .feature-info-window {
+  pointer-events: auto;
   position:absolute;
   display: inline-flex;
   height: 40%;
@@ -400,15 +401,12 @@ a:hover {
 }
 
 .clickable{
-  /*TODO THESIS pointer does only change for a split second */
-  /*cursor:pointer;*/
+  cursor:pointer;
 }
 
 .clickable:hover{
-  color: rebeccapurple;
-  /*font-weight: bolder;*/
-  text-shadow: 1px 1px 1px #555;
-  /*text-decoration: underline;*/
+  text-shadow: 0.5px 0 #555;
+  cursor:pointer;
 }
 
 /* responsive */
