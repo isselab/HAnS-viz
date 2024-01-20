@@ -5,7 +5,6 @@ import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.cef.callback.CefQueryCallback;
 import se.isselab.HAnS.featureExtension.HAnSCallback;
-import se.isselab.HAnS.Logger;
 import se.isselab.HAnS.featureExtension.FeatureService;
 import se.isselab.HAnS.featureLocation.FeatureFileMapping;
 import se.isselab.HAnS.featureLocation.FeatureLocation;
@@ -47,7 +46,6 @@ public class JSONHandler implements HAnSCallback {
             topLevelFeatures = featureService.getFeatures();
         // &end[Tangling]
         else {
-            Logger.print(Logger.Channel.ERROR, "Could not create JSON because of invalid type");
             //return new JSONObject();
         }
 
@@ -76,8 +74,6 @@ public class JSONHandler implements HAnSCallback {
         }
         dataJSON.put("features", nodesJSON);
         dataJSON.put("tanglingLinks", linksJSON);
-        System.out.println("Ich bin von dem BackgroundTask");
-        System.out.println(dataJSON.toJSONString());
         callback.success(dataJSON.toJSONString());
     }
 

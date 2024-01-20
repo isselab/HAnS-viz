@@ -19,7 +19,6 @@ public class HanSDumbModeListener implements DumbService.DumbModeListener {
         for(Project project:ProjectManager.getInstance().getOpenProjects()){
             BrowserViewerWindow browserViewerWindow = project.getService(BrowserViewerService.class).browserViewerWindow;
             if(browserViewerWindow!=null) {
-                System.out.println("browserViewWindow ViewInit: "+ browserViewerWindow.isViewInit());
                 if((!browserViewerWindow.isViewInit()) && browserViewerWindow.isBrowserReady()){
                     browserViewerWindow.setViewInit();
                     Thread delayThread = new Thread(() -> {
@@ -31,7 +30,6 @@ public class HanSDumbModeListener implements DumbService.DumbModeListener {
                             e.printStackTrace();
                         }
                     });
-                    System.out.println("Starte Dumb Thread");
                     delayThread.start();
                 }
             }

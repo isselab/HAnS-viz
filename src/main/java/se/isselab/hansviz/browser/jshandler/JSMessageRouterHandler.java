@@ -33,16 +33,13 @@ public class JSMessageRouterHandler extends CefMessageRouterHandlerAdapter {
      */
     @Override
     public boolean onQuery(CefBrowser browser, CefFrame frame, long queryId, String request, boolean persistent, CefQueryCallback callback) {
-        System.out.println("Request: " + request); // For testing purposes
         String[] requestTokens = request.split(",");
         switch (requestTokens[0]) {
             // Add all queries that need to be handled
             case "buttonClicked" -> {
-                System.out.println("Button Clicked!");
                 return true;
             }
             case "refresh" -> {
-                System.out.println("Refreshing!");
                 // return JSON through parameter of success function
                 callback.success("JSON");
                 return true;

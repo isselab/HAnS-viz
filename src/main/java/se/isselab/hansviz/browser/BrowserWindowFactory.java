@@ -12,7 +12,6 @@ public class BrowserWindowFactory implements ToolWindowFactory {
     /* First step when window gets opened on sidebar */
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        System.out.println("factory");
         BrowserViewerWindow browserViewerWindow = project.getService(BrowserViewerService.class).browserViewerWindow;
         JComponent component = toolWindow.getComponent();
         component.getParent().add(browserViewerWindow.content(),0);
@@ -39,7 +38,6 @@ public class BrowserWindowFactory implements ToolWindowFactory {
                         e.printStackTrace();
                     }
                 });
-                System.out.println("Starte Factory thread");
                 delayThread.start();
                 // browserViewerWindow.runJavascript("alert('hallo');");
             }
@@ -54,7 +52,6 @@ public class BrowserWindowFactory implements ToolWindowFactory {
                     e.printStackTrace();
                 }
             });
-            System.out.println("Starte wait For Indexing Thread");
             delayThread.start();
         }
     }

@@ -114,7 +114,6 @@ public class BrowserViewerWindow {
      * @return The JCEF browser as a JComponent.
      */
     public JComponent content() {
-        System.out.println("return content");
         return content;
     }
 
@@ -199,7 +198,6 @@ public class BrowserViewerWindow {
      * @param function String
      */
     public void runJavascript(String function) {
-        System.out.println(function);
         webView.getCefBrowser().executeJavaScript(function, null, 0);
     }
 }
