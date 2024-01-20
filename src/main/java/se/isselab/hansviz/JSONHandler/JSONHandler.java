@@ -4,17 +4,15 @@ import com.intellij.openapi.project.Project;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.cef.callback.CefQueryCallback;
-import org.jetbrains.annotations.TestOnly;
 import se.isselab.HAnS.featureExtension.HAnSCallback;
 import se.isselab.HAnS.Logger;
 import se.isselab.HAnS.featureExtension.FeatureService;
 import se.isselab.HAnS.featureLocation.FeatureFileMapping;
 import se.isselab.HAnS.featureLocation.FeatureLocation;
-import se.isselab.HAnS.featureLocation.FeatureLocationManager;
-import se.isselab.HAnS.featureLocation.pathFormatter.PathFormatter;
 import se.isselab.HAnS.featureModel.psi.FeatureModelFeature;
 import se.isselab.HAnS.metrics.FeatureMetrics;
-import se.isselab.HAnS.metrics.FeatureTangling;
+import se.isselab.hansviz.JSONHandler.pathFormatter.PathFormatter;
+
 
 import java.util.HashMap;
 import java.util.HashSet;
