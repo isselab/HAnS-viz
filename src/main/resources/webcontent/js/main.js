@@ -379,12 +379,10 @@ function addMainChartListener(){
     });
 
     myChart.on("contextmenu", function (params) {
-        if (params.dataType !== "node")
+        if(params.dataType !== "node" && params.dataType !== "main")
             return;
-        //TODO THESIS put into its own button action etc
-        //TODO THESIS hide JCEF context menu on rightclick and open HAnS-viz contextmenu
-        //TODO THESIS if a child in the featureModel is already highlighted then the requested one will not get highlighted
         requestData("highlightFeature," + params.data.id, myChart.hideLoading(), false);
+        onFeatureSelect(params);
     })
 
     myChart.on("finished", function() {
@@ -396,7 +394,7 @@ function addMainChartListener(){
     })
 
     myChart.on("dblclick", function(params) {
-        if(params.dataType !== "node")
+        if(params.dataType !== "node" && params.dataType !== "main")
             return;
         openScattering();
     })
@@ -408,20 +406,25 @@ function addScatteringChartListener(){
         requestData("openPath,"+params.data.id,function(){},false);
 
     })
+
+    scatteringChart.on("contextmenu", function(params){
+        if(params.dataType !== "node") return;
+        requestData("highlightFeature," + params.data.id, scatteringChart.hideLoading(), false);
+
+    })
 }
 
 function openScattering(){
-    /*TODO: adjust size to make chart fit into window */
-    /*TODO: resize window at resize event*/
     //get current feature lpq
     let lpqName = document.getElementById("featureLpqNameText").innerText;
     let feature = getFeatureData(lpqName);
+    if(lpqName == "-")
+        return;
 
     scatteringWindow.classList.add("active");
     let body = document.getElementById(" mainBody");
     body.classList.add("applyBackdrop");
     hideScatteringWindow.classList.add("active");
-    /* TODO: dispose before opening a new chart for theme */
     // &begin[Scattering]
     scatteringChart.clear();
     let plotData = [];
@@ -1045,7 +1048,7 @@ function openTanglingView() {
             show: true,
             formatter: function (params) {
                 if (params.dataType === "node") {
-                    return `${params.marker}${params.data.name}<br>Tangling Degree: ${params.data.tanglingDegree}<br>Scattering Degree: ${params.data.scatteringDegree}<br>Total Lines: ${params.data.totalLines}`;
+                    return `${params.marker}${params.data.id}<br>Tangling Degree: ${params.data.tanglingDegree}<br>Scattering Degree: ${params.data.scatteringDegree}<br>Total Lines: ${params.data.totalLines}`;
                 } else {
                     return `${params.data.source} > ${params.data.target}`;
                 }

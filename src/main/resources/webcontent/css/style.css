@@ -263,6 +263,18 @@ a:hover {
   left:0;
   z-index: 2;
 }
+.feature-info-panel-header{
+  border: rebeccapurple solid 0.5px;
+  border-radius: 5px;
+  margin: 5px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.feature-info-panel-header .feature-info-div:not(:first-child){
+  margin-top: 1px;
+}
+.feature-info-panel-header .feature-info-div p{
+  margin-top: 10%;
+}
 #toggleFeatureWindowDiv{
   border-radius: 0 10px 10px 0;
   padding: 5px 1px 5px 1px;
@@ -279,8 +291,13 @@ a:hover {
   display:none;
   overflow:auto;
   font-size: 12px;
+  margin: 1px;
+  border: rebeccapurple solid 1px;
+  border-radius: 0 5px 5px 0;
 }
-
+#tanglingDiv p, #scatteringDiv p{
+  font-weight: bolder;
+}
 .feature-info-window.openFeatureWindow .feature-info-panel  {
   display: block;
 }
@@ -311,6 +328,10 @@ a:hover {
   width: 100%;
   height: 2px;
   background: linear-gradient(to right, rebeccapurple, #5e42a6)
+}
+
+#locationDiv{
+  margin-top: 10%;
 }
 #locationDiv ul{
   text-align: left;
