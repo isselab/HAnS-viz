@@ -534,7 +534,7 @@ function openScattering(){
                     show: true, // Show label by default
                     position: 'top',
                     formatter: function(params) {
-                        if(state.showLpqNames)
+                        if(state.showLpqNames && params.dataType === "node")
                             return `${params.data.id}`;
                         else
                             return`${params.data.name}`;
