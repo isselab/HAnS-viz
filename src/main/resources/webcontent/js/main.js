@@ -488,11 +488,11 @@ function openScattering(){
                     if(params.data.type === "feature")
                         return `${params.marker}${params.data.name}<br>Scattering Degree: ${params.data.scatteringDegree}<br>Total Lines: ${params.data.totalLines}`;
                     else
-                        return `${params.marker}${params.data.id}<br>Feature Lines: ${params.data.lines}<br>Coverage: ${(params.data.coverage * 100).toFixed(2)}%`;
+                        return `${params.marker}${params.data.id}<br>Feature Lines: ${params.data.lines}<br>Feature coverage: ${(params.data.coverage * 100).toFixed(2)}%`;
 
                 } else {
                     let pathName = params.data.source === feature.id ? params.data.target : params.data.source;
-                    return `Feature coverage:<br>File:${pathName}:<br>${(params.data.coverage * 100).toFixed(2)}% `;
+                    return `Feature coverage: ${(params.data.coverage * 100).toFixed(2)}%<br>File:${pathName}:<br> `;
                 }
             }
         },
