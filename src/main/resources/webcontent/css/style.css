@@ -83,6 +83,7 @@ a:hover {
   top:6vh;
   right:0;
   width: 29%;
+  max-width: 340px;
   pointer-events: none;
   transition: all 0.2s linear;
   border: none;
@@ -100,10 +101,14 @@ a:hover {
 .settings-row {
   display: flex;
   gap: 10px;
-  padding: 15px;
+  padding: 25px 10px 40px 10px;
   align-items: center;
   transition: 0.5s;
   font-size: 14px;
+}
+.settings-row > span {
+  position: absolute;
+  left: 45px;
 }
 .settings-row.automated-fetch-disabled {
   display: none;
@@ -182,7 +187,7 @@ a:hover {
 
 /* toggle animation */
 .toggle {
-  position: relative;
+  position: absolute;
   display: block;
   width: 30px;
   height: 15px;
