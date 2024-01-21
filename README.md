@@ -23,7 +23,7 @@ The visualisations are based on metrics provided by HAnS that also can be shown 
 <img src="images/TanglingNonCircular.png" alt="Tangling (non-circular)" width="600">
 
 
-HAnS-Viz also provides a [Feature Info Window](https://github.com/isselab/HAnS-viz/assets/79728213/a2e01eed-4f1b-4fa1-bc65-1d8df93aa13c)
+HAnS-Viz also provides a Feature Info Window
  on the lower left side to provide insight into various feature-specific information, such as
 - Tangling Degree
 - Scattering Degree
