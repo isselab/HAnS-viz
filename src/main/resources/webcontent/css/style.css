@@ -50,6 +50,9 @@ limitations under the License.
 .box.dark-mode .show-full-path{
   background-color: rgba(255, 255, 255, 0.9);
 }
+.box.dark-mode .scattering-window{
+  background-color: transparent;
+}
 
 /* navigation bar setup */
 
@@ -409,7 +412,7 @@ a:hover {
   bottom: 15vh;
   border-radius: 5vh;
   z-index: 100;
-  // background-color: white;
+  background-color: white;
   box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
 }
 .scattering-window.active {
