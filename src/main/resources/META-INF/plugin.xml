@@ -16,7 +16,7 @@ limitations under the License.
 <idea-plugin>
     <id>se.isselab.hansviz</id>
     <name>HAnS-Viz</name>
-    <vendor email="johan.t.martinson+HAnS@gmail.com" url="https://github.com/isselab/HAnS">Johan Martinson</vendor>
+    <vendor email="johan.t.martinson+HAnS@gmail.com" url="https://github.com/isselab/HAnS-viz">Johan Martinson, David Stechow and Philipp Kusmierz</vendor>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>se.isselab.hans</depends>
