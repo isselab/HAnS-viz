@@ -77,7 +77,7 @@ const state = {
     isNav: false,
     isFeatureWindow: false,
     isFetching: false,
-    showLpqNames: false,
+    showLpqNames: true,
     showTanglingAsNormalGraph: false,
     isAutoFetch: false,
     fetchIntervall: 600000,
@@ -93,6 +93,11 @@ const jsonData = {
     tanglingData: "",
     treeData: ""
 }
+
+darkModeToggle.classList.toggle("active", state.isDarkmode);
+//automatedFetchToggle.classList.toggle("active", state.isAutoFetch);
+lpqNameToggle.classList.toggle("active", state.showLpqNames);
+circularTanglingToggle.classList.toggle("active", state.showTanglingAsNormalGraph);
 
 //TODO THESIS:
 // get IDE theme and set it to state.isDarkmode before the following lines
