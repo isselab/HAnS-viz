@@ -1,0 +1,153 @@
+<!--
+Copyright [2024] [David Stechow & Philipp Kusmierz]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8"/>
+    <title>ECharts</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0"/>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+</head>
+<body id=" mainBody" class="box dark-mode">
+<div class="show-full-path">/src/main/java/se/isselab/hansviz/browser/BrowserSchemeHandlerFactory.java</div>
+<div class="hide-scattering"></div>
+<div class="scattering-window">
+    <div class="scattering-chart"></div>
+</div>
+<div class="last-fetch-timestamp dark-mode">Loading...</div>
+<div class="search-box">
+    <span class="material-symbols-outlined search-icon" id="inner-search-icon">search</span>
+    <input placeholder="Search here..." id="searchbar"/>
+    <span class="material-symbols-outlined search-settings-toggle" id="search-settings">tune</span>
+    <span class="material-symbols-outlined close-search" id="close-search">close</span>
+</div>
+<div class="settings-box">
+    <div class="settings-row" id="dark-mode-settings">
+        <div class="toggle active" id="dark-mode-toggle">
+            <i class="indicator"></i>
+        </div>
+        <span>Dark Mode</span>
+    </div>
+    <div class="settings-row">
+        <div class="toggle" id="automated-fetch-toggle">
+            <i class="indicator"></i>
+        </div>
+        <span>Automated fetch</span>
+    </div>
+    <div class="settings-row automated-fetch-disabled" id="automated-fetch-range">
+        <p><span>Fetching interval: </span><span id="fetching-interval-value">10 min</span></p>
+        <input type="range" id="fetching-interval" min="1" max="60" value="10">
+    </div>
+    <div class="settings-row">
+        <div class="toggle" id="lpq-name-toggle">
+            <i class="indicator"></i>
+        </div>
+        <span>Show LPQ Names</span>
+    </div>
+    <div class="settings-row">
+        <div class="toggle" id="circular-tangling-toggle">
+            <i class="indicator"></i>
+        </div>
+        <span>Non-circular Tangling graph</span>
+    </div>
+</div>
+<div class="search-box-settings">
+    <div class="clickable">
+        <input type="checkbox" checked="true" id="incrementalSearchCheckBox" value="IncrementalSearch">
+        <label onclick="toggleSearchSettings('incrementalSearch')">Incremental search</label>
+    </div>
+
+    <div class="clickable">
+        <input type="checkbox" id="regExCheckBox" value="RegEx">
+        <label onclick="toggleSearchSettings('regEx')">RegEx</label>
+    </div>
+    <div class="clickable">
+        <input type="checkbox" id="exactMatchCheckBox" value="ExactMatch">
+        <label onclick="toggleSearchSettings('exactMatch')">Exact match</label>
+    </div>
+    <div class="clickable">
+        <input type="checkbox" id="caseSensitiveCheckBox" value="CaseSensitive">
+        <label onclick="toggleSearchSettings('caseSensitive')">Case-Sensitive</label>
+    </div>
+</div>
+<div class="feature-info-window">
+    <div class="feature-info-panel">
+        <div class="feature-info-panel-header">
+            <div class="feature-info-div" id="lpqDiv">
+                <label id="lpqNameLabel" class="underline">LPQ-Name</label>
+                <p id="featureLpqNameText">-</p>
+            </div>
+            <div class="feature-info-div" id="nameDiv">
+                <label id="nameLabel" class="underline">Name</label>
+                <p id="featureNameText">-</p>
+            </div>
+            <div class="feature-info-div" id="tanglingDiv">
+            <span class="material-symbols-outlined" style="font-size: smaller">
+            share
+            </span>
+                <label id="tanglingLabel" class="underline">Tangling Degree</label>
+                <p id="tanglingText">-</p>
+            </div>
+            <div class="feature-info-div" id="scatteringDiv">
+          <span class="material-symbols-outlined" style="font-size: smaller">
+          scatter_plot
+          </span>
+                <label id="scatteringLabel" class="underline">Scattering Degree</label>
+                <p id="scatteringText">-</p>
+                <div class="show-scattering clickable">
+                    <p class="show-scattering">Open Scattering</p>
+                </div>
+            </div>
+        </div>
+        <div class="feature-info-div" id="locationDiv">
+          <span class="material-symbols-outlined" style="font-size: smaller">
+          location_on
+          </span>
+            <label id="locationLabel" class="underline">Locations</label>
+            <ul id="featureLocationList">
+            </ul>
+        </div>
+    </div>
+    <div id="toggleFeatureWindowDiv">
+        <p id="toggleFeatureWindowText">Feature Info</p>
+        <span class="material-symbols-outlined feature-info-button" id="toggleFeatureWindowButton">keyboard_double_arrow_right</span>
+    </div>
+</div>
+<div id="main" class="dark-mode"></div>
+<nav class="nav">
+    <img class="logo" src="./img/pluginIcon.png" alt="HAnS-Viz">
+    <ul class="nav-links">
+        <span class="material-symbols-outlined navCloseBtn">close</span>
+        <li><a href="#" onclick="toggleChart(state.treeChart)">Tree View</a></li>
+        <li><a href="#" onclick="toggleChart(state.treeMapChart)">Treemap View</a></li>
+        <li><a href="#" onclick="toggleChart(state.tanglingChart)">Tangling</a></li>
+    </ul>
+    <div class="docked">
+        <span class="material-symbols-outlined search-icon" id="searchIcon">search</span>
+        <span class="material-symbols-outlined refresh-button" id="refresh-button">refresh</span>
+        <span class="material-symbols-outlined settings">settings</span>
+        <span class="material-symbols-outlined navOpenBtn">menu</span>
+    </div>
+</nav>
+</body>
+<script src="js/main.js"></script>
+<script type="text/javascript">
+</script>
+</html>

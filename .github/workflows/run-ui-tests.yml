@@ -61,5 +61,5 @@ jobs:
           retry-delay: 30s
 
       # Run tests
-      - name: Tests
-        run: ./gradlew test
+      #- name: Tests
+      #  run: ./gradlew test

@@ -23,7 +23,7 @@ repositories {
 
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
-//    implementation(libs.annotations)
+    implementation("net.minidev", "json-smart", "2.5.0")
 }
 
 // Set the JVM language level used to build the project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
@@ -43,6 +43,10 @@ intellij {
 
     // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
     plugins = properties("platformPlugins").map { it.split(',').map(String::trim).filter(String::isNotEmpty) }
+
+    //TODO IMPORTANT Add plugins.set(listOf(file("LOCATION OF HAnS-0.0.4.jar")))
+    plugins.set(listOf(file("C:\\Users\\dstec\\Project\\HAnS\\build\\libs\\HAnS-0.0.4.jar")))
+
 }
 
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
@@ -104,6 +108,9 @@ tasks {
             }
         }
     }
+    runIde {
+        autoReloadPlugins = true
+    }
 
     // Configure UI tests plugin
     // Read more: https://github.com/JetBrains/intellij-ui-test-robot
@@ -126,6 +133,6 @@ tasks {
         // The pluginVersion is based on the SemVer (https://semver.org) and supports pre-release labels, like 2.1.7-alpha.3
         // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
         // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
-        channels = properties("pluginVersion").map { listOf(it.split('-').getOrElse(1) { "default" }.split('.').first()) }
+        /*channels = properties("pluginVersion").map { listOf(it.split('-').getOrElse(1) { "default" }.split('.').first()) }*/
     }
 }

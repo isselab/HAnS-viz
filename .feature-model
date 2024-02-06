@@ -1,0 +1,19 @@
+HAnSViz
+    JSONHandler
+        Request
+        PathFormatter
+    HAnSData
+        Service
+    Visualization
+        FeatureInfoWindow
+        Coloring
+        Graph
+            Tree
+            TreeMap
+            Scattering
+            Tangling
+    Browser
+        ToolWindowHandler
+            Open
+        DumbModeHandler
+        JSHandler

@@ -1,18 +1,42 @@
-<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<!--
+Copyright [2024] [David Stechow & Philipp Kusmierz]
+
+Licensed und    er the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 <idea-plugin>
-    <id>com.github.johmara.hansviz</id>
-    <name>HAnS-viz Template</name>
-    <vendor>johmara</vendor>
+    <id>se.isselab.hansviz</id>
+    <name>HAnS-Viz</name>
+    <vendor email="johan.t.martinson+HAnS@gmail.com" url="https://github.com/isselab/HAnS-viz">Johan Martinson, David Stechow and Philipp Kusmierz</vendor>
 
     <depends>com.intellij.modules.platform</depends>
-
-    <resource-bundle>messages.MyBundle</resource-bundle>
+    <depends>se.isselab.hans</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.johmara.hansviz.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+
+        <toolWindow icon="/icons/vizIcon.svg" id="HANS-Viz" factoryClass="se.isselab.hansviz.browser.BrowserWindowFactory" anchor="right"/>
+
+        <projectService id="BrowserViewerService" serviceImplementation="se.isselab.hansviz.browser.BrowserViewerService"/>
     </extensions>
 
-    <applicationListeners>
-        <listener class="com.github.johmara.hansviz.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
+
+    <projectListeners>
+        <!-- &begin[DumbModeHandler]-->
+        <listener class="se.isselab.hansviz.listener.HanSDumbModeListener"
+                  topic="com.intellij.openapi.project.DumbService$DumbModeListener"/>
+        <!-- &end[DumbModeHandler]-->
+        <!-- &begin[ToolWindowHandler]-->
+        <listener class="se.isselab.hansviz.listener.HAnSToolWindowListener"
+                  topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener"/>
+        <!-- &end[ToolWindowHandler]-->
+    </projectListeners>
 </idea-plugin>

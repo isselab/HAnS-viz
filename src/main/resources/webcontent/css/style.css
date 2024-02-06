@@ -1,0 +1,542 @@
+
+/*
+Copyright 2024 David Stechow & Philipp Kusmierz
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Lato", sans-serif;
+  overflow: hidden;
+}
+#main {
+  width: 100%;
+  height:95vh;
+  margin-top: 5vh;
+  background-color: white;
+}
+
+.dark-mode {
+  background-color: #222222;
+}
+
+/* color settings for floating panels*/
+/* background color */
+.settings-box, 
+.search-box, 
+.last-fetch-timestamp, 
+.feature-info-window,
+.search-box-settings,
+.show-full-path{
+  background-color: rgba(185, 192, 218, 0.9);
+}
+.box.dark-mode .settings-box, 
+.box.dark-mode .search-box, 
+.box.dark-mode .last-fetch-timestamp,
+.box.dark-mode .feature-info-window,
+.box.dark-mode .search-box-settings,
+.box.dark-mode .show-full-path{
+  background-color: rgba(255, 255, 255, 0.9);
+}
+.box.dark-mode .scattering-window{
+  background-color: transparent;
+}
+
+/* navigation bar setup */
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5vh;
+  padding: 15px 200px;
+  background: black;
+}
+.nav,
+.nav .nav-links {
+  display: flex;
+  align-items: center;
+}
+.nav {
+  justify-content: space-between;
+}
+a {
+  color: #fff;
+  text-decoration: none;
+}
+a:hover {
+  color: rebeccapurple;
+}
+
+.nav .logo {
+  width: 5vh;
+  height: 5vh;
+}
+
+.nav .nav-links {
+  column-gap: 20px;
+  list-style: none;
+}
+.nav .docked {
+  display: flex;
+  justify-content: space-between;
+  gap:10px;
+}
+
+/* settings box set up */
+.settings-box {
+  opacity:0;
+  position: absolute;
+  top:6vh;
+  right:0;
+  width: 29%;
+  max-width: 340px;
+  pointer-events: none;
+  transition: all 0.2s linear;
+  border: none;
+  outline: none;
+  border-radius: 6px;
+  align-items: center;
+  display:block;
+  z-index: 2;
+}
+
+.settings-box.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.settings-row {
+  display: flex;
+  gap: 10px;
+  padding: 25px 10px 40px 10px;
+  align-items: center;
+  transition: 0.5s;
+  font-size: 14px;
+}
+.settings-row > span {
+  position: absolute;
+  left: 45px;
+}
+.settings-row.automated-fetch-disabled {
+  display: none;
+}
+
+/* search box set up */
+.search-box {
+  opacity:0;
+  position: absolute;
+  top:6vh;
+  left:30%;
+  width: 40%;
+  height: 5vh;
+  pointer-events: none;
+  transition: all 0.2s linear;
+  border: none;
+  outline: none;
+  border-radius: 6px;
+  align-items: center;
+  display:flex;
+  z-index: 2;
+}
+
+.search-box .search-icon {
+  font-size: 20px;
+  color: #4a98f7;
+  padding: 0 10px 0 10px;
+  cursor: auto;
+}
+.search-box .search-settings-toggle,
+.search-box .close-search {
+  font-size: 20px;
+  color: #4a98f7;
+  padding: 0 10px 0 5px;
+  cursor: pointer;
+}
+.search-box input {
+  height: 70%;
+  width: 100%;
+  border: none;
+  outline: none;
+  border-radius: 6px;
+  background-color: #fff;
+  padding: 4px 15px 4px 15px;
+}
+.search-box.openSearch {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* searchbox settings setup */
+.search-box-settings {
+  opacity: 0;
+  pointer-events: none;
+  display:none;
+}
+.search-box-settings.openSettings{
+  opacity: 1;
+  pointer-events: auto;
+  position: absolute;
+  /* TODO: maybe change to default width */
+  /*width:25%;*/
+
+  top: 12vh;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 0 5px 0;
+  display:block;
+  z-index: 10;
+  border-radius: 6px;
+  transition: all 0.5s linear;
+}
+.search-box-settings.openSettings > div{
+  padding: 2px 5px 2px 5px;
+}
+
+/* toggle animation */
+.toggle {
+  position: absolute;
+  display: block;
+  width: 30px;
+  height: 15px;
+  border-radius: 15px;
+  background:#7d7d7d;
+  transition: 0.5s;
+  cursor: pointer;
+  box-shadow: inset 0 8px 60px rgba(0,0,0,0.1),
+              inset 0 8px 8px rgba(0,0,0,0.1),
+              inset 0 -4px 4px rgba(0,0,0,0.1);
+}
+.toggle .indicator{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to bottom, #ffffff, #f0f0f0);
+  border-radius: 50%;
+  transform: scale(0.8);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5),
+              inset 0 4px 4px rgba(255,255,255,0.2),
+              inset 0 -4px 4px rgba(255,255,255,0.2);
+  transition: 0.5s;
+
+}
+.toggle.active .indicator{
+  left:15px;
+  background: linear-gradient(to bottom, #aa77dd, rebeccapurple);
+}
+
+/* docked elements */
+.docked > * {
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.nav .navOpenBtn,
+.nav .navCloseBtn {
+  display: none;
+}
+.nav .search-icon {
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+}
+.nav .search-icon.openSearch {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* last-fetch timestamp setup*/
+
+.last-fetch-timestamp {
+  position: absolute;
+  top:6vh;
+  left:0;
+  max-width: 30%;
+  color: black;
+  padding: 5px 10px;
+  border-radius: 10px;
+  z-index: 2;
+  font-size: 14px;
+}
+
+
+
+/* feature-info window setup */
+
+.feature-info-window {
+  pointer-events: auto;
+  position:absolute;
+  display: inline-flex;
+  height: 40%;
+  /* width: 100px; */
+  bottom:0%;
+  left:0;
+  z-index: 2;
+}
+.feature-info-panel-header{
+  border: rebeccapurple solid 0.5px;
+  border-radius: 5px;
+  margin: 5px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.feature-info-panel-header .feature-info-div:not(:first-child){
+  margin-top: 1px;
+}
+.feature-info-panel-header .feature-info-div p{
+  margin-top: 10%;
+}
+#toggleFeatureWindowDiv{
+  border-radius: 0 10px 10px 0;
+  padding: 5px 1px 5px 1px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0 8px 24px;
+}
+#toggleFeatureWindowText{
+  writing-mode: vertical-lr;
+  text-orientation: upright;
+  font-family: "Lato", sans-serif;
+  font-weight: bolder;
+}
+.feature-info-window .feature-info-panel {
+  height: 100%;
+  display:none;
+  overflow:auto;
+  font-size: 12px;
+  margin: 1px;
+  border: rebeccapurple solid 1px;
+  border-radius: 0 5px 5px 0;
+}
+#tanglingDiv p, #scatteringDiv p{
+  font-weight: bolder;
+}
+.feature-info-window.openFeatureWindow .feature-info-panel  {
+  display: block;
+}
+.feature-info-div {
+  text-align: center;
+  margin: 4px 5px 6px 5px;
+  padding: 2px;
+  overflow:auto;
+}
+.feature-info-div label {
+  font-weight: bolder;
+  font-size: larger;
+}
+.feature-info-window .feature-info-button {
+  margin-top:5px;
+  z-index: 2;
+  height:25px;
+  border-radius: 3px;
+}
+.feature-info-window {
+  border-radius: 0 10px 10px 0;
+}
+.underline::after {
+
+  text-decoration: none;
+  content: "";
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, rebeccapurple, #5e42a6)
+}
+
+#locationDiv{
+  margin-top: 10%;
+}
+#locationDiv ul{
+  text-align: left;
+}
+#locationDiv ul > li {
+  padding: 10px 10px 10px 10px
+}
+#locationDiv ul > li .pathName::after {
+  text-decoration: none;
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, rebeccapurple, #5e42a6)
+}
+#locationDiv .line {
+  margin-left: 5px;
+  margin-bottom: 5%;
+}
+.pathName {
+  /* color: white; */
+  font-weight: bolder;
+  margin-bottom: 3px;
+}
+.show-full-path{
+  position: absolute;
+  display: none;
+  left:50%;
+  top:50%;
+  z-index: 5000;
+  align-content: center;
+  font-size: 12px;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+.show-full-path.active{
+  display:flex;
+}
+.show-scattering {
+  display: flex;
+  justify-content: space-evenly;
+  align-self: center;
+  cursor: pointer;
+}
+.scattering-window {
+  position: absolute;
+  display: none;
+  pointer-events: none;
+  left: 15vh;
+  right: 15vh;
+  top: 15vh;
+  bottom: 15vh;
+  border-radius: 5vh;
+  z-index: 100;
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+}
+.scattering-window.active {
+  display: block;
+  pointer-events: all;
+}
+.hide-scattering {
+  display: none;
+}
+.hide-scattering.active{
+  /*filter: blur(4px);*/
+  display: block;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  z-index: 50;
+}
+.applyBackdrop > *:not(.scattering-window)  {
+  filter: blur(4px);
+}
+
+.last-fetch-timestamp {
+  font-size: smaller;
+}
+
+.material-symbols-outlined {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+.clickable{
+  cursor:pointer;
+}
+
+.clickable:hover{
+  text-shadow: 0.5px 0 #555;
+  cursor:pointer;
+}
+
+/* responsive */
+@media screen and (max-width: 1160px) {
+  .nav {
+    padding: 15px 100px;
+  }
+}
+@media screen and (max-width: 950px) {
+  .nav {
+    padding: 15px 50px;
+  }
+}
+@media screen and (max-width: 630px) {
+  .nav .navOpenBtn,
+  .nav .navCloseBtn {
+    display: block;
+  }
+  .nav {
+    padding: 15px 20px;
+    z-index: 40;
+  }
+  
+  .nav .nav-links {
+    position: fixed;
+    top: 5%;
+    right:-100%;
+    height: 95%;
+    max-width: 200px;
+    width: 100%;
+    padding-top: 100px;
+    row-gap: 30px;
+    flex-direction: column;
+    background-color: #11101d;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease;
+    z-index: 1;
+  }
+  .nav.openNav .nav-links {
+    right:0;
+  }
+  /* ECharts turned dumb */
+  .dumb {
+    pointer-events: none;
+    z-index:0;
+  }
+  .nav .navOpenBtn {
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  .nav .navCloseBtn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+  }
+}
+@media screen and (max-width: 500px) {
+  .nav .search-box {
+    opacity: 1;
+    right: 80px;
+    max-width: 250px;
+  }
+ 
+}
+@media screen and (max-width: 430px) {
+  .nav .search-box {
+    opacity: 1;
+    right: 80px;
+    max-width: 150px;
+  }
+}
+@media screen and (max-width: 350px) {
+  .nav .search-box {
+    opacity: 0;
+  }
+  .nav .search-icon {
+    opacity: 0;
+  }
+}
+@media screen and (max-height: 520px) {
+  /* TODO THESIS: Handle */
+}

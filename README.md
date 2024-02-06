@@ -1,44 +1,58 @@
-# HAnS-viz
+# HAnS-Viz
 
 ![Build](https://github.com/isselab/HAnS-viz/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
-
-## Template ToDo list
-- [x] Create a new [IntelliJ Platform Plugin Template][template] project.
-- [ ] Get familiar with the [template documentation][template].
-- [ ] Adjust the [pluginGroup](./gradle.properties), [plugin ID](./src/main/resources/META-INF/plugin.xml) and [sources package](./src/main/kotlin).
-- [ ] Adjust the plugin description in `README` (see [Tips][docs:plugin-description])
-- [ ] Review the [Legal Agreements](https://plugins.jetbrains.com/docs/marketplace/legal-agreements.html?from=IJPluginTemplate).
-- [ ] [Publish a plugin manually](https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html?from=IJPluginTemplate) for the first time.
-- [ ] Set the `PLUGIN_ID` in the above README badges.
-- [ ] Set the [Plugin Signing](https://plugins.jetbrains.com/docs/intellij/plugin-signing.html?from=IJPluginTemplate) related [secrets](https://github.com/JetBrains/intellij-platform-plugin-template#environment-variables).
-- [ ] Set the [Deployment Token](https://plugins.jetbrains.com/docs/marketplace/plugin-upload.html?from=IJPluginTemplate).
-- [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 <!-- Plugin description -->
-This Fancy IntelliJ Platform Plugin is going to be your implementation of the brilliant ideas that you have.
+HAnS-Viz is a plugin that aims to help developers with visualizing features that are created by HAnS.
+See also: [HAnS Plugin](https://plugins.jetbrains.com/plugin/22759)
 
-This specific section is a source for the [plugin.xml](/src/main/resources/META-INF/plugin.xml) file which will be extracted by the [Gradle](/build.gradle.kts) during the build process.
+The visualisations are based on metrics provided by HAnS that also can be shown as
+### Tree View
+<img src="images/TreeView.png" alt="Tree View" width="600">
 
-To keep everything working, do not remove `<!-- ... -->` sections. 
+### Tree Map
+<img src="images/TreeMap.png" alt="Tree Map" width="600">
+
+### Tangling (circular)
+<img src="images/TanglingCircular.png" alt="Tangling (circular)" width="600">
+
+### Tangling (non-circular)
+<img src="images/TanglingNonCircular.png" alt="Tangling (non-circular)" width="600">
+
+
+HAnS-Viz also provides a Feature Info Window
+ on the lower left side to provide insight into various feature-specific information, such as
+- Tangling Degree
+- Scattering Degree
+- Locations of annotated software assets
+
+<img src="images/FeatureInfoWindow.png" alt="Feature Info Window" height="600">
+
+The Feature Info Window also allows to navigate to files or lines of code annotated by a specific feature by clicking on one of the entries under "Locations" or by clicking on them in the Scattering Chart.
+
+### Scattering Chart
+<img src="images/Scattering.png" alt="Scattering Chart" width="600">
+
+The width of the edges between the nodes within the Scattering chart indicates the proportion of lines annotated in the given feature file in relation to the total lines annotated by the feature. This is also determined by the "Feature coverage" property
+
 <!-- Plugin description end -->
-
 ## Installation
+Since HAnS-Viz is dependent on HAnS, it is necessary to install HAnS. For further information see:
+[HAnS Plugin on GitHub](https://github.com/isselab/HAnS)
 
-- Using the IDE built-in plugin system:
-  
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "HAnS-viz"</kbd> >
-  <kbd>Install</kbd>
-  
-- Manually:
-
-  Download the [latest release](https://github.com/isselab/HAnS-viz/releases/latest) and install it manually using
+1. Clone/Download this repository 
+2. Go to main folder 
+3. Build JAR with gradle-task "buildPlugin" 
+4. Install it manually using
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
 
+#### Research group
+[![jhc github](https://img.shields.io/badge/GitHub-isselab-181717.svg?style=flat&logo=github)](https://www.github.com/isselab)
+[![](https://img.shields.io/website.svg?down_color=red&down_message=down&up_color=green&up_message=isselab.org&url=http%3A%2F%2Fshields.io)](https://www.isselab.org)
+#### Chair of Software Engineering
+[![Chair of Software Engineering](https://img.shields.io/website.svg?down_color=red&down_message=down&up_color=green&up_message=se.ruhr-uni-bochum.de&url=http%3A%2F%2Fshields.io)](http://se.rub.de)
 
----
-Plugin based on the [IntelliJ Platform Plugin Template][template].
-
-[template]: https://github.com/JetBrains/intellij-platform-plugin-template
-[docs:plugin-description]: https://plugins.jetbrains.com/docs/intellij/plugin-user-experience.html#plugin-description-and-presentation
+### [Contributors](CONTRIBUTORS.md)
