@@ -73,7 +73,7 @@ const state = {
     treeChart: 0,
     treeMapChart: 1,
     tanglingChart: 2,
-    isDarkmode: true,
+    isDarkmode: false,
     isNav: false,
     isFeatureWindow: false,
     isFetching: false,
@@ -94,7 +94,12 @@ const jsonData = {
     treeData: ""
 }
 
+// Initialize dark mode here
 darkModeToggle.classList.toggle("active", state.isDarkmode);
+body.classList.toggle("dark-mode", state.isDarkmode);
+lastFetchTimestamp.classList.toggle("dark-mode", state.isDarkmode);
+chartDom.classList.toggle("dark-mode", state.isDarkmode);
+
 //automatedFetchToggle.classList.toggle("active", state.isAutoFetch);
 lpqNameToggle.classList.toggle("active", state.showLpqNames);
 circularTanglingToggle.classList.toggle("active", state.showTanglingAsNormalGraph);
