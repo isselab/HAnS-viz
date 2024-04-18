@@ -25,7 +25,7 @@ limitations under the License.
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
 </head>
-<body id=" mainBody" class="box dark-mode">
+<body id="mainBody" class="box dark-mode">
 <div class="show-full-path">/src/main/java/se/isselab/hansviz/browser/BrowserSchemeHandlerFactory.java</div>
 <div class="hide-scattering"></div>
 <div class="scattering-window">
@@ -135,7 +135,10 @@ limitations under the License.
     <img class="logo" src="./img/pluginIcon.png" alt="HAnS-Viz">
     <ul class="nav-links">
         <span class="material-symbols-outlined navCloseBtn">close</span>
-        <li><a href="#" onclick="toggleChart(state.treeChart)">Tree View</a></li>
+        <li>
+            <a href="#" onclick="toggleChart(state.treeChart)">Tree View</a>
+            
+        </li>
         <li><a href="#" onclick="toggleChart(state.treeMapChart)">Treemap View</a></li>
         <li><a href="#" onclick="toggleChart(state.tanglingChart)">Tangling</a></li>
     </ul>
@@ -143,9 +146,33 @@ limitations under the License.
         <span class="material-symbols-outlined search-icon" id="searchIcon">search</span>
         <span class="material-symbols-outlined refresh-button" id="refresh-button">refresh</span>
         <span class="material-symbols-outlined settings">settings</span>
+        <span class="material-symbols-outlined edit" id="edit-button">edit</span>
         <span class="material-symbols-outlined navOpenBtn">menu</span>
     </div>
 </nav>
+<div class="feature-modification-box">
+    <div class="edit-row">
+        <button id="feature-modification-add-btn">Add <span class="material-symbols-outlined add">add</span></button>
+    </div>
+    <div class="edit-row">
+        <button id="feature-modification-move-btn">Move<span class="material-symbols-outlined timeline">timeline</span></button>
+    </div>
+    <div class="edit-row">
+        <button id="feature-modification-rename-btn">Rename<span class="material-symbols-outlined edit">edit</span></button>
+    </div>
+    <div class="edit-row">
+        <button id="feature-modification-delete-btn">Delete with annotations<span class="material-symbols-outlined remove">remove</span></button>
+    </div>
+    <div class="edit-row">
+        <button id="feature-modification-drop-btn">Delete with code<span class="material-symbols-outlined delete_forever">delete_forever</span></button>
+    </div>
+</div>
+<div id="modify-feature-rename-container" >
+</div>
+<div id="modify-feature-delete-container" >
+</div>
+<div id="modify-feature-notification-container"></div>
+
 </body>
 <script src="js/main.js"></script>
 <script type="text/javascript">

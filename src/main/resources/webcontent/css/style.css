@@ -37,6 +37,7 @@ limitations under the License.
 /* background color */
 .settings-box, 
 .search-box, 
+.feature-modification-box, 
 .last-fetch-timestamp, 
 .feature-info-window,
 .search-box-settings,
@@ -45,6 +46,7 @@ limitations under the License.
 }
 .box.dark-mode .settings-box, 
 .box.dark-mode .search-box, 
+.box.dark-mode .feature-modification-box, 
 .box.dark-mode .last-fetch-timestamp,
 .box.dark-mode .feature-info-window,
 .box.dark-mode .search-box-settings,
@@ -113,9 +115,11 @@ a:hover {
   align-items: center;
   display:block;
   z-index: 2;
+  margin-right: 1%;
 }
 
-.settings-box.active {
+.settings-box.active,
+.feature-modification-box.active {
   opacity: 1;
   pointer-events: all;
 }
@@ -134,6 +138,65 @@ a:hover {
 .settings-row.automated-fetch-disabled {
   display: none;
 }
+
+/* edit box set up */
+
+.feature-modification-box {
+  opacity:0;
+  position: absolute;
+  top:6vh;
+  right:0;
+  width: 29%;
+  max-width: 200px;
+  pointer-events: none;
+  transition: all 0.2s linear;
+  border: none;
+  outline: none;
+  border-radius: 6px;
+  display:block;
+  z-index: 2;
+  margin-right: 1%;
+
+}
+.edit-row {
+  display: flex;
+  gap: 8px;
+  padding: 10px 10px 10px 10px;
+  justify-content: center;
+  transition: 0.5s;
+  font-size: 14px;
+}
+
+.edit-row button {
+    width: 90%;
+    padding: 10px 20px;
+    font-weight: bold;
+    background-color: #5e42a6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    transition: background-color 0.3s ease;
+}
+.edit-row button  {
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+}
+.edit-row button span {
+    padding-left: 1vh;
+}
+
+.edit-row button:disabled {
+    background-color: #b0a0d9;
+}
+
+.edit-row button:hover {
+    background-color: #b0a0d9;
+}
+
+
 
 /* search box set up */
 .search-box {
@@ -513,6 +576,7 @@ a:hover {
     font-size: 20px;
     cursor: pointer;
   }
+
 }
 @media screen and (max-width: 500px) {
   .nav .search-box {
@@ -539,4 +603,88 @@ a:hover {
 }
 @media screen and (max-height: 520px) {
   /* TODO THESIS: Handle */
+}
+
+.modify-feature-custom-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+.modify-feature-popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.modify-feature-popup-error {
+  color: red;
+  font-size: 14px;
+}
+
+.modify-feature-notif {
+    padding: 1vh;
+    position: fixed;
+    top: 6vh;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: self-start;
+    pointer-events: none; 
+/*    z-index: 2;*/
+}
+
+.modify-feature-notif-content {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  pointer-events: auto; 
+}
+
+.modify-feature-popup-content .popup-input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+.modify-feature-popup-content button {
+    padding: 5px 10px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+
+}
+.modify-feature-popup-content button.submit-btn {
+  background-color: #4CAF50;
+  border: 1px solid #4CAF50;
+}
+
+.modify-feature-popup-content button.close-btn {
+  color:black;  
+  border: 1px solid black;
+}
+
+
+.modify-feature-popup-content button:last-child {
+    margin-right: 0;
+}
+
+.popup-message {
+    margin-bottom: 10px;
 }
