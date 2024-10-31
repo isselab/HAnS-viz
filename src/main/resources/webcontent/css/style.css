@@ -828,5 +828,13 @@ a:hover {
   font-size: 14px;
   font-weight: bold;
 }
+.commit-filter-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  gap: 10px;
+}
+
 
 

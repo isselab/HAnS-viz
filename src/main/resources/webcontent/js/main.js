@@ -1312,6 +1312,8 @@ function openTreeView() {
     };
     option && myChart.setOption(option);
 }
+// &end[Tree]
+
 // &begin[FeatureHistory]
 
 let allSeriesData = [];   // Copy of all data points for filtering
@@ -1347,7 +1349,7 @@ function openFeatureTimelineView() {
     contentDiv.innerHTML = `
         <!-- Feature Filter Panel -->
         <div id="featureFilterPanel" class="feature-filter-panel">
-            <button id="toggleFilterPanel" class="toggle-filter-button">☰ Selections</button>
+            <button id="toggleFilterPanel" class="toggle-filter-button">☰ Select Features</button>
             <div id="filterContent" class="filter-content hide">
                 <h4>Select Features</h4>
                 <div id="featureCheckboxes" class="feature-checkboxes">
@@ -1359,6 +1361,7 @@ function openFeatureTimelineView() {
         </div>
         <!-- Timeline Chart -->
        <div id="timelineChart" style="width: 100%; height: 100vh;"></div>
+       <!-- Commit Filter Panel -->
     `;
 
     requestData('featureHistory', function () {
@@ -1379,9 +1382,9 @@ function openDeletedFeaturesView() {
 
 // Function to handle the feature history data and render the chart
 function handleFeatureHistoryData() {
-    const data = jsonData.featureHistoryData;
-    const features = data.features;
-    const commits = data.commits;
+    data = jsonData.featureHistoryData;
+    features = data.features;
+    commits = data.commits;
 
     processCodeAnnotations(data.codeAnnotations, features, commits);
     processFileMappings(data.fileMappings, features, commits);
@@ -1415,7 +1418,7 @@ function handleFeatureHistoryData() {
                         Commit Time: ${data.commitTime}<br/>
                         Commit Message: ${escapeHtml(data.commitMessage)}<br/>
                         Author: ${data.commitAuthor}<br/>
-                        Click to copy commit hash`;
+                        <span style="color: #8A00C4; font-weight: bold;">Click to copy commit hash</span>`;
                 }
             }
         },
@@ -1435,7 +1438,7 @@ function handleFeatureHistoryData() {
                     return `Feature: ${featureName}<br/>
                         Commit Time: ${data.commitTime}<br/>
                         File: ${data.entityName}<br/>
-                        Click to copy commit hash`;
+                        <span style="color: #8A00C4; font-weight: bold;">Click to copy commit hash</span>`;
                 }
             }
         },
@@ -1455,7 +1458,7 @@ function handleFeatureHistoryData() {
                     return `Feature: ${featureName}<br/>
                         Commit Time: ${data.commitTime}<br/>
                         Folder: ${data.entityName}<br/>
-                        Click to copy commit hash`;
+                        <span style="color: #8A00C4; font-weight: bold;">Click to copy commit hash</span>`;
                 }
             }
         }
@@ -1587,6 +1590,9 @@ function handleFeatureHistoryData() {
     };
     state.timelineChart.setOption(options);
 
+    // Add event listener for the Apply Filter button
+    //document.getElementById('applyCommitFilter').addEventListener('click', handleCommitFilter);
+
     // Initialize crosshair event listeners
     function updateCrosshair(event) {
         const grid = state.timelineChart.getModel().getComponent('grid', 0).coordinateSystem.getRect();
@@ -1597,7 +1603,7 @@ function handleFeatureHistoryData() {
         if (pointInGrid) {
             const [featureIndex, commitIndex] = pointInGrid;
             const features = state.timelineChart.getOption().xAxis[0].data; // Use the currently displayed features
-            const commits = jsonData.featureHistoryData.commits;
+            const commits = state.timelineChart.getOption().yAxis[0].data;
 
             // Snapping logic: Find the closest feature and commit index
             let nextFeatureIndex = Math.ceil(featureIndex);
@@ -1702,6 +1708,72 @@ function handleFeatureHistoryData() {
     }
 }
 
+/*
+function handleCommitFilter() {
+    const authorFilterValue = document.getElementById('authorFilter').value.toLowerCase().trim();
+    const messageFilterValue = document.getElementById('messageFilter').value.toLowerCase().trim();
+
+    // Filter the data points directly
+    const filterDataPoints = (dataPoints) => {
+        return dataPoints.filter(point => {
+            const authorMatch = authorFilterValue ? point.commitAuthor.toLowerCase().includes(authorFilterValue) : true;
+            const messageMatch = messageFilterValue ? point.commitMessage.toLowerCase().includes(messageFilterValue) : true;
+            return authorMatch && messageMatch;
+        });
+    };
+
+    const updatedCodeAnnotationsData = filterDataPoints(codeAnnotationsData);
+    const updatedFileMappingsData = filterDataPoints(fileMappingsData);
+    const updatedFolderMappingsData = filterDataPoints(folderMappingsData);
+
+    // Collect all commits from the filtered data points
+    const allCommitIndices = new Set();
+    [...updatedCodeAnnotationsData, ...updatedFileMappingsData, ...updatedFolderMappingsData].forEach(point => {
+        allCommitIndices.add(point.value[1]); // commitIndex
+    });
+
+    // Build updated yAxis data
+    const updatedYAxisData = Array.from(allCommitIndices).sort((a, b) => a - b).map(commitIndex => {
+        const point = codeAnnotationsData.find(p => p.value[1] === commitIndex) ||
+            fileMappingsData.find(p => p.value[1] === commitIndex) ||
+            folderMappingsData.find(p => p.value[1] === commitIndex);
+        return `${point.commitTime} (${point.commitAuthor})`;
+    });
+
+    // Create a mapping from old commit indices to new indices
+    const oldToNewCommitIndexMap = {};
+    Array.from(allCommitIndices).sort((a, b) => a - b).forEach((commitIndex, newIndex) => {
+        oldToNewCommitIndexMap[commitIndex] = newIndex;
+    });
+
+    // Update data points with new commit indices
+    const remapDataPoints = (dataPoints) => {
+        return dataPoints.map(point => ({
+            ...point,
+            value: [point.value[0], oldToNewCommitIndexMap[point.value[1]]]
+        }));
+    };
+
+    const finalCodeAnnotationsData = remapDataPoints(updatedCodeAnnotationsData);
+    const finalFileMappingsData = remapDataPoints(updatedFileMappingsData);
+    const finalFolderMappingsData = remapDataPoints(updatedFolderMappingsData);
+
+    // Update the chart options
+    state.timelineChart.setOption({
+        yAxis: {
+            data: updatedYAxisData
+        },
+        series: [
+            { data: finalCodeAnnotationsData },
+            { data: finalFileMappingsData },
+            { data: finalFolderMappingsData }
+        ]
+    });
+}
+
+ */
+
+
 /// Function to create the filter panel UI
 function createFeatureFilterPanel(features) {
     const featureCheckboxesDiv = document.getElementById('featureCheckboxes');
@@ -1788,19 +1860,21 @@ function initializeFeatureFilterPanel() {
     selectionWarning.style.display = 'none';
 }
 
-function processCodeAnnotations(annotations, features, commits) {
+function processCodeAnnotations(annotations, features) {
     const [primaryColor] = customTheme.color;
-    codeAnnotationsData = annotations.map(point => ({
-        value: [point.featureIndex, point.commitIndex],
-        name: features[point.featureIndex],
-        commitTime: commits[point.commitIndex],
-        commitHash: point.commitHash,
-        commitMessage: point.commitMessage,
-        commitAuthor: point.commitAuthor,
-        type: 'codeAnnotation',
-        symbol: 'circle',
-        itemStyle: { color: primaryColor }
-    }));
+    codeAnnotationsData = annotations.map(point => {
+        return {
+            value: [point.featureIndex, point.commitIndex],
+            name: features[point.featureIndex],
+            commitTime: commits[point.commitIndex],
+            commitHash: point.commitHash,
+            commitMessage: point.commitMessage,
+            commitAuthor: point.commitAuthor,
+            type: 'codeAnnotation',
+            symbol: 'circle',
+            itemStyle: { color: primaryColor }
+        };
+    });
 }
 
 function processFileMappings(fileMappings, features, commits) {
@@ -1810,6 +1884,8 @@ function processFileMappings(fileMappings, features, commits) {
         name: features[point.featureIndex],
         commitHash: point.commitHash,
         commitTime: point.commitTime,
+        commitMessage: point.commitMessage,
+        commitAuthor: point.commitAuthor,
         entityName: point.entityName,
         type: 'fileMapping',
         symbol: 'rect',
@@ -1824,12 +1900,15 @@ function processFolderMappings(folderMappings, features, commits) {
         name: features[point.featureIndex],
         commitHash: point.commitHash,
         commitTime: point.commitTime,
+        commitMessage: point.commitMessage,
+        commitAuthor: point.commitAuthor,
         entityName: point.entityName,
         type: 'folderMapping',
         symbol: 'diamond',
         itemStyle: { color: neonPink }
     }));
 }
+
 
 function getLegendOptions() {
     const [primaryColor, , , , , , , ,neonBlue, neonPink] = customTheme.color;
@@ -2151,8 +2230,6 @@ function escapeHtml(text) {
 
 // &end[FeatureHistory]
 
-
-// &end[Tree]
 
 //helper function for the treemap
 // &begin[TreeMap]
