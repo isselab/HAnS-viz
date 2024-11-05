@@ -1499,6 +1499,13 @@ function handleFeatureHistoryData() {
             },
             axisLine: {
                 lineStyle: { color: customTheme.grid.borderColor }
+            },
+            splitLine: {
+                show: true, // Enable split lines
+                lineStyle: {
+                    color: customTheme.grid.borderColor, // Customize color as desired
+                    type: 'solid'  // Set line type to solid; can be 'dashed' or 'dotted' as well
+                }
             }
         },
         yAxis: {
@@ -1514,6 +1521,9 @@ function handleFeatureHistoryData() {
             },
             axisLine: {
                 lineStyle: { color: customTheme.grid.borderColor }
+            },
+            splitLine: {
+                show: false  // Disable horizontal split lines
             }
         },
         series: series,
@@ -1589,9 +1599,6 @@ function handleFeatureHistoryData() {
         ]
     };
     state.timelineChart.setOption(options);
-
-    // Add event listener for the Apply Filter button
-    //document.getElementById('applyCommitFilter').addEventListener('click', handleCommitFilter);
 
     // Initialize crosshair event listeners
     function updateCrosshair(event) {
@@ -1707,72 +1714,6 @@ function handleFeatureHistoryData() {
         state.resizeListenerAdded = true; // Prevent adding multiple listeners
     }
 }
-
-/*
-function handleCommitFilter() {
-    const authorFilterValue = document.getElementById('authorFilter').value.toLowerCase().trim();
-    const messageFilterValue = document.getElementById('messageFilter').value.toLowerCase().trim();
-
-    // Filter the data points directly
-    const filterDataPoints = (dataPoints) => {
-        return dataPoints.filter(point => {
-            const authorMatch = authorFilterValue ? point.commitAuthor.toLowerCase().includes(authorFilterValue) : true;
-            const messageMatch = messageFilterValue ? point.commitMessage.toLowerCase().includes(messageFilterValue) : true;
-            return authorMatch && messageMatch;
-        });
-    };
-
-    const updatedCodeAnnotationsData = filterDataPoints(codeAnnotationsData);
-    const updatedFileMappingsData = filterDataPoints(fileMappingsData);
-    const updatedFolderMappingsData = filterDataPoints(folderMappingsData);
-
-    // Collect all commits from the filtered data points
-    const allCommitIndices = new Set();
-    [...updatedCodeAnnotationsData, ...updatedFileMappingsData, ...updatedFolderMappingsData].forEach(point => {
-        allCommitIndices.add(point.value[1]); // commitIndex
-    });
-
-    // Build updated yAxis data
-    const updatedYAxisData = Array.from(allCommitIndices).sort((a, b) => a - b).map(commitIndex => {
-        const point = codeAnnotationsData.find(p => p.value[1] === commitIndex) ||
-            fileMappingsData.find(p => p.value[1] === commitIndex) ||
-            folderMappingsData.find(p => p.value[1] === commitIndex);
-        return `${point.commitTime} (${point.commitAuthor})`;
-    });
-
-    // Create a mapping from old commit indices to new indices
-    const oldToNewCommitIndexMap = {};
-    Array.from(allCommitIndices).sort((a, b) => a - b).forEach((commitIndex, newIndex) => {
-        oldToNewCommitIndexMap[commitIndex] = newIndex;
-    });
-
-    // Update data points with new commit indices
-    const remapDataPoints = (dataPoints) => {
-        return dataPoints.map(point => ({
-            ...point,
-            value: [point.value[0], oldToNewCommitIndexMap[point.value[1]]]
-        }));
-    };
-
-    const finalCodeAnnotationsData = remapDataPoints(updatedCodeAnnotationsData);
-    const finalFileMappingsData = remapDataPoints(updatedFileMappingsData);
-    const finalFolderMappingsData = remapDataPoints(updatedFolderMappingsData);
-
-    // Update the chart options
-    state.timelineChart.setOption({
-        yAxis: {
-            data: updatedYAxisData
-        },
-        series: [
-            { data: finalCodeAnnotationsData },
-            { data: finalFileMappingsData },
-            { data: finalFolderMappingsData }
-        ]
-    });
-}
-
- */
-
 
 /// Function to create the filter panel UI
 function createFeatureFilterPanel(features) {
@@ -2229,7 +2170,6 @@ function escapeHtml(text) {
 }
 
 // &end[FeatureHistory]
-
 
 //helper function for the treemap
 // &begin[TreeMap]
