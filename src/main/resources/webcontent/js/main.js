@@ -1721,6 +1721,31 @@ function createFeatureFilterPanel(features) {
     const selectionWarning = document.getElementById('selectionWarning');
     let selectedCount = 0;
 
+    // Add "Deselect All" checkbox at the top
+    const deselectAllLabel = document.createElement('label');
+    const deselectAllCheckbox = document.createElement('input');
+    deselectAllCheckbox.type = 'checkbox';
+    deselectAllCheckbox.id = 'deselectAllCheckbox';
+    deselectAllLabel.appendChild(deselectAllCheckbox);
+    deselectAllLabel.appendChild(document.createTextNode(" Deselect All"));
+    featureCheckboxesDiv.appendChild(deselectAllLabel);
+
+    deselectAllCheckbox.addEventListener('change', function () {
+        const allCheckboxes = document.querySelectorAll('#featureCheckboxes input[type="checkbox"]:not(#deselectAllCheckbox)');
+        if (deselectAllCheckbox.checked) {
+            allCheckboxes.forEach(cb => {
+                cb.checked = false;
+                cb.disabled = false;
+                cb.parentElement.classList.remove('disabled');
+            });
+            selectedCount = 0;
+            selectionWarning.style.display = 'none';
+        } else {
+            // Optionally, handle like re-checking previous selections if needed
+        }
+        handleFilterChange();
+    });
+
     features.forEach((feature, index) => {
         const checkboxId = `featureCheckbox_${index}`;
         const label = document.createElement('label');
@@ -1741,6 +1766,7 @@ function createFeatureFilterPanel(features) {
         checkbox.addEventListener('change', function () {
             if (checkbox.checked) {
                 selectedCount++;
+                deselectAllCheckbox.checked = false;  // Uncheck "Deselect All" when any feature checkbox is selected
                 if (selectedCount > MAX_FEATURES_DISPLAYED) {
                     // Prevent checking this box
                     checkbox.checked = false;
@@ -1771,6 +1797,10 @@ function createFeatureFilterPanel(features) {
                     // Hide warning message
                     selectionWarning.style.display = 'none';
                 }
+            }
+            // Uncheck "Deselect All" if any individual checkbox is checked
+            if (selectedCount > 0) {
+                deselectAllCheckbox.checked = false;
             }
             handleFilterChange();
         });
@@ -1859,7 +1889,7 @@ function getLegendOptions() {
             { name: 'File Mappings', icon: 'rect', itemStyle: { color: neonBlue } },
             { name: 'Folder Mappings', icon: 'diamond', itemStyle: { color: neonPink } }
         ],
-        bottom: '7%',
+        bottom: '10%',
         left: 'center',
         orient: 'horizontal',
         textStyle: { color: customTheme.textStyle.color }
@@ -1873,7 +1903,7 @@ function getDataZoomOptions() {
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            bottom: 1,
+            bottom: 50,
             height: 20,
         },
         {
