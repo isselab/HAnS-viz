@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.changelog) // Gradle Changelog Plugin
     alias(libs.plugins.qodana) // Gradle Qodana Plugin
     alias(libs.plugins.kover) // Gradle Kover Plugin
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = properties("pluginGroup").get()
@@ -23,9 +24,9 @@ repositories {
 
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
-    implementation("net.minidev", "json-smart", "2.5.0")
-
+    implementation("net.minidev:json-smart:2.5.0")
 }
+
 
 // Set the JVM language level used to build the project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
 kotlin {
@@ -45,7 +46,7 @@ intellij {
     plugins = properties("platformPlugins").map { it.split(',').map(String::trim).filter(String::isNotEmpty) }
 
     //TODO IMPORTANT Add plugins.set(listOf(file("LOCATION OF HAnS-0.0.7.jar")))
-    plugins.set(listOf(file("/Users/rimanhoubbi/Desktop/HAnS2/build/libs/HAnS-0.0.8.jar")))
+    plugins.set(listOf(file("/Users/rimanhoubbi/Desktop/HAnS/build/libs/HAnS-0.0.8.jar")))
 
 }
 
@@ -134,5 +135,11 @@ tasks {
         // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
         // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
         /*channels = properties("pluginVersion").map { listOf(it.split('-').getOrElse(1) { "default" }.split('.').first()) }*/
+    }
+    shadowJar {
+        archiveBaseName.set("HAnS-Viz")
+        archiveVersion.set("0.0.2")
+        archiveClassifier.set("") // Removes "all" suffix from the JAR name
+        mergeServiceFiles()
     }
 }
