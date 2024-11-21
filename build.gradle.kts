@@ -31,8 +31,7 @@ dependencies {
 kotlin {
     @Suppress("UnstableApiUsage")
     jvmToolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-        vendor = JvmVendorSpec.JETBRAINS
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -45,8 +44,8 @@ intellij {
     // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
     plugins = properties("platformPlugins").map { it.split(',').map(String::trim).filter(String::isNotEmpty) }
 
-    //TODO IMPORTANT Add plugins.set(listOf(file("LOCATION OF HAnS-0.0.4.jar")))
-    plugins.set(listOf(file("/Users/rimanhoubbi/Desktop/HAnS-2/build/libs/HAnS-0.0.8.jar")))
+    //TODO IMPORTANT Add plugins.set(listOf(file("LOCATION OF HAnS-0.0.7.jar")))
+    plugins.set(listOf(file("/Users/rimanhoubbi/Desktop/HAnS2/build/libs/HAnS-0.0.8.jar")))
 
 }
 
